@@ -92,27 +92,53 @@ const Form = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Address 1"
+                type="password"
+                label="Temporal Password"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Address 2"
+                label="National ID or Passport"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
+                value={values.nationalId}
+                name="nationalId"
+                error={!!touched.nationalId && !!errors.nationalId}
+                helperText={touched.nationalId && errors.nationalId}
+                sx={{ gridColumn: "span 4" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Birth Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.birthDate}
+                name="birthDate"
+                error={!!touched.birthDate && !!errors.birthDate}
+                helperText={touched.birthDate && errors.birthDate}
+                sx={{ gridColumn: "span 4" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="User Role"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.userRole}
+                name="userRole"
+                error={!!touched.userRole && !!errors.userRole}
+                helperText={touched.userRole && errors.userRole}
                 sx={{ gridColumn: "span 4" }}
               />
             </Box>
@@ -139,16 +165,22 @@ const checkoutSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
+  password: yup.string().required("required"),
+  nationalId: yup.string().required("required"),
+  birthDate: yup.date().required("required"),
+  userRole: yup.string().required("required"),
   address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
 });
 const initialValues = {
   firstName: "",
   lastName: "",
   email: "",
   contact: "",
+  password: "",
+  nationalId: "",
+  birthDate: "",
+  userRole: "",
   address1: "",
-  address2: "",
 };
 
 export default Form;

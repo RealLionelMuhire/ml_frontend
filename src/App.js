@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
