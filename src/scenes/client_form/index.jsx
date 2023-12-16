@@ -4,7 +4,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 
-const Form = () => {
+const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
@@ -13,7 +13,7 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
+      <Header title="REGISTER A CLIENT" subtitle="Register a new client and Company information" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -144,7 +144,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New User
+                Register a New Client
               </Button>
             </Box>
           </form>
@@ -183,4 +183,4 @@ const initialValues = {
   address1: "",
 };
 
-export default Form;
+export default ClientForm;

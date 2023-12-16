@@ -1,11 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
+import { Link} from "react-router-dom";
 
-const Contacts = () => {
+const Clients = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -54,10 +55,16 @@ const Contacts = () => {
 
   return (
     <Box m="20px">
-      <Header
-        title="CONTACTS"
-        subtitle="List of Contacts for Future Reference"
-      />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Header title="CLIENTS" subtitle="Managing All Clinets" />
+      <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                <Link to="/client-form">
+                  Register a New Client
+                </Link>
+              </Button>
+      </Box>
+    </Box>
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -100,4 +107,4 @@ const Contacts = () => {
   );
 };
 
-export default Contacts;
+export default Clients;

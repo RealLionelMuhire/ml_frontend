@@ -6,7 +6,7 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
-import { Link, Navigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 const Team = () => {
   const theme = useTheme();
@@ -75,7 +75,7 @@ const Team = () => {
       <Header title="TEAM" subtitle="Managing the Team Members" />
       <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                <Link to="/form">
+                <Link to="/user-form">
                   Create New User
                 </Link>
               </Button>

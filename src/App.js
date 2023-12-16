@@ -3,8 +3,9 @@ import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Roles from "./scenes/roles";
-import Contacts from "./scenes/contacts";
-import Form from "./scenes/form";
+import Clients from "./scenes/clients";
+import UserForm from "./scenes/user_form";
+import ClientForm from "./scenes/client_form";
 import FAQ from "./scenes/faq";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
@@ -28,8 +29,8 @@ function App() {
               <Route path="/team" element={<AdminLayout>
                 <Team/>
               </AdminLayout>} />
-              <Route path="/contacts" element={<AdminLayout>
-                <Contacts />
+              <Route path="/clients" element={<AdminLayout>
+                <Clients />
               </AdminLayout>} />
               <Route path="/invoices" element={<AdminLayout>
                 <Invoices/>
@@ -37,8 +38,11 @@ function App() {
               <Route path="/roles" element={<AdminLayout>
                 <Roles/>
               </AdminLayout>} />
-              <Route path="/form" element={<AdminLayout>
-                <Form/>
+              <Route path="/user-form" element={<AdminLayout>
+                <UserForm/>
+              </AdminLayout>} />
+              <Route path="/client-form" element={<AdminLayout>
+                <ClientForm/>
               </AdminLayout>} />
               <Route path="/faq" element={<AdminLayout>
                 <FAQ/>

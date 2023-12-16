@@ -147,7 +147,7 @@ const Sidebar = () => {
             />
             <Item
               title="Manage Clients"
-              to="/contacts"
+              to="/clients"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
