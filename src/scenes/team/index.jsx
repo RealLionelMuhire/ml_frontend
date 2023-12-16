@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
@@ -6,6 +6,7 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
+import { Link, Navigate } from "react-router-dom";
 
 const Team = () => {
   const theme = useTheme();
@@ -69,8 +70,18 @@ const Team = () => {
   ];
 
   return (
-    <Box m="20px">
+    <Box m="20px" >
+    <Box display="flex" justifyContent="space-between" alignItems="center">
       <Header title="TEAM" subtitle="Managing the Team Members" />
+      <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                <Link to="/form">
+                  Create New User
+                </Link>
+              </Button>
+      </Box>
+    </Box>
+      
       <Box
         m="40px 0 0 0"
         height="75vh"

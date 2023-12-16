@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { loginUser, forgotPassword } from '../../../services/api';
-import { loginAction } from '../../../actions/authActions';
+import { loginUser, forgotPassword } from '../services/api';
+import { loginAction } from '../actions/authActions';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -44,7 +44,7 @@ function AdminLoginPage({ isAuthenticated, loginAction }) {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/admin-dashboard');
+      navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
@@ -77,7 +77,7 @@ function AdminLoginPage({ isAuthenticated, loginAction }) {
         loginAction(response.user_id);
 
         if (!isAuthenticated) {
-          navigate('/admin-dashboard');
+          navigate('/dashboard');
         }
       } else {
         setError('Login failed. Please check your credentials.');
