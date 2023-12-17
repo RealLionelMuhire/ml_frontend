@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, MenuItem } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -74,7 +74,7 @@ const ClientForm = () => {
                 name="email"
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -87,20 +87,7 @@ const ClientForm = () => {
                 name="contact"
                 error={!!touched.contact && !!errors.contact}
                 helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="password"
-                label="Temporal Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                name="password"
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -113,7 +100,7 @@ const ClientForm = () => {
                 name="nationalId"
                 error={!!touched.nationalId && !!errors.nationalId}
                 helperText={touched.nationalId && errors.nationalId}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -126,21 +113,104 @@ const ClientForm = () => {
                 name="birthDate"
                 error={!!touched.birthDate && !!errors.birthDate}
                 helperText={touched.birthDate && errors.birthDate}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="User Role"
+                label="Nationality"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.userRole}
-                name="userRole"
-                error={!!touched.userRole && !!errors.userRole}
-                helperText={touched.userRole && errors.userRole}
-                sx={{ gridColumn: "span 4" }}
+                value={values.nationality}
+                name="nationality"
+                error={!!touched.nationality && !!errors.nationality}
+                helperText={touched.nationality && errors.nationality}
+                sx={{ gridColumn: "span 2" }}
               />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Country of Residence"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.countryOfResidence}
+                name="countryOfResidence"
+                error={!!touched.countryOfResidence && !!errors.countryOfResidence}
+                helperText={touched.countryOfResidence && errors.countryOfResidence}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Passport Expiry Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.passportExpiryDate}
+                name="passportExpiryDate"
+                error={!!touched.passportExpiryDate && !!errors.passportExpiryDate}
+                helperText={touched.passportExpiryDate && errors.passportExpiryDate}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Country of Issue"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.countryOfIssue}
+                name="countryOfIssue"
+                error={!!touched.countryOfIssue && !!errors.countryOfIssue}
+                helperText={touched.countryOfIssue && errors.countryOfIssue}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                select
+                label="Language Spoken"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.languageSpoken}
+                name="languageSpoken"
+                error={!!touched.languageSpoken && !!errors.languageSpoken}
+                helperText={touched.languageSpoken && errors.languageSpoken}
+                sx={{ gridColumn: "span 2" }}
+              >
+                <MenuItem value="english">English</MenuItem>
+                <MenuItem value="french">French</MenuItem>
+                <MenuItem value="kinyarwanda">Kinyarwanda</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Company Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.companyName}
+                name="companyName"
+                error={!!touched.companyName && !!errors.companyName}
+                helperText={touched.companyName && errors.companyName}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Company Role"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.companyRole}
+                name="companyRole"
+                error={!!touched.companyRole && !!errors.companyRole}
+                helperText={touched.companyRole && errors.companyRole}
+                sx={{ gridColumn: "span 2" }}
+              />
+              
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
@@ -165,10 +235,15 @@ const checkoutSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
-  password: yup.string().required("required"),
   nationalId: yup.string().required("required"),
   birthDate: yup.date().required("required"),
-  userRole: yup.string().required("required"),
+  nationality: yup.string().required("required"),
+  countryOfResidence: yup.string().required("required"),
+  passportExpiryDate: yup.date().required("required"),
+  countryOfIssue: yup.string().required("required"),
+  languageSpoken: yup.string().required("required"),
+  companyName: yup.string().required("required"),
+  companyRole: yup.string().required("required"),
   address1: yup.string().required("required"),
 });
 const initialValues = {
@@ -176,10 +251,15 @@ const initialValues = {
   lastName: "",
   email: "",
   contact: "",
-  password: "",
   nationalId: "",
   birthDate: "",
-  userRole: "",
+  nationality: "",
+  countryOfResidence: "",
+  passportExpiryDate: "",
+  countryOfIssue: "",
+  languageSpoken: "",
+  companyName: "",
+  companyRole: "",
   address1: "",
 };
 
