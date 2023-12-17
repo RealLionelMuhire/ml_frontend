@@ -1,10 +1,11 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
+import { Link} from "react-router-dom"; 
 
-const Invoices = () => {
+const Activities = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
@@ -44,7 +45,16 @@ const Invoices = () => {
 
   return (
     <Box m="20px">
-      <Header title="INVOICES" subtitle="List of Invoice Balances" />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Header title="Activities" subtitle="Activities Done" />
+      <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                <Link to="/activities-form">
+                  Start New Activity
+                </Link>
+              </Button>
+      </Box>
+    </Box>
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -80,4 +90,4 @@ const Invoices = () => {
   );
 };
 
-export default Invoices;
+export default Activities;

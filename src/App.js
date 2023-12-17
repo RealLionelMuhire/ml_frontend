@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
-import Invoices from "./scenes/invoices";
+import Invoices from "./scenes/activities";
 import Roles from "./scenes/roles";
 import Clients from "./scenes/clients";
 import UserForm from "./scenes/user_form";
@@ -12,6 +12,8 @@ import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Login from "./scenes/login";
 import AdminLayout from "./layouts/admin";
+import Activities from "./scenes/activities";
+import ActivitiesForm from "./scenes/activities_form";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -34,6 +36,12 @@ function App() {
               </AdminLayout>} />
               <Route path="/invoices" element={<AdminLayout>
                 <Invoices/>
+              </AdminLayout>} />
+              <Route path="/activities-form" element={<AdminLayout>
+                <ActivitiesForm/>
+              </AdminLayout>} />
+              <Route path="/activities" element={<AdminLayout>
+                <Activities/>
               </AdminLayout>} />
               <Route path="/roles" element={<AdminLayout>
                 <Roles/>
