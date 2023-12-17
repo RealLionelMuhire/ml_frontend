@@ -210,6 +210,17 @@ const ClientForm = () => {
                 helperText={touched.companyRole && errors.companyRole}
                 sx={{ gridColumn: "span 2" }}
               />
+              {/* Add Field Button */}
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  // Handle the logic to add a new field
+                }}
+                sx={{ gridColumn: "span 2" }}
+              >
+                Add a More Client Data
+              </Button>
               
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
