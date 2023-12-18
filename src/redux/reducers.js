@@ -1,14 +1,9 @@
-// redux/reducers.js
+// reducers.js
+import { combineReducers } from 'redux';
 import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from './actions';
 
-// Initial state
-const initialState = {
-  isAuthenticated: false,
-  user: null,
-};
-
-// Reducer function
-const authReducer = (state = initialState, action) => {
+// Authentication reducer
+const authReducer = (state = { isAuthenticated: false, user: null }, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {
@@ -29,4 +24,10 @@ const authReducer = (state = initialState, action) => {
   }
 };
 
-export default authReducer;
+// Combine reducers
+const rootReducer = combineReducers({
+  auth: authReducer,
+  // Add other reducers if needed
+});
+
+export default rootReducer;
