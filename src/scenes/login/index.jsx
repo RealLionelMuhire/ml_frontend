@@ -25,7 +25,7 @@ const Login = () => {
         backgroundColor={theme.palette.background.alt}
       >
         <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-          Welcom, the Social Media for Sociopaths!
+          Welcome to MLCS Client & Admin Management Platform(For ML authorized personel only)!
         </Typography>
         <Form />
       </Box>
