@@ -1,18 +1,50 @@
-import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery, IconButton } from "@mui/material";
 import Form from "./form";
+import { useContext } from "react";
+import { ColorModeContext} from "../../theme";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
 const Login = () => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const colorMode = useContext(ColorModeContext);
   return (
-    <Box>
+    <Box m="20px">
       <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="left"
+        alignItems="left"
+        ml="15px"
+      >
+        <img
+        alt="logo"
+        src={
+          theme.palette.mode === 'light'
+            ? `../../assets/white_theme_logo.png`
+            : `../../assets/dark_theme_logo.png`
+        }
+        style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
+        />
+        <IconButton onClick={colorMode.toggleColorMode}
+        style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
+        >
+            {theme.palette.mode === "dark" ? (
+              <LightModeOutlinedIcon />
+            ) : (
+              <DarkModeOutlinedIcon />
+            )}
+        </IconButton>
+      </Box>
+
+      <Box
+        variant="contained"
+        m="20px"
         width="100%"
-        backgroundColor={theme.palette.background.alt}
-        p="1rem 6%"
         textAlign="center"
       >
-        <Typography fontWeight="bold" fontSize="32px" color="primary">
+        <Typography fontWeight="bold" fontSize="32px" color="secondary" justifyContent="left">
           ML Corporates Services
         </Typography>
       </Box>
@@ -24,8 +56,8 @@ const Login = () => {
         borderRadius="1.5rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-          Welcome to MLCS Client & Admin Management Platform(For ML authorized personel only)!
+        <Typography color="secondary" fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
+          Welcome to MLCS Client & Admin Management Platform (For Staff only)!
         </Typography>
         <Form />
       </Box>

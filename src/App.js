@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route} from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -24,77 +24,40 @@ import { useSelector } from "react-redux";
 function App() {
   const [theme, colorMode] = useMode();
   const isAuth = Boolean(useSelector((state) => state.token));
-  const [isSidebar, setIsSidebar] = React.useState(true);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
-          <Sidebar isSidebar={isSidebar} />
-          <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route
-                path="/dashboard"
-                element={isAuth ? <Dashboard /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/team"
-                element={isAuth ? <Team /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/clients"
-                element={isAuth ? <Clients /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/activities-form"
-                element={isAuth ? <ActivitiesForm /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/activities"
-                element={isAuth ? <Activities /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/roles"
-                element={isAuth ? <Roles /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/user-form"
-                element={isAuth ? <UserForm /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/client-form"
-                element={isAuth ? <ClientsForm /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/bar"
-                element={isAuth ? <Bar /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/pie"
-                element={isAuth ? <Pie /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/faq"
-                element={isAuth ? <FAQ /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/line"
-                element={isAuth ? <Line /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/calendar"
-                element={isAuth ? <Calendar /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/geography"
-                element={isAuth ? <Geography /> : <Navigate to="/" />}
-              />
-            </Routes>
-          </main>
-        </div>
+        {isAuth && (
+          <div className="app">
+            <Sidebar />
+            <main className="content">
+              <Topbar />
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/clients" element={<Clients />} />
+                <Route path="/activities-form" element={<ActivitiesForm />} />
+                <Route path="/activities" element={<Activities />} />
+                <Route path="/roles" element={<Roles />} />
+                <Route path="/user-form" element={<UserForm />} />
+                <Route path="/client-form" element={<ClientsForm />} />
+                <Route path="/bar" element={<Bar />} />
+                <Route path="/pie" element={<Pie />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/line" element={<Line />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/geography" element={<Geography />} />
+              </Routes>
+            </main>
+          </div>
+          )}
+          {!isAuth && (
+              <Routes>
+                <Route path="/" element={<Login />} />
+              </Routes>
+            )}
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

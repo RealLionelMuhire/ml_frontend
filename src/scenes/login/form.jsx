@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
 
+
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
   password: yup.string().required("Required"),
@@ -150,10 +151,12 @@ const Form = () => {
             <Button
               fullWidth
               type="submit"
+              color="secondary"
+              variant="contained"
               sx={{
                 m: "2rem 0",
                 p: "1rem",
-                backgroundColor: palette.primary.main,
+                backgroundColor: palette.secondary.main,
                 color: palette.background.alt,
                 "&:hover": { color: palette.primary.main },
               }}
@@ -161,13 +164,15 @@ const Form = () => {
               {isLogin ? "LOGIN" : "RESET PASSWORD"}
             </Button>
             <Typography
+              color="secondary" fontWeight="500" variant="h5"
               onClick={() => {
                 setPageType(isLogin ? "forgotPassword" : "login");
                 resetForm();
               }}
               sx={{
+                mb: "1.5rem",
                 textDecoration: "underline",
-                color: palette.primary.main,
+                color: palette.secondary.main,
                 "&:hover": {
                   cursor: "pointer",
                   color: palette.primary.light,
