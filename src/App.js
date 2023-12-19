@@ -25,11 +25,11 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const token = useSelector((state) => state.token);
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     // Check if the token is present to determine authentication status
-    console.log("Uncleared Token:", token);
+    console.log("Backend Token:", token);
     setIsAuthenticated(!!token);
   }, [token]);
 

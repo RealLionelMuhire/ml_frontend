@@ -1,11 +1,11 @@
-// state/index.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, combineReducers } from "@reduxjs/toolkit";
+import { api } from "./api";
 
 const initialState = {
   mode: "light",
   user: null,
   token: null,
-  posts: [],
+  customers: [],
 };
 
 export const authSlice = createSlice({
@@ -20,36 +20,17 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
     },
     setLogout: (state) => {
-      // No need to fetch here, the logic will be handled in the thunk
       state.user = null;
       state.token = null;
-    },
-    setFriends: (state, action) => {
-      if (state.user) {
-        state.user.friends = action.payload.friends;
-      } else {
-        console.error("user friends non-existent :(");
-      }
-    },
-    setPosts: (state, action) => {
-      state.posts = action.payload.posts;
-    },
-    setPost: (state, action) => {
-      const updatedPosts = state.posts.map((post) => {
-        if (post._id === action.payload.post._id) return action.payload.post;
-        return post;
-      });
-      state.posts = updatedPosts;
     },
   },
 });
 
-export const {
-  setMode,
-  setLogin,
-  setLogout,
-  setFriends,
-  setPosts,
-  setPost,
-} = authSlice.actions;
-export default authSlice.reducer;
+export const { setMode, setLogin, setLogout } = authSlice.actions;
+
+const rootReducer = combineReducers({
+  auth: authSlice.reducer,
+  [api.reducerPath]: api.reducer,
+});
+
+export default rootReducer;

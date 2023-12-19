@@ -1,4 +1,3 @@
-// state/thunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Async action to handle logout

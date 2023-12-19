@@ -12,23 +12,26 @@ const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
-    { field: "id", headerName: "ID" },
+    { field: "UserID", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Name",
+      field: "FirstName",
+      headerName: "First Name",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
+      field: "LastName",
+      headerName: "Last Name",
+      flex: 1,
     },
     {
-      field: "phone",
-      headerName: "Phone Number",
+      field: "NationalID",
+      headerName: "National ID",
+      flex: 1,
+    },
+    {
+      field: "Address",
+      headerName: "Address",
       flex: 1,
     },
     {
@@ -37,10 +40,10 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: "accessLevel",
+      field: "accessLevel",  // Assuming this is the access level field
       headerName: "Access Level",
       flex: 1,
-      renderCell: ({ row: { access } }) => {
+      renderCell: ({ row: { UserRoles } }) => {
         return (
           <Box
             width="60%"
@@ -49,19 +52,19 @@ const Team = () => {
             display="flex"
             justifyContent="center"
             backgroundColor={
-              access === "admin"
+              UserRoles === "admin"
                 ? colors.greenAccent[600]
-                : access === "manager"
+                : UserRoles === "manager"
                 ? colors.greenAccent[700]
                 : colors.greenAccent[700]
             }
             borderRadius="4px"
           >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
+            {UserRoles === "admin" && <AdminPanelSettingsOutlinedIcon />}
+            {UserRoles === "manager" && <SecurityOutlinedIcon />}
+            {UserRoles === "user" && <LockOpenOutlinedIcon />}
             <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
+              {UserRoles}
             </Typography>
           </Box>
         );
