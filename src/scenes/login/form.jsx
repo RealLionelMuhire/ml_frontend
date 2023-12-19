@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
-
+import useNotify from "../../components/Notification"
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
@@ -28,6 +28,7 @@ const forgotPasswordSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
 });
 
+
 const initialValuesForgotPassword = {
   email: "",
 };
@@ -41,38 +42,51 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isForgotPassword = pageType === "forgotPassword";
 
+  // Use the useNotify hook
+  const showNotification = useNotify();
+
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:8000/api/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      navigate("/dashboard");
+    try {
+      const loggedInResponse = await fetch("http://localhost:8000/api/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const loggedIn = await loggedInResponse.json();
+      onSubmitProps.resetForm();
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      // Call showNotification with the error message and duration (optional)
+      showNotification("Error logging in. Please try again.");
     }
   };
 
   const forgotPassword = async (values, onSubmitProps) => {
-    const forgotPasswordResponse = await fetch(
-      "http://localhost:3001/auth/forgot-password",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      }
-    );
-    const forgotPasswordResult = await forgotPasswordResponse.json();
-    onSubmitProps.resetForm();
-    // Handle the result as needed, e.g., show a success message.
-    console.log(forgotPasswordResult);
+    try {
+      const forgotPasswordResponse = await fetch(
+        "http://localhost:8000/api/forgot-password/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        }
+      );
+      const forgotPasswordResult = await forgotPasswordResponse.json();
+      onSubmitProps.resetForm();
+      // Handle the result as needed, e.g., show a success message.
+      console.log(forgotPasswordResult);
+    } catch (error) {
+      // Call showNotification with the error message and duration (optional)
+      showNotification("Error resetting password. Please try again.");
+    }
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
@@ -164,7 +178,9 @@ const Form = () => {
               {isLogin ? "LOGIN" : "RESET PASSWORD"}
             </Button>
             <Typography
-              color="secondary" fontWeight="500" variant="h5"
+              color="secondary"
+              fontWeight="500"
+              variant="h5"
               onClick={() => {
                 setPageType(isLogin ? "forgotPassword" : "login");
                 resetForm();

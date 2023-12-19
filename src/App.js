@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route} from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
@@ -23,13 +23,21 @@ import { useSelector } from "react-redux";
 
 function App() {
   const [theme, colorMode] = useMode();
-  const isAuth = Boolean(useSelector((state) => state.token));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const token = useSelector((state) => state.token);
+
+  useEffect(() => {
+    // Check if the token is present to determine authentication status
+    console.log("Uncleared Token:", token);
+    setIsAuthenticated(!!token);
+  }, [token]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {isAuth && (
+        {isAuthenticated && (
           <div className="app">
             <Sidebar />
             <main className="content">
@@ -53,7 +61,7 @@ function App() {
             </main>
           </div>
           )}
-          {!isAuth && (
+          {!isAuthenticated && (
               <Routes>
                 <Route path="/" element={<Login />} />
               </Routes>

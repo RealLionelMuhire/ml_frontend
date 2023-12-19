@@ -10,12 +10,17 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/EmailOutlined"
+import { setLogout } from "../../state";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const settings = ['Profile', 'Logout'];
 
@@ -24,6 +29,17 @@ const Topbar = () => {
   };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+  const handleSettingClick = (setting) => {
+    handleCloseUserMenu();
+
+    if (setting === 'Logout') {
+      dispatch(setLogout());
+      navigate("/")
+      
+    } else {
+      // Handle other settings (e.g., 'Profile') if needed
+    }
   };
 
 
@@ -63,27 +79,27 @@ const Topbar = () => {
           <PersonOutlinedIcon />
         </IconButton>
         <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+          sx={{ mt: '45px' }}
+          id="menu-appbar"
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          {settings.map((setting) => (
+            <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
+              <Typography textAlign="center">{setting}</Typography>
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
     </Box>
   );

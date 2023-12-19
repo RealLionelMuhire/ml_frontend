@@ -1,3 +1,4 @@
+// state/index.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -19,6 +20,7 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
     },
     setLogout: (state) => {
+      // No need to fetch here, the logic will be handled in the thunk
       state.user = null;
       state.token = null;
     },
@@ -42,6 +44,12 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
-  authSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setFriends,
+  setPosts,
+  setPost,
+} = authSlice.actions;
 export default authSlice.reducer;
