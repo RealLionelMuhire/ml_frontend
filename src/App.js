@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route} from "react-router-dom";
+import { Routes, Route, Navigate} from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -37,13 +37,13 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {isAuthenticated && (
+        {isAuthenticated ? (
           <div className="app">
             <Sidebar />
             <main className="content">
               <Topbar />
               <Routes>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard" element={ <Dashboard /> } />
                 <Route path="/team" element={<Team />} />
                 <Route path="/clients" element={<Clients />} />
                 <Route path="/activities-form" element={<ActivitiesForm />} />
@@ -57,11 +57,11 @@ function App() {
                 <Route path="/line" element={<Line />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/geography" element={<Geography />} />
+                <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </main>
           </div>
-          )}
-          {!isAuthenticated && (
+          ) : (
               <Routes>
                 <Route path="/" element={<Login />} />
               </Routes>
