@@ -15,7 +15,7 @@ const Login = () => {
         display="flex"
         flexDirection="column"
         justifyContent="left"
-        alignItems="left"
+        alignItems="right"
         ml="15px"
       >
         <img

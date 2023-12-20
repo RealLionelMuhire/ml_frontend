@@ -12,7 +12,7 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { DescriptionOutlined, GroupWorkOutlined } from "@mui/icons-material";
-import FlexBetween from "../../components/FlexBetween";
+// import FlexBetween from "../../components/FlexBetween";
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -60,7 +60,7 @@ const Sidebar = () => {
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
+        <Menu iconShape="square" >
           {/* LOGO AND MENU ICON */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -70,32 +70,30 @@ const Sidebar = () => {
               color: colors.grey[100],
             }}
           >
-            <FlexBetween color={theme.palette.secondary.main}>
-              {!isCollapsed && (
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  ml="15px"
-                >
-                    <img
-                    alt="logo"
-                    src={
-                      theme.palette.mode === 'light'
-                        ? `../../assets/white_theme_logo.png`
-                        : `../../assets/dark_theme_logo.png`
-                    }
-                    style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
-                  />
-                  <Typography variant="h5" color={colors.grey[100]}>
-                    mlcorporateservices
-                  </Typography>
-                  <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                    <MenuOutlinedIcon />
-                  </IconButton>
-                </Box>
-              )}
-            </FlexBetween>
+            {!isCollapsed && (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                ml="15px"
+              >
+                  <img
+                  alt="logo"
+                  src={
+                    theme.palette.mode === 'light'
+                      ? `../../assets/white_theme_logo.png`
+                      : `../../assets/dark_theme_logo.png`
+                  }
+                  style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
+                />
+                <Typography variant="h5" color={colors.grey[100]}>
+                  mlcorporateservices
+                </Typography>
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <MenuOutlinedIcon />
+                </IconButton>
+              </Box>
+            )}
           </MenuItem>
 
           {!isCollapsed && (
