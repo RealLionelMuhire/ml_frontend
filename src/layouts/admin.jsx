@@ -7,11 +7,13 @@ const AdminLayout = ({ children }) => {
 
   return (
     <>
+    <div className="app">
       <Sidebar isSidebar={isSidebar} />
       <main className="content">
         <Topbar setIsSidebar={setIsSidebar}/>
         {children}
       </main>
+      </div>
     </>
   );
 };

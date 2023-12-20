@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate} from "react-router-dom";
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
+import { Routes, Route, Navigate } from "react-router-dom";
+// import Topbar from "./scenes/global/Topbar";
+// import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Clients from "./scenes/clients";
@@ -19,55 +19,164 @@ import ActivitiesForm from "./scenes/activities_form";
 import Roles from "./scenes/roles";
 import UserForm from "./scenes/user_form";
 import ClientsForm from "./scenes/client_form";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import AdminLayout from "./layouts/admin";
+
+const ProtectedRoute = ({ isAuthenticated }) => {
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+};
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const token = useSelector((state) => state.auth.token);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     // Check if the token is present to determine authentication status
-    console.log("Backend Token:", token);
-    setIsAuthenticated(!!token);
-  }, [token]);
+    setIsLoading(false);
+    console.log("===bolean===>", token);
+    if (token && token !== "undefined") {
+      console.log("--token===>", token);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {isAuthenticated ? (
-          <div className="app">
-            <Sidebar />
-            <main className="content">
-              <Topbar />
-              <Routes>
-                <Route path="/dashboard" element={ <Dashboard /> } />
-                <Route path="/team" element={<Team />} />
-                <Route path="/clients" element={<Clients />} />
-                <Route path="/activities-form" element={<ActivitiesForm />} />
-                <Route path="/activities" element={<Activities />} />
-                <Route path="/roles" element={<Roles />} />
-                <Route path="/user-form" element={<UserForm />} />
-                <Route path="/client-form" element={<ClientsForm />} />
-                <Route path="/bar" element={<Bar />} />
-                <Route path="/pie" element={<Pie />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/line" element={<Line />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/geography" element={<Geography />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </main>
-          </div>
+    <Router>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {!isLoading ? (
+            <Routes>
+              <Route
+                element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
+              >
+                <Route
+                  path="/dashboard"
+                  element={
+                    <AdminLayout>
+                      <Dashboard />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/team"
+                  element={
+                    <AdminLayout>
+                      <Team />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/clients"
+                  element={
+                    <AdminLayout>
+                      <Clients />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/activities-form"
+                  element={
+                    <AdminLayout>
+                      <ActivitiesForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/activities"
+                  element={
+                    <AdminLayout>
+                      <Activities />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/roles"
+                  element={
+                    <AdminLayout>
+                      <Roles />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/user-form"
+                  element={
+                    <AdminLayout>
+                      <UserForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/client-form"
+                  element={
+                    <AdminLayout>
+                      <ClientsForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/bar"
+                  element={
+                    <AdminLayout>
+                      <Bar />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/pie"
+                  element={
+                    <AdminLayout>
+                      <Pie />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/faq"
+                  element={
+                    <AdminLayout>
+                      <FAQ />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/line"
+                  element={
+                    <AdminLayout>
+                      <Line />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/calendar"
+                  element={
+                    <AdminLayout>
+                      <Calendar />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/geography"
+                  element={
+                    <AdminLayout>
+                      <Geography />
+                    </AdminLayout>
+                  }
+                />
+              </Route>
+
+              <Route path="/login" element={<Login />} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
           ) : (
-              <Routes>
-                <Route path="/" element={<Login />} />
-              </Routes>
-            )}
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+            <h1>loading ... </h1>
+          )}
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </Router>
   );
 }
 

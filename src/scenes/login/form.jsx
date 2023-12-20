@@ -54,14 +54,18 @@ const Form = () => {
       });
       const loggedIn = await loggedInResponse.json();
       onSubmitProps.resetForm();
-      if (loggedIn) {
+      if (loggedIn?.token) {
+        console.log("===logging-in===>", loggedIn)
+        localStorage.setItem("token", loggedIn.token)
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
         );
-        navigate("/dashboard");
+        // navigate("/dashboard");
+        window.location.href = "/dashboard"
+        console.log("===reaching here===<")
       }
     } catch (error) {
       // Call showNotification with the error message and duration (optional)

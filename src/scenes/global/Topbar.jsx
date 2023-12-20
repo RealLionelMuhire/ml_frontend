@@ -12,7 +12,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/EmailOutlined"
 import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -20,7 +20,7 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const settings = ['Profile', 'Logout'];
 
@@ -30,16 +30,32 @@ const Topbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const handleSettingClick = (setting) => {
+  const handleSettingClick = async(setting) => {
     handleCloseUserMenu();
 
     if (setting === 'Logout') {
-      dispatch(setLogout());
-      navigate("/")
-      
-    } else {
-      // Handle other settings (e.g., 'Profile') if needed
-    }
+      try {
+        const loggedOutResponse = await fetch("http://localhost:8000/api/logout/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json,","Authorization": `token ${localStorage.getItem("token")}`},
+          
+        });
+        const loggedOut = await loggedOutResponse.json();
+        if (loggedOut) {
+          localStorage.clear('token')
+          dispatch(
+            setLogout({
+              user: "null",
+              token: "null",
+            })
+          );
+          window.location.href = "/";
+        }
+      } catch (error) {
+        // Call showNotification with the error message and duration (optional)
+        // showNotification("Error in Logging out. Please try again.");
+      }
+    };
   };
 
 
