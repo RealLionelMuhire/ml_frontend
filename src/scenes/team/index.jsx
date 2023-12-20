@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme, Button } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
@@ -43,6 +43,27 @@ const Team = () => {
       headerName: "Email",
       flex: 1,
     },
+
+    {
+      field: "is_active",
+      headerName: "Is Active",
+      flex: 1,
+    },
+    {
+      field: "is_staff",
+      headerName: "Is Staff",
+      flex: 1,
+    },
+    {
+      field: "registered_by_id",
+      headerName: "Registrar ID",
+      flex: 1,
+    },
+    {
+      field: "registered_by_fullname",
+      headerName: "Registrar Name",
+      flex: 1,
+    },
     {
       field: "accessLevel",  // Assuming this is the access level field
       headerName: "Access Level",
@@ -74,6 +95,7 @@ const Team = () => {
         );
       },
     },
+    
   ];
 
   return (
@@ -116,13 +138,17 @@ const Team = () => {
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`,
+          },
         }}
       >
         <DataGrid
           loading={isLoading || !data}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row.UserID}
           rows={data || []}
           columns={columns}
+          components={{ Toolbar: GridToolbar }}
         />
       </Box>
     </Box>
