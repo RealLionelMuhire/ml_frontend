@@ -1,14 +1,26 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import { useCreateUserMutation } from "../../state/api";
 
 const UserForm = () => {
+  console.log("UserForm component rendered");
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = async (values) => {
+    console.log("Form submission initiated. Values:", values);
+    try {
+      console.log("Before mutation call");
+
+      const response = await createUser(values);
+
+      console.log("After mutation call. User created successfully:", response);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   };
 
   return (
@@ -44,10 +56,10 @@ const UserForm = () => {
                 label="First Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
+                value={values.FirstName}
+                name="FirstName"
+                error={!!touched.FirstName && !!errors.FirstName}
+                helperText={touched.FirstName && errors.FirstName}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
@@ -57,10 +69,10 @@ const UserForm = () => {
                 label="Last Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
+                value={values.LastName}
+                name="LastName"
+                error={!!touched.LastName && !!errors.LastName}
+                helperText={touched.LastName && errors.LastName}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
@@ -109,10 +121,10 @@ const UserForm = () => {
                 label="National ID or Passport"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.nationalId}
-                name="nationalId"
-                error={!!touched.nationalId && !!errors.nationalId}
-                helperText={touched.nationalId && errors.nationalId}
+                value={values.NationalID}
+                name="NationalID"
+                error={!!touched.NationalID && !!errors.NationalID}
+                helperText={touched.NationalID && errors.NationalID}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -122,10 +134,10 @@ const UserForm = () => {
                 label="Birth Date"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.birthDate}
-                name="birthDate"
-                error={!!touched.birthDate && !!errors.birthDate}
-                helperText={touched.birthDate && errors.birthDate}
+                value={values.BirthDate}
+                name="BirthDate"
+                error={!!touched.BirthDate && !!errors.BirthDate}
+                helperText={touched.BirthDate && errors.BirthDate}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -135,18 +147,43 @@ const UserForm = () => {
                 label="User Role"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.userRole}
-                name="userRole"
-                error={!!touched.userRole && !!errors.userRole}
-                helperText={touched.userRole && errors.userRole}
+                value={values.UserRoles}
+                name="UserRoles"
+                error={!!touched.UserRoles && !!errors.UserRoles}
+                helperText={touched.UserRoles && errors.UserRoles}
+                sx={{ gridColumn: "span 4" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Address"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.Address}
+                name="Address"
+                error={!!touched.Address && !!errors.Address}
+                helperText={touched.Address && errors.Address}
                 sx={{ gridColumn: "span 4" }}
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New User
+              <Button type="submit" color="secondary" variant="contained" disabled={isLoading}>
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Create New User"}
               </Button>
             </Box>
+
+            {isError && (
+              <Box mt="20px" color="error.main">
+                Error creating user. Please try again.
+              </Box>
+            )}
+
+            {data && (
+              <Box mt="20px" color="success.main">
+                User created successfully!
+              </Box>
+            )}
           </form>
         )}
       </Formik>
@@ -157,30 +194,33 @@ const UserForm = () => {
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
+
+ 
+  
 const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
+  FirstName: yup.string().required("required"),
+  LastName: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   contact: yup
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
   password: yup.string().required("required"),
-  nationalId: yup.string().required("required"),
-  birthDate: yup.date().required("required"),
-  userRole: yup.string().required("required"),
-  address1: yup.string().required("required"),
+  NationalID: yup.string().required("required"),
+  BirthDate: yup.date().required("required"),
+  UserRoles: yup.string().required("required"),
+  Address: yup.string().required("required"),
 });
 const initialValues = {
-  firstName: "",
-  lastName: "",
+  FirstName: "",
+  LastName: "",
   email: "",
   contact: "",
   password: "",
-  nationalId: "",
-  birthDate: "",
-  userRole: "",
-  address1: "",
+  NationalID: "",
+  BirthDate: "",
+  UserRoles: "",
+  Address: "",
 };
 
 export default UserForm;

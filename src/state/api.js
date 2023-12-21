@@ -1,3 +1,5 @@
+// state/api.js
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
@@ -11,13 +13,17 @@ export const api = createApi({
       query: () => "/users/",
       providesTags: ["Team"],
     }),
-    getLogout: build.query({
-      query: () => "/logout/",
-      providesTags: "Logout",
+    createUser: build.mutation({
+      query: (newUser) => ({
+        url: "/register/",
+        method: "POST",
+        body: newUser,
+      }),
+      invalidatesTags: ["Team"],
     }),
   }),
 });
 
-export const { useGetUsersQuery, useGetLogoutQuery } = api;
+export const { useGetUsersQuery, useCreateUserMutation } = api;
 
 export default api;

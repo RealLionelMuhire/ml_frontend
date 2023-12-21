@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
 import useNotify from "../../components/Notification"
@@ -37,7 +36,6 @@ const Form = () => {
   const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isForgotPassword = pageType === "forgotPassword";
