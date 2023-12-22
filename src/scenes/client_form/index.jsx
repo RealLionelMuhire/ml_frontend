@@ -1,19 +1,38 @@
-import { Box, Button, TextField, MenuItem } from "@mui/material";
+import { Box, Button, TextField, MenuItem, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import { CountryDropdown } from "react-country-region-selector";
+import { useCreateClientMutation } from "../../state/api";
+import { Link, useNavigate } from "react-router-dom"
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [createUser, { isLoading, isError, data }] = useCreateClientMutation();
+  const navigate = useNavigate();
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = async (values) => {
+    try {
+      const response = await createUser(values);
+      navigate("/clients");
+  } catch (error) {
+    console.error(error)};
   };
 
   return (
     <Box m="20px">
-      <Header title="REGISTER A CLIENT" subtitle="Register a new client and Company information" />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="REGISTER A CLIENT" subtitle="Register a new client and Company information" />
+        <Box display="flex" justifyContent="end" mt="20px">
+            <Button type="submit" color="secondary" variant="contained">
+              <Link to="/clients">
+                Back to Client List
+              </Link>
+            </Button>
+        </Box>
+      </Box>
+      
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -70,36 +89,95 @@ const ClientForm = () => {
                 label="Email"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
+                value={values.clientEmail}
+                name="clientEmail"
+                error={!!touched.clientEmail && !!errors.clientEmail}
+                helperText={touched.clientEmail && errors.clientEmail}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Contact Number"
+                label="Contact Phone"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
+                value={values.clientContact}
+                name="clientContact"
+                error={!!touched.clientContact && !!errors.clientContact}
+                helperText={touched.clientContact && errors.clientContact}
+                sx={{ gridColumn: "span 2" }}
+              />
+              
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Citizenship"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.citizenship}
+                name="citizenship"
+                error={!!touched.citizenship && !!errors.citizenship}
+                helperText={touched.citizenship && errors.citizenship}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="National ID or Passport"
+                label="Tax Residency"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.nationalId}
-                name="nationalId"
-                error={!!touched.nationalId && !!errors.nationalId}
-                helperText={touched.nationalId && errors.nationalId}
+                value={values.taxResidency}
+                name="taxResidency"
+                error={!!touched.taxResidency && !!errors.taxResidency}
+                helperText={touched.taxResidency && errors.taxResidency}
+                sx={{ gridColumn: "span 2" }}
+              />
+              
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="TIN Number"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.tinNumber}
+                name="tinNumber"
+                error={!!touched.tinNumber && !!errors.tinNumber}
+                helperText={touched.tinNumber && errors.tinNumber}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Country of Residence"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                name="countryOfResidence"
+                error={!!touched.countryOfResidence && !!errors.countryOfResidence}
+                helperText={touched.countryOfResidence && errors.countryOfResidence}
+                sx={{ gridColumn: "span 2" }}
+              >
+                <CountryDropdown
+                  value={values.countryOfResidence}
+                  onChange={(val) => handleChange({ target: { name: "countryOfResidence", value: val } })}
+                  classes="form-control"
+                />
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Current Address"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.currentAddress}
+                name="currentAddress"
+                error={!!touched.currentAddress && !!errors.currentAddress}
+                helperText={touched.currentAddress && errors.currentAddress}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
@@ -119,28 +197,16 @@ const ClientForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Nationality"
+                label="National ID or Passport"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.nationality}
-                name="nationality"
-                error={!!touched.nationality && !!errors.nationality}
-                helperText={touched.nationality && errors.nationality}
+                value={values.passportIdNumber}
+                name="passportIdNumber"
+                error={!!touched.passportIdNumber && !!errors.passportIdNumber}
+                helperText={touched.passportIdNumber && errors.passportIdNumber}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Country of Residence"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.countryOfResidence}
-                name="countryOfResidence"
-                error={!!touched.countryOfResidence && !!errors.countryOfResidence}
-                helperText={touched.countryOfResidence && errors.countryOfResidence}
-                sx={{ gridColumn: "span 2" }}
-              />
+              
               <TextField
                 fullWidth
                 variant="filled"
@@ -171,13 +237,13 @@ const ClientForm = () => {
                 fullWidth
                 variant="filled"
                 select
-                label="Language Spoken"
+                label="Preferred Language"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.languageSpoken}
-                name="languageSpoken"
-                error={!!touched.languageSpoken && !!errors.languageSpoken}
-                helperText={touched.languageSpoken && errors.languageSpoken}
+                value={values.preferredLanguage}
+                name="preferredLanguage"
+                error={!!touched.preferredLanguage && !!errors.preferredLanguage}
+                helperText={touched.preferredLanguage && errors.preferredLanguage}
                 sx={{ gridColumn: "span 2" }}
               >
                 <MenuItem value="english">English</MenuItem>
@@ -201,33 +267,34 @@ const ClientForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Company Role"
+                label="Client Role in Company"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.companyRole}
-                name="companyRole"
-                error={!!touched.companyRole && !!errors.companyRole}
-                helperText={touched.companyRole && errors.companyRole}
+                value={values.clientRole_InCompany}
+                name="clientRole_InCompany"
+                error={!!touched.clientRole_InCompany && !!errors.clientRole_InCompany}
+                helperText={touched.clientRole_InCompany && errors.clientRole_InCompany}
                 sx={{ gridColumn: "span 2" }}
               />
-              {/* Add Field Button */}
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => {
-                  // Handle the logic to add a new field
-                }}
-                sx={{ gridColumn: "span 2" }}
-              >
-                Add a More Client Data
-              </Button>
               
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Register a New Client
+              <Button type="submit" color="secondary" variant="contained" disabled={isLoading}>
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Register a New Client"}
               </Button>
             </Box>
+
+            {isError && (
+              <Box mt="20px" color="error.main">
+                Error regstering client. Please try again.
+              </Box>
+            )}
+
+            {data && (
+              <Box mt="20px" color="success.main">
+                Client registered successfully!
+              </Box>
+            )}
           </form>
         )}
       </Formik>
@@ -241,37 +308,41 @@ const phoneRegExp =
 const checkoutSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
+  clientEmail: yup.string().email("Invalid email").required("required"),
+  clientContact: yup
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
-  nationalId: yup.string().required("required"),
+  passportIdNumber: yup.string().required("required"),
   birthDate: yup.date().required("required"),
-  nationality: yup.string().required("required"),
-  countryOfResidence: yup.string().required("required"),
-  passportExpiryDate: yup.date().required("required"),
-  countryOfIssue: yup.string().required("required"),
-  languageSpoken: yup.string().required("required"),
-  companyName: yup.string().required("required"),
-  companyRole: yup.string().required("required"),
-  address1: yup.string().required("required"),
+  citizenship: yup.string().required("required"),
+  countryOfResidence: yup.string(),
+  passportExpiryDate: yup.date(),
+  countryOfIssue: yup.string(),
+  preferredLanguage: yup.string().required("required"),
+  companyName: yup.string(),
+  clientRole_InCompany: yup.string(),
+  currentAddress: yup.string().required("required"),
+  taxResidency: yup.string().required("required"),
+  tinNumber: yup.string().required("required"),
 });
 const initialValues = {
   firstName: "",
   lastName: "",
-  email: "",
-  contact: "",
-  nationalId: "",
+  clientEmail: "",
+  clientContact: "",
+  passportIdNumberNumber: "",
   birthDate: "",
-  nationality: "",
+  citizenship: "",
   countryOfResidence: "",
   passportExpiryDate: "",
   countryOfIssue: "",
-  languageSpoken: "",
+  preferredLanguage: "",
   companyName: "",
-  companyRole: "",
-  address1: "",
+  clientRole_InCompany: "",
+  currentAddress: "",
+  taxResidency:"",
+  tinNumber:"",
 };
 
 export default ClientForm;
