@@ -21,6 +21,10 @@ export const api = createApi({
       }),
       invalidatesTags: ["Team"],
     }),
+    getClients: build.query({
+      query: () => "/list-clients/",
+      providesTags: ["Clients"],
+    }),
     createClient: build.mutation({
       query: (newClient) => ({
         url: "/register-client/",
@@ -35,6 +39,7 @@ export const api = createApi({
 export const {
   useGetUsersQuery,
   useCreateUserMutation,
+  useGetClientsQuery,
   useCreateClientMutation,
 } = api;
 
