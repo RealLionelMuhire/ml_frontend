@@ -23,6 +23,7 @@ import ClientsForm from "./scenes/client_form";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import AdminLayout from "./layouts/admin";
+import ClientWithID from "./scenes/clients/clientByID";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -75,6 +76,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <Clients />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/clients-id"
+                  element={
+                    <AdminLayout>
+                      <ClientWithID />
                     </AdminLayout>
                   }
                 />

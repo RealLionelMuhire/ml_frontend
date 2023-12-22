@@ -6,12 +6,14 @@ import { useTheme } from "@mui/material";
 import { Link} from "react-router-dom";
 import { useGetClientsQuery } from "../../state/api";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // import { mockDataContacts } from "../../data/mockData";
 // import { useCreateClientMutation } from "../../state/api";
 
 const Clients = () => {
   const { data, isLoading } = useGetClientsQuery();
 
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedClientIds, setSelectedClientIds] = useState([]);
@@ -28,6 +30,9 @@ const Clients = () => {
 
   const handleViewMoreClick = () => {
     console.log("View More clicked for selected client IDs:", selectedClientIds);
+    navigate("/clients-id", {
+      state: {selectedClientIds},
+    });
   };
 
   const columns = [

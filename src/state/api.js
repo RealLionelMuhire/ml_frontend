@@ -33,6 +33,11 @@ export const api = createApi({
       }),
       invalidatesTags: ["Clients"],
     }),
+    getClientsByIds: build.query({
+      query: (ids) => `/clients-list-by-id/?ids=${ids.join(",")}`,
+      providesTags: (result, error, ids) =>
+        ids ? [{ type: "Clients", id: "LIST" }] : [],
+    }),
   }),
 });
 
@@ -41,6 +46,7 @@ export const {
   useCreateUserMutation,
   useGetClientsQuery,
   useCreateClientMutation,
+  useGetClientsByIdsQuery,
 } = api;
 
 export default api;
