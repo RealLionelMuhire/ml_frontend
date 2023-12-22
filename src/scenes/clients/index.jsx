@@ -7,8 +7,6 @@ import { Link} from "react-router-dom";
 import { useGetClientsQuery } from "../../state/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { mockDataContacts } from "../../data/mockData";
-// import { useCreateClientMutation } from "../../state/api";
 
 const Clients = () => {
   const { data, isLoading } = useGetClientsQuery();
@@ -50,52 +48,62 @@ const Clients = () => {
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "FirstName", headerName: "First Name", flex: 1, cellClassName: "name-column--cell" },
     { field: "LastName", headerName: "Last Name", flex: 1 },
-    { field: "dateOfBirth", headerName: "Date of Birth", flex: 1 },
-    { field: "placeOfBirth", headerName: "Place of Birth", flex: 1 },
     { field: "passportIdNumber", headerName: "Passport ID Number", flex: 1 },
     { field: "countryOfIssue", headerName: "Country of Issue", flex: 1 },
-    { field: "expiryDate", headerName: "Expiry Date", flex: 1 },
-    { field: "occupation", headerName: "Occupation", flex: 1 },
     { field: "clientContactPhone", headerName: "Client Contact Phone", flex: 1 },
     { field: "clientEmail", headerName: "Client Email", flex: 1 },
     { field: "preferredLanguage", headerName: "Preferred Language", flex: 1 },
-    // { field: "registrarID", headerName: "Registrar ID", flex: 1 },
-    // { field: "registrarEmail", headerName: "Registrar Email", flex: 1 },
-    // { field: "registrarFirstName", headerName: "Registrar First Name", flex: 1 },
-    // { field: "isActive", headerName: "Is Active", flex: 1 },
-    // { field: "registrarID", headerName: "Registrar ID" },
-    // { field: "activatorID", headerName: "Activator ID", flex: 1 },
-    // { field: "activatorEmail", headerName: "Activator Email", flex: 1 },
-    // { field: "activatorFirstName", headerName: "Activator First Name", flex: 1 },
-    // { field: "deactivatorID", headerName: "Deactivator ID", flex: 1 },
-    // { field: "deactivatorEmail", headerName: "Deactivator Email", flex: 1 },
-    // { field: "deactivatorFirstName", headerName: "Deactivator First Name", flex: 1 },
-    // { field: "user", headerName: "User", flex: 1 },
+    { field: "isActive", headerName: "Is Active", flex: 1 },
   ];
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Header title="CLIENTS" subtitle="Managing All Clinets" />
-      <Box display="flex" justifyContent="end" mt="20px" >
-        <Button
-          marginRight="10px"
-          type="button"
-          color="secondary"
-          variant="contained"
-          onClick={handleViewMoreClick}
-          disabled={selectedClientIds.length === 0}
-        >
-          View More on Selected
-        </Button>
-        
-        <Button type="submit" color="secondary" variant="contained" marginLeft="10px">
-          <Link to="/client-form">
-            Register a New Client
-          </Link>
-        </Button>
-              
-      </Box>
+        <Header title="CLIENTS" subtitle="Managing All Clinets" />
+        <Box display="flex" justifyContent="left" mt="20px" ml="10px" >
+          <Button
+            marginRight="10px"
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleViewMoreClick}
+            disabled={selectedClientIds.length === 0}
+          >
+            View More on Selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px" >
+          <Button
+            marginRight="10px"
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleViewMoreClick}
+            disabled={selectedClientIds.length !== 1 }
+          >
+            Select To Activate
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px" >
+          <Button
+            marginRight="10px"
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleViewMoreClick}
+            disabled={selectedClientIds.length !== 1 }
+          >
+            Select To Deactivate
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
+          
+          <Button type="submit" color="secondary" variant="contained" marginLeft="10px">
+            <Link to="/client-form">
+              Register a New Client
+            </Link>
+          </Button>
+        </Box>
     </Box>
       <Box
         m="40px 0 0 0"

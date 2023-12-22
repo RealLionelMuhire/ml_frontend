@@ -4,7 +4,8 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useCreateUserMutation } from "../../state/api";
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+
 
 const UserForm = () => {
   console.log("UserForm component rendered");
@@ -28,7 +29,16 @@ const UserForm = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="CREATE USER" subtitle="Create a New User Profile" />
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button type="submit" color="secondary" variant="contained">
+            <Link to="/team">
+              Back to Team
+            </Link>
+          </Button>
+        </Box>
+      </Box>
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -115,7 +125,7 @@ const UserForm = () => {
                 name="password"
                 error={!!touched.password && !!errors.password}
                 helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -128,7 +138,7 @@ const UserForm = () => {
                 name="NationalID"
                 error={!!touched.NationalID && !!errors.NationalID}
                 helperText={touched.NationalID && errors.NationalID}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -141,7 +151,7 @@ const UserForm = () => {
                 name="BirthDate"
                 error={!!touched.BirthDate && !!errors.BirthDate}
                 helperText={touched.BirthDate && errors.BirthDate}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -154,7 +164,7 @@ const UserForm = () => {
                 name="UserRoles"
                 error={!!touched.UserRoles && !!errors.UserRoles}
                 helperText={touched.UserRoles && errors.UserRoles}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -167,7 +177,7 @@ const UserForm = () => {
                 name="Address"
                 error={!!touched.Address && !!errors.Address}
                 helperText={touched.Address && errors.Address}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
@@ -195,10 +205,7 @@ const UserForm = () => {
 };
 
 const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-
- 
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/; 
   
 const checkoutSchema = yup.object().shape({
   FirstName: yup.string().required("required"),

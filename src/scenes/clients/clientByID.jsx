@@ -17,7 +17,7 @@ const ClientWithID = () => {
   const colors = tokens(theme.palette.mode);
 
   const commonColumns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "id", headerName: "ID", flex: 1 },
     // Add other common columns
   ];
 
@@ -48,11 +48,16 @@ const ClientWithID = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="TEAM" subtitle="Managing the Team Members" />
+        <Header title="CLIENTS" subtitle="View more data on selected clients" />
         <Box display="flex" justifyContent="end" mt="20px">
-          <Button type="submit" color="secondary" variant="contained">
-            <Link to="/user-form">Create New User</Link>
-          </Button>
+            <Button type="submit" color="secondary" variant="contained">
+                <Link to="/clients">Back To Clients Listt</Link>
+            </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
+            <Button type="submit" color="secondary" variant="contained">
+                <Link to="/client-form">Register a new client</Link>
+            </Button>
         </Box>
       </Box>
 
