@@ -21,9 +21,21 @@ export const api = createApi({
       }),
       invalidatesTags: ["Team"],
     }),
+    createClient: build.mutation({
+      query: (newClient) => ({
+        url: "/register-client/",
+        method: "POST",
+        body: newClient,
+      }),
+      invalidatesTags: ["Clients"],
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useCreateUserMutation } = api;
+export const {
+  useGetUsersQuery,
+  useCreateUserMutation,
+  useCreateClientMutation,
+} = api;
 
 export default api;

@@ -4,11 +4,13 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useCreateUserMutation } from "../../state/api";
+import { useNavigate } from "react-router-dom"
 
 const UserForm = () => {
   console.log("UserForm component rendered");
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
+  const navigate = useNavigate();
 
   const handleFormSubmit = async (values) => {
     console.log("Form submission initiated. Values:", values);
@@ -17,7 +19,8 @@ const UserForm = () => {
 
       const response = await createUser(values);
 
-      console.log("After mutation call. User created successfully:", response);
+      console.log("After mutation call. response from backend:", response);
+      navigate("/team");
     } catch (error) {
       console.error("Error creating user:", error);
     }
@@ -86,7 +89,7 @@ const UserForm = () => {
                 name="email"
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -99,7 +102,7 @@ const UserForm = () => {
                 name="contact"
                 error={!!touched.contact && !!errors.contact}
                 helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
