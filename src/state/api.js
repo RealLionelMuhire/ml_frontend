@@ -46,6 +46,14 @@ export const api = createApi({
       // Invalidate the Clients tag to trigger a refetch after activation
       invalidatesTags: ["Clients"],
     }),
+    deactivateClient: build.mutation({
+      query: (clientId) => ({
+        url: `/deactivate-client/${clientId}/`,
+        method: "PUT",
+      }),
+      // Invalidate the Clients tag to trigger a refetch after activation
+      invalidatesTags: ["Clients"],
+    }),
   }),
 });
 
@@ -56,6 +64,7 @@ export const {
   useCreateClientMutation,
   useGetClientsByIdsQuery,
   useActivateClientMutation,
+  useDeactivateClientMutation,
 } = api;
 
 export default api;

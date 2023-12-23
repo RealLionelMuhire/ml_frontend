@@ -8,10 +8,12 @@ import { useGetClientsQuery } from "../../state/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useActivateClientMutation } from "../../state/api";
+import { useDeactivateClientMutation } from "../../state/api";
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();
-  const [activateClient, { isLoading: isActivating, isError: activationError, data: activationData }] = useActivateClientMutation();
+  const [activateClient, { isLoading: isActivating }] = useActivateClientMutation();
+  const [deactivateClient, { isLoading: isDeactivating }] = useDeactivateClientMutation();
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -42,6 +44,23 @@ const Clients = () => {
     } catch (error) {
       // Handle error
       console.error("Error activating/deactivating clients:", error);
+    }
+  };
+
+  const handleDeactivateClick = async () => {
+    try {
+      // Map over selectedClientIds and deactivate each client
+      const promises = selectedClientIds.map(async (clientId) => {
+        await deactivateClient(clientId);
+      });
+      // Wait for all promises to resolve
+      await Promise.all(promises);
+
+      // Deactivation successful
+      refetch(); // Refetch the client list after deactivation
+    } catch (error) {
+      // Handle error
+      console.error("Error deactivating clients:", error);
     }
   };
 
@@ -109,8 +128,8 @@ const Clients = () => {
             type="button"
             color="secondary"
             variant="contained"
-            onClick={handleViewMoreClick}
-            disabled={selectedClientIds.length !== 1 }
+            onClick={() => handleDeactivateClick()}
+        disabled={selectedClientIds.length !== 1 || isDeactivating}
           >
             Select To Deactivate
           </Button>
