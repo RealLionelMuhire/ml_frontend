@@ -5,7 +5,7 @@ import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
 import { Link} from "react-router-dom"; 
 
-const Activities = () => {
+const Services = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
@@ -46,11 +46,11 @@ const Activities = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Header title="Activities" subtitle="Activities Done" />
+      <Header title="Services" subtitle="List of Services" />
       <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
                 <Link to="/activities-form">
-                  Start New Activity
+                  Inititiate a Service
                 </Link>
               </Button>
       </Box>
@@ -90,4 +90,4 @@ const Activities = () => {
   );
 };
 
-export default Activities;
+export default Services;

@@ -45,22 +45,22 @@ const Team = () => {
     },
 
     {
-      field: "is_active",
+      field: "isActive ",
       headerName: "Is Active",
       flex: 1,
     },
     {
-      field: "is_staff",
+      field: "isStaff",
       headerName: "Is Staff",
       flex: 1,
     },
     {
-      field: "registered_by_id",
+      field: "registrarID",
       headerName: "Registrar ID",
       flex: 1,
     },
     {
-      field: "registered_by_fullname",
+      field: "registrarFirstName",
       headerName: "Registrar Name",
       flex: 1,
     },

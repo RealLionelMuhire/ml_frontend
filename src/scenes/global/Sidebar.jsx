@@ -12,6 +12,11 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { DescriptionOutlined, GroupWorkOutlined } from "@mui/icons-material";
+import PublicIcon from '@mui/icons-material/Public';
+import BusinessIcon from '@mui/icons-material/Business';
+
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -160,9 +165,9 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Activities"
-              to="/activities"
-              icon={<ReceiptOutlinedIcon />}
+              title="Services"
+              to="/services"
+              icon={<BusinessIcon />}
               selected={selected}
               setSelected={setSelected}
             />

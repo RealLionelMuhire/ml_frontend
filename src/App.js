@@ -5,7 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Clients from "./scenes/clients";
-import Activities from "./scenes/activities";
+import Services from "./scenes/services";
 import Bar from "./scenes/bar";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
@@ -15,7 +15,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Login from "./scenes/login";
-import ActivitiesForm from "./scenes/activities_form";
+import ServicesForm from "./scenes/services_from";
 import Roles from "./scenes/roles";
 import UserForm from "./scenes/user_form";
 import ClientsForm from "./scenes/client_form";
@@ -88,18 +88,18 @@ function App() {
                   }
                 />
                 <Route
-                  path="/activities-form"
+                  path="/services-list"
                   element={
                     <AdminLayout>
-                      <ActivitiesForm />
+                      <ServicesForm />
                     </AdminLayout>
                   }
                 />
                 <Route
-                  path="/activities"
+                  path="/services"
                   element={
                     <AdminLayout>
-                      <Activities />
+                      <Services />
                     </AdminLayout>
                   }
                 />

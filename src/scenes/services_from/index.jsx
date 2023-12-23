@@ -4,7 +4,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 
-const ActivitiesForm = () => {
+const ServicesForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
@@ -13,7 +13,7 @@ const ActivitiesForm = () => {
 
   return (
     <Box m="20px">
-      <Header title="INITIATION OF A NEW ACTIVITY" subtitle="Starting a new activity.. Note that loging out will automatically close all initiated activities" />
+      <Header title="INITIATION OF A NEW SERVICE" subtitle="Starting a new service.. Note that loging out will automatically close all initiated services" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -101,4 +101,4 @@ const initialValues = {
   description: "",
 };
 
-export default ActivitiesForm;
+export default ServicesForm;
