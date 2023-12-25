@@ -7,10 +7,12 @@ import globalReducer from "./state";
 import { Provider } from "react-redux";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { api } from "./state/api";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const store = configureStore({
   reducer: {
-    global: globalReducer, // Correct the import path
+    global: globalReducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefault) => getDefault().concat(api.middleware),
@@ -23,6 +25,18 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <App />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </Provider>
   </React.StrictMode>
 );

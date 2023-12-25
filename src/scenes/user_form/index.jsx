@@ -4,8 +4,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useCreateUserMutation } from "../../state/api";
-import { Link, useNavigate } from "react-router-dom"
-
+import { Link, useNavigate } from "react-router-dom";
 
 const UserForm = () => {
   console.log("UserForm component rendered");
@@ -33,9 +32,7 @@ const UserForm = () => {
         <Header title="CREATE USER" subtitle="Create a New User Profile" />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/team">
-              Back to Team
-            </Link>
+            <Link to="/team">Back to Team</Link>
           </Button>
         </Box>
       </Box>
@@ -181,8 +178,17 @@ const UserForm = () => {
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained" disabled={isLoading}>
-                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Create New User"}
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Create New User"
+                )}
               </Button>
             </Box>
 
@@ -205,8 +211,8 @@ const UserForm = () => {
 };
 
 const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/; 
-  
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+
 const checkoutSchema = yup.object().shape({
   FirstName: yup.string().required("required"),
   LastName: yup.string().required("required"),

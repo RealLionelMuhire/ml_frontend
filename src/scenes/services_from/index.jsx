@@ -1,23 +1,71 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useGetClientsQuery } from "../../state/api";
+import { useCreateServiceMutation } from "../../state/api";
+import { toast } from "react-toastify";
 
 const ServicesForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [createService] = useCreateServiceMutation();
 
-  // Fetch clients data
   const { data: clientData } = useGetClientsQuery();
+  const handleFormSubmit = async (values) => {
+    try {
+      const selectedClient = clientData.find(
+        (client) => client.firstName === values.clientName
+      );
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+      const result = await createService({
+        clientId: selectedClient.id,
+        serviceData: {
+          title: values.activityTitle,
+          description: values.description,
+          service_cost_per_hour: values.service_cost_per_hour,
+          currency: values.currency,
+        },
+      });
+      if (result?.error) {
+        toast.error(result.error?.data?.message);
+      }
+      if (result?.data) {
+        toast.success(result.data?.message);
+      }
+    } catch (error) {
+      toast.error(error);
+    }
   };
+
+  const serviceTitles = [
+    "Setting up and incorporation",
+    "Corporate Governance",
+    "Legal and Compliance Assistance",
+    "Private Notary Services",
+    "Taxation",
+    "Accounting",
+    "Fund Services",
+    "Intellectual property",
+    "Training",
+  ];
+
+  const currencies = ["RWF", "USD", "EUR", "GBP", "JPY"];
 
   return (
     <Box m="20px">
-      <Header title="INITIATION OF A NEW SERVICE" subtitle="Starting a new service.. Note that logging out will automatically close all initiated services" />
+      <Header
+        title="INITIATION OF A NEW SERVICE"
+        subtitle="Starting a new service.. Note that logging out will automatically close all initiated services"
+      />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -41,29 +89,35 @@ const ServicesForm = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
+              <FormControl
+                fullWidth
+                variant="filled"
+                sx={{ gridColumn: "span 4" }}
+              >
                 <InputLabel id="clientNameLabel">Client Name</InputLabel>
                 <Select
                   labelId="clientNameLabel"
                   id="clientName"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.clientName}
+                  value={values.clientName || ""}
                   name="clientName"
                   error={!!touched.clientName && !!errors.clientName}
                 >
-                  {clientData && clientData.map((client) => (
-                    <MenuItem key={client.id} value={client.name}>
-                      {client.name}
-                    </MenuItem>
-                  ))}
+                  {clientData &&
+                    clientData.map((client) => (
+                      <MenuItem key={client.id} value={client.firstName}>
+                        {client.firstName} {client.lastName} with Passport or
+                        ID: {client.passportIdNumber}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Activity Title"
+                label="Service Title"
+                select
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.activityTitle}
@@ -71,7 +125,13 @@ const ServicesForm = () => {
                 error={!!touched.activityTitle && !!errors.activityTitle}
                 helperText={touched.activityTitle && errors.activityTitle}
                 sx={{ gridColumn: "span 4" }}
-              />
+              >
+                {serviceTitles.map((title) => (
+                  <MenuItem key={title} value={title}>
+                    {title}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField
                 fullWidth
                 variant="filled"
@@ -85,10 +145,51 @@ const ServicesForm = () => {
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="Cost Per Hour"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.service_cost_per_hour}
+                name="service_cost_per_hour"
+                error={
+                  !!touched.service_cost_per_hour &&
+                  !!errors.service_cost_per_hour
+                }
+                helperText={
+                  touched.service_cost_per_hour && errors.service_cost_per_hour
+                }
+                sx={{ gridColumn: "span 4" }}
+              />
+
+              <FormControl
+                fullWidth
+                variant="filled"
+                sx={{ gridColumn: "span 4" }}
+              >
+                <InputLabel id="currencyLabel">Currency</InputLabel>
+                <Select
+                  labelId="currencyLabel"
+                  id="currency"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.currency}
+                  name="currency"
+                  error={!!touched.currency && !!errors.currency}
+                >
+                  {currencies.map((currency) => (
+                    <MenuItem key={currency} value={currency}>
+                      {currency}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New User
+                Initiate a new service
               </Button>
             </Box>
           </form>
@@ -99,15 +200,22 @@ const ServicesForm = () => {
 };
 
 const checkoutSchema = yup.object().shape({
-  clientName: yup.string().required("required"),
-  activityTitle: yup.string().required("required"),
+  clientName: yup.string().required("Required"),
+  activityTitle: yup.string().required("Required"),
   description: yup.string(),
+  service_cost_per_hour: yup
+    .number()
+    .required("Required")
+    .min(0, "Cannot be negative"),
+  currency: yup.string(),
 });
 
 const initialValues = {
   clientName: "",
   activityTitle: "",
   description: "",
+  service_cost_per_hour: "",
+  currency: "",
 };
 
 export default ServicesForm;

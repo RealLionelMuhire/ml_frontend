@@ -3,7 +3,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGetClientsQuery } from "../../state/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +12,11 @@ import { useDeactivateClientMutation } from "../../state/api";
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();
-  const [activateClient, { isLoading: isActivating }] = useActivateClientMutation();
-  const [deactivateClient, { isLoading: isDeactivating }] = useDeactivateClientMutation();
-  
+  const [activateClient, { isLoading: isActivating }] =
+    useActivateClientMutation();
+  const [deactivateClient, { isLoading: isDeactivating }] =
+    useDeactivateClientMutation();
+
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -52,9 +54,12 @@ const Clients = () => {
   };
 
   const handleViewMoreClick = () => {
-    console.log("View More clicked for selected client IDs:", selectedClientIds);
+    console.log(
+      "View More clicked for selected client IDs:",
+      selectedClientIds
+    );
     navigate("/clients-id", {
-      state: {selectedClientIds},
+      state: { selectedClientIds },
     });
   };
 
@@ -64,7 +69,12 @@ const Clients = () => {
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "firstName", headerName: "First Name", flex: 1, cellClassName: "name-column--cell" },
+    {
+      field: "firstName",
+      headerName: "First Name",
+      flex: 1,
+      cellClassName: "name-column--cell",
+    },
     { field: "lastName", headerName: "Last Name", flex: 1 },
     { field: "passportIdNumber", headerName: "Passport ID Number", flex: 1 },
     { field: "countryOfIssue", headerName: "Country of Issue", flex: 1 },
@@ -78,9 +88,8 @@ const Clients = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CLIENTS" subtitle="Managing All Clinets" />
-        <Box display="flex" justifyContent="left" mt="20px" ml="10px" >
+        <Box display="flex" justifyContent="left" mt="20px" ml="10px">
           <Button
-            marginRight="10px"
             type="button"
             color="secondary"
             variant="contained"
@@ -90,9 +99,8 @@ const Clients = () => {
             View More on Selected
           </Button>
         </Box>
-        <Box display="flex" justifyContent="end" mt="20px" >
+        <Box display="flex" justifyContent="end" mt="20px">
           <Button
-            marginRight="10px"
             type="button"
             color="secondary"
             variant="contained"
@@ -102,9 +110,8 @@ const Clients = () => {
             Activate Selected
           </Button>
         </Box>
-        <Box display="flex" justifyContent="end" mt="20px" >
+        <Box display="flex" justifyContent="end" mt="20px">
           <Button
-            marginRight="10px"
             type="button"
             color="secondary"
             variant="contained"
@@ -115,14 +122,16 @@ const Clients = () => {
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
-          
-          <Button type="submit" color="secondary" variant="contained" marginLeft="10px">
-            <Link to="/client-form">
-              Register a New Client
-            </Link>
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            marginLeft="10px"
+          >
+            <Link to="/client-form">Register a New Client</Link>
           </Button>
         </Box>
-    </Box>
+      </Box>
       <Box
         m="40px 0 0 0"
         height="75vh"

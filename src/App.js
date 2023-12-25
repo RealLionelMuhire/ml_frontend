@@ -33,11 +33,8 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // Check if the token is present to determine authentication status
     setIsLoading(false);
-    console.log("===bolean===>", token);
     if (token && token !== "undefined") {
-      console.log("--token===>", token);
       setIsAuthenticated(true);
     }
   }, []);

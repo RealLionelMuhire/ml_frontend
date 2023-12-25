@@ -1,16 +1,65 @@
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGetServicesQuery } from "../../state/api";
-
+import { useCloseServiceMutation } from "../../state/api";
+import { useState } from "react";
 
 const Services = () => {
-  const { data, isLoading, error } = useGetServicesQuery();
-  console.log('Data:', data);
-  console.log('Error:', error);
-  console.log('Loading:', isLoading);
+  const { data, isLoading, refetch } = useGetServicesQuery();
+  const [closeService, { isLoading: isClosing }] = useCloseServiceMutation();
+  const [selectedServiceIds, setSelectedServiceIds] = useState([]);
+  const [description, setDescription] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirmClose = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("description", description);
+      formData.append("file", file);
+
+      const promises = selectedServiceIds.map(async (serviceId) => {
+        await closeService({ serviceId, formData });
+      });
+
+      await Promise.all(promises);
+      await refetch();
+      setOpenDialog(false); // Close the dialog after successful close
+    } catch (error) {
+      // Handle error
+      console.error("Error closing service:", error);
+    }
+  };
+
+  const handleSelectionModelChange = (selectionModel) => {
+    setSelectedServiceIds(selectionModel);
+  };
 
   // Helper function to format time in hours and minutes
   const formatTime = (hours) => {
@@ -18,7 +67,7 @@ const Services = () => {
     const formattedHours = Math.floor(totalMinutes / 60);
     const formattedMinutes = totalMinutes % 60;
 
-    let result = '';
+    let result = "";
     if (formattedHours > 0) {
       result += `${formattedHours}h `;
     }
@@ -28,8 +77,7 @@ const Services = () => {
     }
 
     return result;
-};
-
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -56,8 +104,12 @@ const Services = () => {
       headerName: "Cost",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[500]}>
-          {params.row.currency} {params.row.total_cost}
+        <Typography
+          color={params.row.is_active ? colors.greenAccent[500] : undefined}
+        >
+          {params.row.is_active
+            ? "Still active"
+            : `${params.row.currency} ${params.row.total_cost}`}
         </Typography>
       ),
     },
@@ -66,8 +118,12 @@ const Services = () => {
       headerName: "Time spent",
       flex: 1,
       renderCell: (params) => (
-        <Typography>
-          {formatTime(params.row.total_elapsed_time)} {/* Convert hours to formatted time */}
+        <Typography
+          color={params.row.is_active ? colors.greenAccent[500] : undefined}
+        >
+          {params.row.is_active
+            ? "Still active"
+            : formatTime(params.row.total_elapsed_time)}
         </Typography>
       ),
     },
@@ -76,15 +132,24 @@ const Services = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Header title="Services" subtitle="List of Services" />
-      <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                <Link to="/services-form">
-                  Inititiate a Service
-                </Link>
-              </Button>
+        <Header title="Services" subtitle="List of Services" />
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleOpenDialog}
+            disabled={selectedServiceIds.length !== 1 || isClosing}
+          >
+            Close selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button type="submit" color="secondary" variant="contained">
+            <Link to="/services-form">Initiate a Service</Link>
+          </Button>
+        </Box>
       </Box>
-    </Box>
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -114,13 +179,47 @@ const Services = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection
-        loading={isLoading || !data}
-        getRowId={(row) => row.id}
-        rows={data || []}
-        columns={columns}
-        components={{ Toolbar: GridToolbar }} />
+        <DataGrid
+          checkboxSelection
+          loading={isLoading || !data}
+          getRowId={(row) => row.id}
+          rows={data || []}
+          columns={columns}
+          components={{ Toolbar: GridToolbar }}
+          onSelectionModelChange={handleSelectionModelChange}
+        />
       </Box>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Add a short description and File (Optional)</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Description"
+            multiline
+            fullWidth
+            variant="outlined"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <input type="file" onChange={handleFileChange} />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            color="secondary"
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmClose}
+            color="secondary"
+            variant="outlined"
+            disabled={!description.trim()}
+          >
+            Confirm Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

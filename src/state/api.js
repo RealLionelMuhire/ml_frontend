@@ -59,8 +59,23 @@ export const api = createApi({
       providesTags: ["Services"],
     }),
     getDummyData: build.query({
-      query: () => "/list-services/",
+      query: () => "/list-clients/",
       providesTags: ["DummyData"],
+    }),
+    createService: build.mutation({
+      query: ({ clientId, serviceData }) => ({
+        url: `/initiate-service/${clientId}/`,
+        method: "POST",
+        body: serviceData,
+      }),
+      invalidatesTags: ["Services"],
+    }),
+    closeService: build.mutation({
+      query: ({ serviceId, description }) => ({
+        url: `/close-service/${serviceId}/`,
+        method: "POST",
+        body: { description }, // Send description in the body
+      }),
     }),
   }),
 });
@@ -75,6 +90,8 @@ export const {
   useDeactivateClientMutation,
   useGetServicesQuery,
   useGetDummyDataQuery,
+  useCreateServiceMutation,
+  useCloseServiceMutation,
 } = api;
 
 export default api;
