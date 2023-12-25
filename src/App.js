@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-// import Topbar from "./scenes/global/Topbar";
-// import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Clients from "./scenes/clients";
@@ -19,7 +17,6 @@ import ServicesForm from "./scenes/services_from";
 import Roles from "./scenes/roles";
 import UserForm from "./scenes/user_form";
 import ClientsForm from "./scenes/client_form";
-// import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import AdminLayout from "./layouts/admin";
@@ -88,7 +85,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/services-list"
+                  path="/services-form"
                   element={
                     <AdminLayout>
                       <ServicesForm />

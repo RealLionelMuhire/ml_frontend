@@ -25,10 +25,10 @@ const Login = () => {
             ? `../../assets/white_theme_logo.png`
             : `../../assets/dark_theme_logo.png`
         }
-        style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
+        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         />
         <IconButton onClick={colorMode.toggleColorMode}
-        style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
+        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         >
             {theme.palette.mode === "dark" ? (
               <LightModeOutlinedIcon />

@@ -54,6 +54,14 @@ export const api = createApi({
       // Invalidate the Clients tag to trigger a refetch after activation
       invalidatesTags: ["Clients"],
     }),
+    getServices: build.query({
+      query: () => "/list-services/",
+      providesTags: ["Services"],
+    }),
+    getDummyData: build.query({
+      query: () => "/list-services/",
+      providesTags: ["DummyData"],
+    }),
   }),
 });
 
@@ -65,6 +73,8 @@ export const {
   useGetClientsByIdsQuery,
   useActivateClientMutation,
   useDeactivateClientMutation,
+  useGetServicesQuery,
+  useGetDummyDataQuery,
 } = api;
 
 export default api;

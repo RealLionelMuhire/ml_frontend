@@ -7,16 +7,11 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { DescriptionOutlined, GroupWorkOutlined } from "@mui/icons-material";
-import PublicIcon from '@mui/icons-material/Public';
 import BusinessIcon from '@mui/icons-material/Business';
-
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -88,7 +83,7 @@ const Sidebar = () => {
                       ? `../../assets/white_theme_logo.png`
                       : `../../assets/dark_theme_logo.png`
                   }
-                  style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "5px" }}
+                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
                 />
                 <Typography variant="h5" color={colors.grey[100]}>
                   mlcorporateservices

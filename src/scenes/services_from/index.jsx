@@ -1,11 +1,15 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import { useGetClientsQuery } from "../../state/api";
 
 const ServicesForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
+  // Fetch clients data
+  const { data: clientData } = useGetClientsQuery();
 
   const handleFormSubmit = (values) => {
     console.log(values);
@@ -13,7 +17,7 @@ const ServicesForm = () => {
 
   return (
     <Box m="20px">
-      <Header title="INITIATION OF A NEW SERVICE" subtitle="Starting a new service.. Note that loging out will automatically close all initiated services" />
+      <Header title="INITIATION OF A NEW SERVICE" subtitle="Starting a new service.. Note that logging out will automatically close all initiated services" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -37,19 +41,24 @@ const ServicesForm = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Client Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.clientName}
-                name="clientName"
-                error={!!touched.clientName && !!errors.clientName}
-                helperText={touched.clientName && errors.clientName}
-                sx={{ gridColumn: "span 4" }}
-              />
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
+                <InputLabel id="clientNameLabel">Client Name</InputLabel>
+                <Select
+                  labelId="clientNameLabel"
+                  id="clientName"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.clientName}
+                  name="clientName"
+                  error={!!touched.clientName && !!errors.clientName}
+                >
+                  {clientData && clientData.map((client) => (
+                    <MenuItem key={client.id} value={client.name}>
+                      {client.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"

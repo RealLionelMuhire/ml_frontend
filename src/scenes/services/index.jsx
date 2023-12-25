@@ -1,45 +1,75 @@
 import { Box, Typography, useTheme, Button } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
-import { Link} from "react-router-dom"; 
+import { Link} from "react-router-dom";
+import { useGetServicesQuery } from "../../state/api";
+
 
 const Services = () => {
+  const { data, isLoading, error } = useGetServicesQuery();
+  console.log('Data:', data);
+  console.log('Error:', error);
+  console.log('Loading:', isLoading);
+
+  // Helper function to format time in hours and minutes
+  const formatTime = (hours) => {
+    const totalMinutes = hours * 60;
+    const formattedHours = Math.floor(totalMinutes / 60);
+    const formattedMinutes = totalMinutes % 60;
+
+    let result = '';
+    if (formattedHours > 0) {
+      result += `${formattedHours}h `;
+    }
+    if (formattedMinutes > 0 || formattedHours === 0) {
+      // Use toFixed(0) to remove decimal places
+      result += `${formattedMinutes.toFixed(0)}min`;
+    }
+
+    return result;
+};
+
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Name",
+      field: "title",
+      headerName: "Service",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "phone",
-      headerName: "Phone Number",
+      field: "provider_name",
+      headerName: "Provider",
       flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "client_name",
+      headerName: "Client",
       flex: 1,
     },
     {
-      field: "cost",
+      field: "total_cost",
       headerName: "Cost",
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[500]}>
-          ${params.row.cost}
+          {params.row.currency} {params.row.total_cost}
         </Typography>
       ),
     },
     {
-      field: "date",
-      headerName: "Date",
+      field: "total_elapsed_time",
+      headerName: "Time spent",
       flex: 1,
+      renderCell: (params) => (
+        <Typography>
+          {formatTime(params.row.total_elapsed_time)} {/* Convert hours to formatted time */}
+        </Typography>
+      ),
     },
   ];
 
@@ -49,7 +79,7 @@ const Services = () => {
       <Header title="Services" subtitle="List of Services" />
       <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                <Link to="/activities-form">
+                <Link to="/services-form">
                   Inititiate a Service
                 </Link>
               </Button>
@@ -84,7 +114,12 @@ const Services = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataInvoices} columns={columns} />
+        <DataGrid checkboxSelection
+        loading={isLoading || !data}
+        getRowId={(row) => row.id}
+        rows={data || []}
+        columns={columns}
+        components={{ Toolbar: GridToolbar }} />
       </Box>
     </Box>
   );
