@@ -54,10 +54,6 @@ const Clients = () => {
   };
 
   const handleViewMoreClick = () => {
-    console.log(
-      "View More clicked for selected client IDs:",
-      selectedClientIds
-    );
     navigate("/clients-id", {
       state: { selectedClientIds },
     });
@@ -96,7 +92,7 @@ const Clients = () => {
             onClick={handleViewMoreClick}
             disabled={selectedClientIds.length === 0}
           >
-            View More on Selected
+            Select Client to view More
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">

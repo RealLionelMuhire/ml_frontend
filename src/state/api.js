@@ -77,6 +77,12 @@ export const api = createApi({
         body: { description }, // Send description in the body
       }),
     }),
+    getServicesByIds: build.query({
+      query: (ids) => `/services-list-by-id/?ids=${ids.join(",")}`,
+      providesTags: (result, error, ids) =>
+        ids ? [{ type: "Services", id: "LIST" }] : [],
+    }),
+    invalidatesTags: ["Services"],
   }),
 });
 
@@ -92,6 +98,7 @@ export const {
   useGetDummyDataQuery,
   useCreateServiceMutation,
   useCloseServiceMutation,
+  useGetServicesByIdsQuery,
 } = api;
 
 export default api;

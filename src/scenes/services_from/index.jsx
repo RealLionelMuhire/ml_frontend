@@ -14,10 +14,12 @@ import Header from "../../components/Header";
 import { useGetClientsQuery } from "../../state/api";
 import { useCreateServiceMutation } from "../../state/api";
 import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 
 const ServicesForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createService] = useCreateServiceMutation();
+  const navigate = useNavigate();
 
   const { data: clientData } = useGetClientsQuery();
   const handleFormSubmit = async (values) => {
@@ -30,7 +32,7 @@ const ServicesForm = () => {
         clientId: selectedClient.id,
         serviceData: {
           title: values.activityTitle,
-          description: values.description,
+          objective: values.objective,
           service_cost_per_hour: values.service_cost_per_hour,
           currency: values.currency,
         },
@@ -41,6 +43,7 @@ const ServicesForm = () => {
       if (result?.data) {
         toast.success(result.data?.message);
       }
+      navigate("/services");
     } catch (error) {
       toast.error(error);
     }
@@ -62,10 +65,17 @@ const ServicesForm = () => {
 
   return (
     <Box m="20px">
-      <Header
-        title="INITIATION OF A NEW SERVICE"
-        subtitle="Starting a new service.. Note that logging out will automatically close all initiated services"
-      />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header
+          title="INITIATION OF A NEW SERVICE"
+          subtitle="Starting a new service.. Note that logging out will automatically close all initiated services"
+        />
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Button type="submit" color="secondary" variant="contained">
+            <Link to="/services">Back to Services</Link>
+          </Button>
+        </Box>
+      </Box>
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -136,13 +146,13 @@ const ServicesForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Description"
+                label="Objective"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.description}
-                name="description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
+                value={values.objective}
+                name="objective"
+                error={!!touched.objective && !!errors.objective}
+                helperText={touched.objective && errors.objective}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -202,7 +212,7 @@ const ServicesForm = () => {
 const checkoutSchema = yup.object().shape({
   clientName: yup.string().required("Required"),
   activityTitle: yup.string().required("Required"),
-  description: yup.string(),
+  objective: yup.string(),
   service_cost_per_hour: yup
     .number()
     .required("Required")
@@ -213,7 +223,7 @@ const checkoutSchema = yup.object().shape({
 const initialValues = {
   clientName: "",
   activityTitle: "",
-  description: "",
+  objective: "",
   service_cost_per_hour: "",
   currency: "",
 };

@@ -3,28 +3,28 @@ import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
-import { useGetClientsByIdsQuery } from "../../state/api";
+import { useGetServicesByIdsQuery } from "../../state/api";
 import { tokens } from "../../theme";
 import { useLocation } from "react-router-dom";
 import { useMemo } from "react";
 
-const ClientWithID = () => {
+const ServiceByID = () => {
   const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
+  const selectedServiceIds = useMemo(
+    () => location.state?.selectedServiceIds || [],
+    [location.state?.selectedServiceIds]
   );
-  const { data, isLoading } = useGetClientsByIdsQuery(selectedClientIds);
+  const { data, isLoading } = useGetServicesByIdsQuery(selectedServiceIds);
   const theme = useTheme();
 
   const colors = tokens(theme.palette.mode);
 
   const commonColumns = [{ field: "id", headerName: "ID", flex: 1 }];
 
-  // Create dynamic client columns based on the selected clients
-  const clientColumns = selectedClientIds.map((clientId, index) => ({
-    field: `client${index + 1}`,
-    headerName: `Client ${index + 1}`,
+  // Create dynamic service columns based on the selected services
+  const clientColumns = selectedServiceIds.map((serviceId, index) => ({
+    field: `service${index + 1}`,
+    headerName: `Service ${index + 1}`,
     flex: 2,
   }));
 
@@ -35,28 +35,29 @@ const ClientWithID = () => {
       ? Object.keys(data[0]).map((property) => ({
           id: property,
           property,
-          ...data.reduce((clients, client, index) => {
-            clients[`client${index + 1}`] = client[property];
-            return clients;
+          ...data.reduce((services, service, index) => {
+            services[`service${index + 1}`] = service[property];
+            return services;
           }, {}),
         }))
       : [];
-  useEffect(() => {
-    // Set selected client IDs here or fetch them based on your logic
-  }, [selectedClientIds]); // Add dependencies based on your logic
+  useEffect(() => {}, [selectedServiceIds]); // Add dependencies based on your logic
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="CLIENTS" subtitle="View more data on selected clients" />
+        <Header
+          title="SERVICES"
+          subtitle="View more data on selected services"
+        />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/clients">Back To Clients Listt</Link>
+            <Link to="/services">Back To Services List</Link>
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/client-form">Register a new client</Link>
+            <Link to="/service-form">Initiate a new service</Link>
           </Button>
         </Box>
       </Box>
@@ -105,4 +106,4 @@ const ClientWithID = () => {
   );
 };
 
-export default ClientWithID;
+export default ServiceByID;

@@ -21,6 +21,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import AdminLayout from "./layouts/admin";
 import ClientWithID from "./scenes/clients/clientByID";
+import ServiceByID from "./scenes/services/serviceByID";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -94,6 +95,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <Services />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/service-id"
+                  element={
+                    <AdminLayout>
+                      <ServiceByID />
                     </AdminLayout>
                   }
                 />

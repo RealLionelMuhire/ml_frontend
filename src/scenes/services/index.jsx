@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import { useGetServicesQuery } from "../../state/api";
 import { useCloseServiceMutation } from "../../state/api";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Services = () => {
   const { data, isLoading, refetch } = useGetServicesQuery();
@@ -24,6 +26,7 @@ const Services = () => {
   const [description, setDescription] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -45,7 +48,17 @@ const Services = () => {
       formData.append("file", file);
 
       const promises = selectedServiceIds.map(async (serviceId) => {
-        await closeService({ serviceId, formData });
+        try {
+          const response = await closeService({ serviceId, formData });
+          if (response?.error) {
+            toast.error(response.error?.data?.message);
+          }
+          if (response?.data) {
+            toast.success(response.data?.message);
+          }
+        } catch (error) {
+          toast.error(error);
+        }
       });
 
       await Promise.all(promises);
@@ -53,12 +66,18 @@ const Services = () => {
       setOpenDialog(false); // Close the dialog after successful close
     } catch (error) {
       // Handle error
-      console.error("Error closing service:", error);
+      toast.error("Error closing service:");
     }
   };
 
   const handleSelectionModelChange = (selectionModel) => {
     setSelectedServiceIds(selectionModel);
+  };
+
+  const handleViewMoreClick = () => {
+    navigate("/service-id", {
+      state: { selectedServiceIds },
+    });
   };
 
   // Helper function to format time in hours and minutes
@@ -133,6 +152,17 @@ const Services = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="Services" subtitle="List of Services" />
+        <Box display="flex" justifyContent="left" mt="20px" ml="10px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleViewMoreClick}
+            disabled={selectedServiceIds.length === 0}
+          >
+            Select Service to view More
+          </Button>
+        </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
