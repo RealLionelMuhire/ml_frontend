@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme} from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -11,8 +11,11 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { DescriptionOutlined, GroupWorkOutlined } from "@mui/icons-material";
-import BusinessIcon from '@mui/icons-material/Business';
-
+import BusinessIcon from "@mui/icons-material/Business";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import PersonIcon from "@mui/icons-material/Person";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import { useGetUserProfileQuery } from "../../state/api";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -32,11 +35,35 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
+const getAccessLevelIcon = (accessLevel) => {
+  switch (accessLevel) {
+    case "manager":
+      return <SupervisorAccountIcon />;
+    case "user":
+      return <PersonIcon />;
+    case "manager user":
+      return <HowToRegIcon />;
+    default:
+      return <PersonIcon />;
+  }
+};
+
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const { data: userProfile, isLoading } = useGetUserProfileQuery();
+
+  // Check if userProfile is still loading
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Check if userProfile is undefined
+  if (!userProfile) {
+    return <div>User profile not available</div>;
+  }
 
   return (
     <Box
@@ -59,7 +86,7 @@ const Sidebar = () => {
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square" >
+        <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -71,20 +98,32 @@ const Sidebar = () => {
           >
             {!isCollapsed && (
               <Box
+                mb="25px"
                 display="flex"
-                justifyContent="center"
-                alignItems="center"
                 ml="15px"
+                justifyContent="left"
+                alignItems="center"
               >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <img
-                  alt="logo"
-                  src={
-                    theme.palette.mode === 'light'
-                      ? `../../assets/white_theme_logo.png`
-                      : `../../assets/dark_theme_logo.png`
-                  }
-                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                />
+                    alt="logo"
+                    src={
+                      theme.palette.mode === "light"
+                        ? `../../assets/white_theme_logo.png`
+                        : `../../assets/dark_theme_logo.png`
+                    }
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </Box>
+
                 <Typography variant="h5" color={colors.grey[100]}>
                   mlcorporateservices
                 </Typography>
@@ -96,27 +135,41 @@ const Sidebar = () => {
           </MenuItem>
 
           {!isCollapsed && (
-            <Box mb="25px" display="flex" ml="15px" justifyContent="space around" alignItems="center">
-              <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+              mb="10px"
+              display="flex"
+              ml="15px"
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="center"
+                width="100%"
+                padding="10px"
+              >
                 <img
-                  alt="profile-user"
-                  width="50px"
-                  height="50px"
-                  src={`../../assets/user.jpg`}
-                  style={{ cursor: "pointer", borderRadius: "20%" }}
+                  alt="logo"
+                  src={
+                    theme.palette.mode === "light"
+                      ? `../../assets/white_user.jpeg`
+                      : `../../assets/dark_user.jpeg`
+                  }
+                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
                 />
               </Box>
-              <Box textAlign="center">
+              <Box padding="10px" justifyContent="left">
                 <Typography
-                  variant="h2"
+                  variant="h5"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
+                  sx={{ m: "5px 0 0 0" }}
                 >
-                  Mr Lionel
+                  {userProfile.FirstName}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  super_user
+                  {userProfile.accessLevel}
                 </Typography>
               </Box>
             </Box>

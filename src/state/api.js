@@ -82,6 +82,10 @@ export const api = createApi({
         ids ? [{ type: "Services", id: "LIST" }] : [],
     }),
     invalidatesTags: ["Services"],
+    getUserProfile: build.query({
+      query: () => "/user-profile/",
+      providesTags: ["UserProfile"],
+    }),
   }),
 });
 
@@ -98,6 +102,7 @@ export const {
   useCreateServiceMutation,
   useCloseServiceMutation,
   useGetServicesByIdsQuery,
+  useGetUserProfileQuery,
 } = api;
 
 export default api;
