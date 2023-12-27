@@ -51,7 +51,6 @@ export const api = createApi({
         url: `/deactivate-client/${clientId}/`,
         method: "PUT",
       }),
-      // Invalidate the Clients tag to trigger a refetch after activation
       invalidatesTags: ["Clients"],
     }),
     getServices: build.query({
@@ -74,7 +73,7 @@ export const api = createApi({
       query: ({ serviceId, description }) => ({
         url: `/close-service/${serviceId}/`,
         method: "POST",
-        body: { description }, // Send description in the body
+        body: { description },
       }),
     }),
     getServicesByIds: build.query({

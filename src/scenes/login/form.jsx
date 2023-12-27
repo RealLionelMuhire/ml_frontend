@@ -11,7 +11,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
-import useNotify from "../../components/Notification"
+import { toast } from "react-toastify";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
@@ -27,7 +27,6 @@ const forgotPasswordSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
 });
 
-
 const initialValuesForgotPassword = {
   email: "",
 };
@@ -40,9 +39,6 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isForgotPassword = pageType === "forgotPassword";
 
-  // Use the useNotify hook
-  const showNotification = useNotify();
-
   const login = async (values, onSubmitProps) => {
     try {
       const loggedInResponse = await fetch("http://localhost:8000/api/login/", {
@@ -50,11 +46,21 @@ const Form = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
+
+      if (!loggedInResponse.ok) {
+        const errorData = await loggedInResponse.json();
+        toast.error(errorData.message);
+        return;
+      }
+
       const loggedIn = await loggedInResponse.json();
+      if (loggedInResponse.ok) {
+        toast.success(loggedIn.message);
+      }
+
       onSubmitProps.resetForm();
       if (loggedIn?.token) {
-        console.log("===logging-in===>", loggedIn)
-        localStorage.setItem("token", loggedIn.token)
+        localStorage.setItem("token", loggedIn.token);
         dispatch(
           setLogin({
             user: loggedIn.user,
@@ -62,12 +68,10 @@ const Form = () => {
           })
         );
         // navigate("/dashboard");
-        window.location.href = "/dashboard"
-        console.log("===reaching here===<")
+        window.location.href = "/dashboard";
       }
     } catch (error) {
-      // Call showNotification with the error message and duration (optional)
-      showNotification("Error logging in. Please try again.");
+      toast.error("Error logging in. Please try again.");
     }
   };
 
@@ -81,13 +85,18 @@ const Form = () => {
           body: JSON.stringify(values),
         }
       );
-      const forgotPasswordResult = await forgotPasswordResponse.json();
+
+      if (!forgotPasswordResponse.ok) {
+        const errorData = await forgotPasswordResponse.json();
+        toast.error(errorData.message);
+        return;
+      }
+
       onSubmitProps.resetForm();
       // Handle the result as needed, e.g., show a success message.
-      console.log(forgotPasswordResult);
+      toast.success("Password reset instructions sent successfully.");
     } catch (error) {
-      // Call showNotification with the error message and duration (optional)
-      showNotification("Error resetting password. Please try again.");
+      toast.error("Error resetting password. Please try again.");
     }
   };
 
