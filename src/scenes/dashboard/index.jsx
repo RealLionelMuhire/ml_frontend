@@ -7,10 +7,24 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
+import { useGetDashboardQuery } from "../../state/api";
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { data: userDashboard, isLoading } = useGetDashboardQuery();
+
+  console.log("userDashboard: ", userDashboard);
+
+  // Check if userProfile is still loading
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Check if userProfile is undefined
+  if (!userDashboard) {
+    return <div>User dashboard data available</div>;
+  }
 
   return (
     <Box m="20px">
@@ -49,10 +63,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
+            title={userDashboard.total_services}
             subtitle="Services provided"
-            progress="0.50"
-            increase="+21%"
+            progress={userDashboard.increase_rate_services}
+            increase={`${userDashboard.increase_rate_services_percentage}%`}
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -68,10 +82,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
+            title={userDashboard.total_clients}
             subtitle="New Clients"
-            progress="0.30"
-            increase="+5%"
+            progress={userDashboard.increase_rate_clients}
+            increase={`${userDashboard.increase_rate_clients_percentage}%`}
             icon={
               <PersonAddIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -87,10 +101,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
+            title="0"
             subtitle="Website Traffic"
-            progress="0.80"
-            increase="+43%"
+            progress="#"
+            increase="#"
             icon={
               <TrafficIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -117,7 +131,7 @@ const Dashboard = () => {
               Recent Services
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {userDashboard.recent_services.map((transaction, i) => (
             <Box
               key={`${transaction.txId}-${i}`}
               display="flex"
@@ -132,7 +146,7 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {transaction.client_name}
                 </Typography>
                 <Typography color={colors.grey[100]}>
                   {transaction.user}
@@ -144,7 +158,8 @@ const Dashboard = () => {
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                {transaction.currency}
+                {transaction.total_cost}
               </Box>
             </Box>
           ))}

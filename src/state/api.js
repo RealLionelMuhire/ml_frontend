@@ -86,6 +86,10 @@ export const api = createApi({
       query: () => "/user-profile/",
       providesTags: ["UserProfile"],
     }),
+    getDashboard: build.query({
+      query: () => "/dashboard-data/",
+      providesTags: ["Dashboard"],
+    }),
   }),
 });
 
@@ -103,6 +107,7 @@ export const {
   useCloseServiceMutation,
   useGetServicesByIdsQuery,
   useGetUserProfileQuery,
+  useGetDashboardQuery,
 } = api;
 
 export default api;
