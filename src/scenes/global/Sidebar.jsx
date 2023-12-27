@@ -12,9 +12,6 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { DescriptionOutlined, GroupWorkOutlined } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import PersonIcon from "@mui/icons-material/Person";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
 import { useGetUserProfileQuery } from "../../state/api";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -33,19 +30,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       <Link to={to} />
     </MenuItem>
   );
-};
-
-const getAccessLevelIcon = (accessLevel) => {
-  switch (accessLevel) {
-    case "manager":
-      return <SupervisorAccountIcon />;
-    case "user":
-      return <PersonIcon />;
-    case "manager user":
-      return <HowToRegIcon />;
-    default:
-      return <PersonIcon />;
-  }
 };
 
 const Sidebar = () => {
