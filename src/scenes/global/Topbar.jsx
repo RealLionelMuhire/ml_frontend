@@ -1,28 +1,43 @@
 import React from "react";
-import { Box, IconButton, useTheme, Menu, MenuItem, Typography } from "@mui/material";
+import { Fragment } from "react";
+import {
+  Box,
+  IconButton,
+  useTheme,
+  Menu,
+  MenuItem,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  Grid,
+} from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import MessageIcon from "@mui/icons-material/EmailOutlined"
+import MessageIcon from "@mui/icons-material/EmailOutlined";
+import { useState } from "react";
 import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
+import { useGetUserProfileQuery } from "../../state/api";
 
 const Topbar = () => {
   const theme = useTheme();
+  const { data: userProfile, isLoading } = useGetUserProfileQuery();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [isProfileDialogOpen, setProfileDialogOpen] = useState(false);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
 
-  const settings = ['Profile', 'Logout'];
+  const choices = ["Profile", "Logout", "Change Password"];
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -30,19 +45,24 @@ const Topbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const handleSettingClick = async(setting) => {
+  const handleSettingClick = async (choice) => {
     handleCloseUserMenu();
 
-    if (setting === 'Logout') {
+    if (choice === "Logout") {
       try {
-        const loggedOutResponse = await fetch("http://localhost:8000/api/logout/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json,","Authorization": `token ${localStorage.getItem("token")}`},
-          
-        });
+        const loggedOutResponse = await fetch(
+          "http://localhost:8000/api/logout/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json,",
+              Authorization: `token ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const loggedOut = await loggedOutResponse.json();
         if (loggedOut) {
-          localStorage.clear('token')
+          localStorage.clear("token");
           dispatch(
             setLogout({
               user: "null",
@@ -51,13 +71,16 @@ const Topbar = () => {
           );
           window.location.href = "/";
         }
-      } catch (error) {
-        // Call showNotification with the error message and duration (optional)
-        // showNotification("Error in Logging out. Please try again.");
-      }
-    };
+      } catch (error) {}
+    } else if (choice === "Profile") {
+      setProfileDialogOpen(true);
+    } else if (choice === "Change Password") {
+    }
   };
 
+  const handleProfileDialogClose = () => {
+    setProfileDialogOpen(false);
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -88,35 +111,72 @@ const Topbar = () => {
         <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
         <IconButton onClick={handleOpenUserMenu}>
           <PersonOutlinedIcon />
         </IconButton>
         <Menu
-          sx={{ mt: '45px' }}
+          sx={{ mt: "45px" }}
           id="menu-appbar"
           anchorEl={anchorElUser}
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           keepMounted
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
-          {settings.map((setting) => (
-            <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
-              <Typography textAlign="center">{setting}</Typography>
+          {choices.map((choice) => (
+            <MenuItem key={choice} onClick={() => handleSettingClick(choice)}>
+              <Typography textAlign="center">{choice}</Typography>
             </MenuItem>
           ))}
         </Menu>
       </Box>
+
+      {/* PROFILE DIALOG */}
+      <Dialog
+        open={isProfileDialogOpen}
+        onClose={handleProfileDialogClose}
+        // maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle variant="h3" style={{ paddingBottom: "15px" }}>
+          My Profile
+        </DialogTitle>
+        <DialogContent>
+          {isLoading ? (
+            <Typography>Loading...</Typography>
+          ) : (
+            <Box>
+              <Grid container spacing={1}>
+                {Object.entries(userProfile).map(([key, value]) => (
+                  <Fragment key={key}>
+                    <Grid item xs={6}>
+                      <Typography variant="h6">{key}:</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="h6">{value}</Typography>
+                    </Grid>
+                  </Fragment>
+                ))}
+              </Grid>
+
+              <Button
+                variant="outlined"
+                color="secondary"
+                style={{ marginTop: "16px" }}
+              >
+                Update Profile
+              </Button>
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
