@@ -22,6 +22,7 @@ import { Outlet } from "react-router-dom";
 import AdminLayout from "./layouts/admin";
 import ClientWithID from "./scenes/clients/clientByID";
 import ServiceByID from "./scenes/services/serviceByID";
+import ProfileUpdateForm from "./scenes/team/profile_update";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -119,6 +120,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <UserForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/update-user"
+                  element={
+                    <AdminLayout>
+                      <ProfileUpdateForm />
                     </AdminLayout>
                   }
                 />

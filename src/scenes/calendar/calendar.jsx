@@ -20,7 +20,7 @@ import {
   useUpdateEventMutation,
   useDeleteEventMutation,
 } from "../../state/api";
-import moment from "moment-timezone";
+// import moment from "moment-timezone";
 
 const Calendar = () => {
   const theme = useTheme();

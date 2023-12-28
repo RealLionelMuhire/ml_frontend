@@ -27,6 +27,7 @@ import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery } from "../../state/api";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -191,7 +192,7 @@ const Topbar = () => {
                 color="secondary"
                 style={{ marginTop: "16px" }}
               >
-                Update Profile
+                <Link to="/update-user">Update Profile</Link>
               </Button>
             </Box>
           )}
