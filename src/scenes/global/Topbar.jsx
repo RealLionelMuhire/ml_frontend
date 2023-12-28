@@ -26,6 +26,7 @@ import { useState } from "react";
 import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery } from "../../state/api";
+import { toast } from "react-toastify";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -35,7 +36,6 @@ const Topbar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [isProfileDialogOpen, setProfileDialogOpen] = useState(false);
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
 
   const choices = ["Profile", "Logout", "Change Password"];
 
@@ -75,6 +75,26 @@ const Topbar = () => {
     } else if (choice === "Profile") {
       setProfileDialogOpen(true);
     } else if (choice === "Change Password") {
+      try {
+        const changePassordResponse = await fetch(
+          "http://localhost:8000/api/forgot-password/",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userProfile.email }),
+          }
+        );
+        if (!changePassordResponse.ok) {
+          const errorData = await changePassordResponse.json();
+          toast.error(errorData.message);
+          return;
+        }
+        toast.success(
+          "Check your email, Password reset instructions sent successfully."
+        );
+      } catch (error) {
+        toast.error("Error resetting password. Please try again.");
+      }
     }
   };
 
