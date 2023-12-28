@@ -13,8 +13,6 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
   const { data: userDashboard, isLoading } = useGetDashboardQuery();
 
-  console.log("userDashboard: ", userDashboard);
-
   // Check if userProfile is still loading
   if (isLoading) {
     return <div>Loading...</div>;

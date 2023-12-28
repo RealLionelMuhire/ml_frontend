@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FullCalendar, { formatDate } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -14,35 +14,87 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
+import {
+  useGetEventsQuery,
+  useCreateEventMutation,
+  useUpdateEventMutation,
+  useDeleteEventMutation,
+} from "../../state/api";
+import moment from "moment-timezone";
 
 const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [currentEvents, setCurrentEvents] = useState([]);
 
-  const handleDateClick = (selected) => {
-    const title = prompt("Please enter a new title for your event");
-    const calendarApi = selected.view.calendar;
-    calendarApi.unselect();
+  const { data: eventsData } = useGetEventsQuery();
+  const [createEvent] = useCreateEventMutation();
+  const [updateEvent] = useUpdateEventMutation();
+  const [deleteEvent] = useDeleteEventMutation();
+
+  useEffect(() => {
+    if (eventsData) {
+      setCurrentEvents(eventsData);
+    }
+  }, [eventsData]);
+
+  const handleDateClick = async (selected) => {
+    const title = prompt("Please enter a new title for the event");
 
     if (title) {
-      calendarApi.addEvent({
-        id: `${selected.dateStr}-${title}`,
+      const newEvent = {
         title,
         start: selected.startStr,
         end: selected.endStr,
         allDay: selected.allDay,
-      });
+      };
+
+      try {
+        const response = await createEvent(newEvent);
+        setCurrentEvents([...currentEvents, response]);
+      } catch (error) {
+        console.error("Error creating event:", error);
+      }
     }
   };
 
-  const handleEventClick = (selected) => {
+  const handleEventClick = async (selected) => {
     if (
       window.confirm(
         `Are you sure you want to delete the event '${selected.event.title}'`
       )
     ) {
-      selected.event.remove();
+      try {
+        await deleteEvent(selected.event.id);
+        setCurrentEvents(
+          currentEvents.filter((event) => event.id !== selected.event.id)
+        );
+      } catch (error) {
+        console.error("Error deleting event:", error);
+      }
+    }
+  };
+
+  const handleEventDrop = async (dropInfo) => {
+    const { event } = dropInfo;
+    console.log("event:", event);
+
+    const eventId = event._def.publicId;
+
+    console.log("selected event id:", eventId);
+    if (eventId) {
+      try {
+        await updateEvent({
+          eventId: eventId,
+          updatedEvent: {
+            title: event.title,
+            start: event.start,
+            end: event.end,
+          },
+        });
+      } catch (error) {
+        console.error("Error updating event:", error);
+      }
     }
   };
 
@@ -53,10 +105,13 @@ const Calendar = () => {
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
         <Box
+          gridColumn="span 1"
+          gridRow="span 4"
           flex="1 1 20%"
           backgroundColor={colors.primary[400]}
           p="15px"
           borderRadius="4px"
+          overflowY="auto"
         >
           <Typography variant="h5">Events</Typography>
           <List>
@@ -108,19 +163,9 @@ const Calendar = () => {
             dayMaxEvents={true}
             select={handleDateClick}
             eventClick={handleEventClick}
-            eventsSet={(events) => setCurrentEvents(events)}
-            initialEvents={[
-              {
-                id: "12315",
-                title: "All-day event",
-                date: "2022-09-14",
-              },
-              {
-                id: "5123",
-                title: "Timed event",
-                date: "2022-09-28",
-              },
-            ]}
+            events={currentEvents}
+            eventDrop={handleEventDrop}
+            timezone="Africa/Kigali"
           />
         </Box>
       </Box>

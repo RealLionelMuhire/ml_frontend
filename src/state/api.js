@@ -43,7 +43,6 @@ export const api = createApi({
         url: `/activate-client/${clientId}/`,
         method: "PUT",
       }),
-      // Invalidate the Clients tag to trigger a refetch after activation
       invalidatesTags: ["Clients"],
     }),
     deactivateClient: build.mutation({
@@ -90,6 +89,42 @@ export const api = createApi({
       query: () => "/dashboard-data/",
       providesTags: ["Dashboard"],
     }),
+    getEvents: build.query({
+      query: () => "/events/",
+      providesTags: ["Events"],
+    }),
+
+    createEvent: build.mutation({
+      query: (newEvent) => ({
+        url: "/events/",
+        method: "POST",
+        body: newEvent,
+      }),
+      invalidatesTags: ["Events"],
+    }),
+
+    getEventById: build.query({
+      query: (eventId) => `/events/${eventId}/`,
+      providesTags: (result, error, eventId) =>
+        eventId ? [{ type: "Events", id: eventId }] : [],
+    }),
+
+    updateEvent: build.mutation({
+      query: ({ eventId, updatedEvent }) => ({
+        url: `/events/${eventId}/`,
+        method: "PUT",
+        body: updatedEvent,
+      }),
+      invalidatesTags: ["Events"],
+    }),
+
+    deleteEvent: build.mutation({
+      query: (eventId) => ({
+        url: `/events/${eventId}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Events"],
+    }),
   }),
 });
 
@@ -108,6 +143,11 @@ export const {
   useGetServicesByIdsQuery,
   useGetUserProfileQuery,
   useGetDashboardQuery,
+  useGetEventsQuery,
+  useCreateEventMutation,
+  useGetEventByIdQuery,
+  useUpdateEventMutation,
+  useDeleteEventMutation,
 } = api;
 
 export default api;
