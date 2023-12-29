@@ -3,36 +3,43 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-import { useCreateUserMutation } from "../../state/api";
+import { useUpdateUserProfileMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ProfileUpdateForm = () => {
-  console.log("ProfileUpdateForm component rendered");
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
+  const [updatedProfile, { isLoading, isError, data }] =
+    useUpdateUserProfileMutation();
   const navigate = useNavigate();
 
-  const handleFormSubmit = async (values) => {
-    console.log("Form submission initiated. Values:", values);
+  const handleFormSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log("Before mutation call");
+      const response = await updatedProfile(values);
 
-      const response = await createUser(values);
-
-      console.log("After mutation call. response from backend:", response);
-      navigate("/dashboard");
+      if (response.error) {
+        toast.error(
+          response.error.message || "Error updating profile. Please try again."
+        );
+      } else if (response.data) {
+        toast.success(response.data.message || "Updated successfully!");
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error updating profile:", error);
+      toast.error("Error updating profile. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="CREATE USER" subtitle="Create a New User Profile" />
+        <Header title="UPDATE PROFILE" subtitle="Change your Profile" />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/team">Back to Team</Link>
+            <Link to="/dashboard">Back to Dashboard</Link>
           </Button>
         </Box>
       </Box>
@@ -49,6 +56,7 @@ const ProfileUpdateForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -114,19 +122,6 @@ const ProfileUpdateForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="password"
-                label="Temporal Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                name="password"
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
                 type="text"
                 label="National ID or Passport"
                 onBlur={handleBlur}
@@ -154,19 +149,6 @@ const ProfileUpdateForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="User Role"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.UserRoles}
-                name="UserRoles"
-                error={!!touched.UserRoles && !!errors.UserRoles}
-                helperText={touched.UserRoles && errors.UserRoles}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
                 label="Address"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -182,25 +164,25 @@ const ProfileUpdateForm = () => {
                 type="submit"
                 color="secondary"
                 variant="contained"
-                disabled={isLoading}
+                disabled={isSubmitting}
               >
-                {isLoading ? (
+                {isSubmitting ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  "Create New User"
+                  "Change Your Profile"
                 )}
               </Button>
             </Box>
 
             {isError && (
               <Box mt="20px" color="error.main">
-                Error creating user. Please try again.
+                Error. Please try again.
               </Box>
             )}
 
             {data && (
               <Box mt="20px" color="success.main">
-                User created successfully!
+                Updated successfully!
               </Box>
             )}
           </form>
@@ -214,28 +196,21 @@ const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const checkoutSchema = yup.object().shape({
-  FirstName: yup.string().required("required"),
-  LastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  password: yup.string().required("required"),
-  NationalID: yup.string().required("required"),
-  BirthDate: yup.date().required("required"),
-  UserRoles: yup.string().required("required"),
-  Address: yup.string().required("required"),
+  FirstName: yup.string(),
+  LastName: yup.string(),
+  email: yup.string().email("invalid email"),
+  contact: yup.string().matches(phoneRegExp, "Phone number is not valid"),
+  NationalID: yup.string(),
+  BirthDate: yup.date(),
+  Address: yup.string(),
 });
 const initialValues = {
   FirstName: "",
   LastName: "",
   email: "",
   contact: "",
-  password: "",
   NationalID: "",
   BirthDate: "",
-  UserRoles: "",
   Address: "",
 };
 

@@ -125,6 +125,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Events"],
     }),
+    updateUserProfile: build.mutation({
+      query: (updatedProfile) => ({
+        url: "/update-user-profile/",
+        method: "PUT",
+        body: updatedProfile,
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
   }),
 });
 
@@ -148,6 +156,7 @@ export const {
   useGetEventByIdQuery,
   useUpdateEventMutation,
   useDeleteEventMutation,
+  useUpdateUserProfileMutation,
 } = api;
 
 export default api;
