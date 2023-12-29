@@ -118,12 +118,7 @@ const Clients = () => {
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="submit"
-            color="secondary"
-            variant="contained"
-            marginLeft="10px"
-          >
+          <Button type="submit" color="secondary" variant="contained">
             <Link to="/client-form">Register a New Client</Link>
           </Button>
         </Box>

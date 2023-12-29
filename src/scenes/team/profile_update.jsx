@@ -9,8 +9,7 @@ import { toast } from "react-toastify";
 
 const ProfileUpdateForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [updatedProfile, { isLoading, isError, data }] =
-    useUpdateUserProfileMutation();
+  const [updatedProfile, { isError, data }] = useUpdateUserProfileMutation();
   const navigate = useNavigate();
 
   const handleFormSubmit = async (values, { setSubmitting }) => {
