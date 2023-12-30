@@ -89,11 +89,14 @@ export const api = createApi({
       query: () => "/dashboard-data/",
       providesTags: ["Dashboard"],
     }),
-    getEvents: build.query({
+    getAllEvents: build.query({
       query: () => "/events/",
       providesTags: ["Events"],
     }),
-
+    getEvents: build.query({
+      query: () => "/all-events/",
+      providesTags: ["Events"],
+    }),
     createEvent: build.mutation({
       query: (newEvent) => ({
         url: "/events/",
@@ -152,6 +155,7 @@ export const {
   useGetUserProfileQuery,
   useGetDashboardQuery,
   useGetEventsQuery,
+  useGetAllEventsQuery,
   useCreateEventMutation,
   useGetEventByIdQuery,
   useUpdateEventMutation,

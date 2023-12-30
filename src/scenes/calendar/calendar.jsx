@@ -4,14 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, ListItemText, Typography, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import {
@@ -19,24 +12,27 @@ import {
   useCreateEventMutation,
   useUpdateEventMutation,
   useDeleteEventMutation,
+  useGetAllEventsQuery,
 } from "../../state/api";
-// import moment from "moment-timezone";
 
 const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [currentEvents, setCurrentEvents] = useState([]);
+  const [calendarEvents, setCalendarEvents] = useState([]);
 
+  const { data: allEventsData } = useGetAllEventsQuery();
   const { data: eventsData } = useGetEventsQuery();
   const [createEvent] = useCreateEventMutation();
   const [updateEvent] = useUpdateEventMutation();
   const [deleteEvent] = useDeleteEventMutation();
 
   useEffect(() => {
-    if (eventsData) {
-      setCurrentEvents(eventsData);
+    if (allEventsData) {
+      setCurrentEvents(allEventsData);
+      setCalendarEvents(eventsData); // Separate data for the calendar
     }
-  }, [eventsData]);
+  }, [allEventsData, eventsData]);
 
   const handleDateClick = async (selected) => {
     const title = prompt("Please enter a new title for the event");
@@ -105,40 +101,48 @@ const Calendar = () => {
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
         <Box
+          height="75vh"
           gridColumn="span 1"
           gridRow="span 4"
           flex="1 1 20%"
           backgroundColor={colors.primary[400]}
           p="15px"
           borderRadius="4px"
-          overflowY="auto"
+          overflow="auto"
         >
-          <Typography variant="h5">Events</Typography>
-          <List>
-            {currentEvents.map((event) => (
-              <ListItem
-                key={event.id}
-                sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  margin: "10px 0",
-                  borderRadius: "2px",
-                }}
-              >
-                <ListItemText
-                  primary={event.title}
-                  secondary={
-                    <Typography>
-                      {formatDate(event.start, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            colors={colors.grey[100]}
+            p="15px"
+          >
+            <Typography variant="h5">Events</Typography>
+          </Box>
+          {currentEvents.map((event) => (
+            <Box
+              key={event.id}
+              sx={{
+                backgroundColor: colors.primary[500],
+                margin: "10px 0",
+                borderRadius: "2px",
+              }}
+            >
+              <ListItemText
+                primary={event.title}
+                secondary={
+                  <Typography>
+                    {formatDate(event.start, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </Typography>
+                }
+              />
+            </Box>
+          ))}
         </Box>
 
         {/* CALENDAR */}
@@ -163,7 +167,7 @@ const Calendar = () => {
             dayMaxEvents={true}
             select={handleDateClick}
             eventClick={handleEventClick}
-            events={currentEvents}
+            events={calendarEvents} // Use separate data for the calendar
             eventDrop={handleEventDrop}
             timezone="Africa/Kigali"
           />
