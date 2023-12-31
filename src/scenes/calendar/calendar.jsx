@@ -14,6 +14,7 @@ import {
   useDeleteEventMutation,
   useGetAllEventsQuery,
 } from "../../state/api";
+import moment from "moment";
 
 const Calendar = () => {
   const theme = useTheme();
@@ -27,21 +28,40 @@ const Calendar = () => {
   const [updateEvent] = useUpdateEventMutation();
   const [deleteEvent] = useDeleteEventMutation();
 
+  const areDatesEqual = (date1, date2) => {
+    const formattedDate1 = formatDate(date1, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
+    const formattedDate2 = formatDate(date2, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
+    return formattedDate1 === formattedDate2;
+  };
+
   useEffect(() => {
     if (allEventsData) {
       setCurrentEvents(allEventsData);
-      setCalendarEvents(eventsData); // Separate data for the calendar
+      setCalendarEvents(eventsData);
     }
   }, [allEventsData, eventsData]);
 
   const handleDateClick = async (selected) => {
     const title = prompt("Please enter a new title for the event");
 
+    const endMinusOneSecond = new Date(selected.endStr);
+    endMinusOneSecond.setSeconds(endMinusOneSecond.getSeconds() - 1);
+
     if (title) {
       const newEvent = {
         title,
         start: selected.startStr,
-        end: selected.endStr,
+        end: endMinusOneSecond.toISOString(),
         allDay: selected.allDay,
       };
 
@@ -118,7 +138,9 @@ const Calendar = () => {
             colors={colors.grey[100]}
             p="15px"
           >
-            <Typography variant="h5">Events</Typography>
+            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+              Upcoming Events
+            </Typography>
           </Box>
           {currentEvents.map((event) => (
             <Box
@@ -130,14 +152,36 @@ const Calendar = () => {
               }}
             >
               <ListItemText
-                primary={event.title}
+                primary={
+                  <Typography
+                    color={colors.greenAccent[500]}
+                    variant="h5"
+                    fontWeight="600"
+                  >
+                    {event.title}
+                  </Typography>
+                }
                 secondary={
-                  <Typography>
-                    {formatDate(event.start, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                  <Typography
+                    color={colors.grey[100]}
+                    variant="h5"
+                    fontWeight="600"
+                  >
+                    {areDatesEqual(event.start, event.end)
+                      ? formatDate(event.start, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : `${formatDate(event.start, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })} - ${formatDate(event.end, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}`}
                   </Typography>
                 }
               />
@@ -167,9 +211,9 @@ const Calendar = () => {
             dayMaxEvents={true}
             select={handleDateClick}
             eventClick={handleEventClick}
-            events={calendarEvents} // Use separate data for the calendar
+            events={calendarEvents}
             eventDrop={handleEventDrop}
-            timezone="Africa/Kigali"
+            initialDate={moment().toISOString()}
           />
         </Box>
       </Box>
