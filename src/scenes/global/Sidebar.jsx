@@ -144,24 +144,26 @@ const Sidebar = () => {
                 />
               </Box>
               <Box padding="10px" justifyContent="left">
-                <Typography
-                  variant="h5"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "5px 0 0 0" }}
-                >
-                  {userProfile.FirstName}
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  {userProfile.accessLevel}
-                </Typography>
+                <Link to="/update-user">
+                  <Typography
+                    variant="h5"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    sx={{ m: "5px 0 0 0" }}
+                  >
+                    {userProfile.FirstName}
+                  </Typography>
+                  <Typography variant="h5" color={colors.greenAccent[500]}>
+                    {userProfile.accessLevel}
+                  </Typography>
+                </Link>
               </Box>
             </Box>
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item
-              title="Dashboard"
+              title="Home page"
               to="/dashboard"
               icon={<HomeOutlinedIcon />}
               selected={selected}
