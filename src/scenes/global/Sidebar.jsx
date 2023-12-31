@@ -222,7 +222,7 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Reports"
-              to="/faq"
+              to="/clients-data"
               icon={<DescriptionOutlined />}
               selected={selected}
               setSelected={setSelected}

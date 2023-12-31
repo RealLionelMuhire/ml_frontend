@@ -23,6 +23,7 @@ import AdminLayout from "./layouts/admin";
 import ClientWithID from "./scenes/clients/clientByID";
 import ServiceByID from "./scenes/services/serviceByID";
 import ProfileUpdateForm from "./scenes/team/profile_update";
+import ClientsData from "./scenes/client_data";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -136,6 +137,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <ClientsForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/clients-data"
+                  element={
+                    <AdminLayout>
+                      <ClientsData />
                     </AdminLayout>
                   }
                 />

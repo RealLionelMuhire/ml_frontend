@@ -1,11 +1,17 @@
-import { Box, Button, TextField, MenuItem, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { CountryDropdown } from "react-country-region-selector";
 import { useCreateClientMutation } from "../../state/api";
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -16,23 +22,24 @@ const ClientForm = () => {
     try {
       const response = await createUser(values);
       navigate("/clients");
-  } catch (error) {
-    console.error(error)};
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="REGISTER A CLIENT" subtitle="Register a new client and Company information" />
+        <Header
+          title="REGISTER A CLIENT"
+          subtitle="Register a new client and Company information"
+        />
         <Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained">
-              <Link to="/clients">
-                Back to Client List
-              </Link>
-            </Button>
+          <Button type="submit" color="secondary" variant="contained">
+            <Link to="/clients">Back to Client List</Link>
+          </Button>
         </Box>
       </Box>
-      
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -67,7 +74,7 @@ const ClientForm = () => {
                 name="firstName"
                 error={!!touched.firstName && !!errors.firstName}
                 helperText={touched.firstName && errors.firstName}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -80,7 +87,7 @@ const ClientForm = () => {
                 name="lastName"
                 error={!!touched.lastName && !!errors.lastName}
                 helperText={touched.lastName && errors.lastName}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -93,7 +100,7 @@ const ClientForm = () => {
                 name="clientEmail"
                 error={!!touched.clientEmail && !!errors.clientEmail}
                 helperText={touched.clientEmail && errors.clientEmail}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -106,9 +113,9 @@ const ClientForm = () => {
                 name="clientContact"
                 error={!!touched.clientContact && !!errors.clientContact}
                 helperText={touched.clientContact && errors.clientContact}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
-              
+
               <TextField
                 fullWidth
                 variant="filled"
@@ -120,7 +127,7 @@ const ClientForm = () => {
                 name="citizenship"
                 error={!!touched.citizenship && !!errors.citizenship}
                 helperText={touched.citizenship && errors.citizenship}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -133,9 +140,9 @@ const ClientForm = () => {
                 name="taxResidency"
                 error={!!touched.taxResidency && !!errors.taxResidency}
                 helperText={touched.taxResidency && errors.taxResidency}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
-              
+
               <TextField
                 fullWidth
                 variant="filled"
@@ -147,7 +154,7 @@ const ClientForm = () => {
                 name="tinNumber"
                 error={!!touched.tinNumber && !!errors.tinNumber}
                 helperText={touched.tinNumber && errors.tinNumber}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -157,13 +164,21 @@ const ClientForm = () => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 name="countryOfResidence"
-                error={!!touched.countryOfResidence && !!errors.countryOfResidence}
-                helperText={touched.countryOfResidence && errors.countryOfResidence}
-                sx={{ gridColumn: "span 2" }}
+                error={
+                  !!touched.countryOfResidence && !!errors.countryOfResidence
+                }
+                helperText={
+                  touched.countryOfResidence && errors.countryOfResidence
+                }
+                sx={{ gridColumn: "span 1" }}
               >
                 <CountryDropdown
                   value={values.countryOfResidence}
-                  onChange={(val) => handleChange({ target: { name: "countryOfResidence", value: val } })}
+                  onChange={(val) =>
+                    handleChange({
+                      target: { name: "countryOfResidence", value: val },
+                    })
+                  }
                   classes="form-control"
                 />
               </TextField>
@@ -178,7 +193,7 @@ const ClientForm = () => {
                 name="currentAddress"
                 error={!!touched.currentAddress && !!errors.currentAddress}
                 helperText={touched.currentAddress && errors.currentAddress}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -191,7 +206,7 @@ const ClientForm = () => {
                 name="birthDate"
                 error={!!touched.birthDate && !!errors.birthDate}
                 helperText={touched.birthDate && errors.birthDate}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -204,9 +219,9 @@ const ClientForm = () => {
                 name="passportIdNumber"
                 error={!!touched.passportIdNumber && !!errors.passportIdNumber}
                 helperText={touched.passportIdNumber && errors.passportIdNumber}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
-              
+
               <TextField
                 fullWidth
                 variant="filled"
@@ -216,9 +231,13 @@ const ClientForm = () => {
                 onChange={handleChange}
                 value={values.passportExpiryDate}
                 name="passportExpiryDate"
-                error={!!touched.passportExpiryDate && !!errors.passportExpiryDate}
-                helperText={touched.passportExpiryDate && errors.passportExpiryDate}
-                sx={{ gridColumn: "span 2" }}
+                error={
+                  !!touched.passportExpiryDate && !!errors.passportExpiryDate
+                }
+                helperText={
+                  touched.passportExpiryDate && errors.passportExpiryDate
+                }
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -231,7 +250,7 @@ const ClientForm = () => {
                 name="countryOfIssue"
                 error={!!touched.countryOfIssue && !!errors.countryOfIssue}
                 helperText={touched.countryOfIssue && errors.countryOfIssue}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -242,9 +261,13 @@ const ClientForm = () => {
                 onChange={handleChange}
                 value={values.preferredLanguage}
                 name="preferredLanguage"
-                error={!!touched.preferredLanguage && !!errors.preferredLanguage}
-                helperText={touched.preferredLanguage && errors.preferredLanguage}
-                sx={{ gridColumn: "span 2" }}
+                error={
+                  !!touched.preferredLanguage && !!errors.preferredLanguage
+                }
+                helperText={
+                  touched.preferredLanguage && errors.preferredLanguage
+                }
+                sx={{ gridColumn: "span 1" }}
               >
                 <MenuItem value="english">English</MenuItem>
                 <MenuItem value="french">French</MenuItem>
@@ -261,26 +284,50 @@ const ClientForm = () => {
                 name="companyName"
                 error={!!touched.companyName && !!errors.companyName}
                 helperText={touched.companyName && errors.companyName}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Client Role in Company"
+                select
+                label="Designation in Company"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.clientRole_InCompany}
-                name="clientRole_InCompany"
-                error={!!touched.clientRole_InCompany && !!errors.clientRole_InCompany}
-                helperText={touched.clientRole_InCompany && errors.clientRole_InCompany}
-                sx={{ gridColumn: "span 2" }}
+                value={values.designation}
+                name="preferredLanguage"
+                error={!!touched.designation && !!errors.designation}
+                helperText={touched.designation && errors.designation}
+                sx={{ gridColumn: "span 1" }}
+              >
+                <MenuItem value="english">Ultimate Beneficiary Owner</MenuItem>
+                <MenuItem value="french">Shareholder</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Percentage Shareholding (%)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.sharePercent}
+                name="sharePercent"
+                error={!!touched.sharePercent && !!errors.sharePercent}
+                helperText={touched.sharePercent && errors.sharePercent}
+                sx={{ gridColumn: "span 1" }}
               />
-              
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained" disabled={isLoading}>
-                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Register a New Client"}
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Register a New Client"
+                )}
               </Button>
             </Box>
 
@@ -321,7 +368,7 @@ const checkoutSchema = yup.object().shape({
   countryOfIssue: yup.string(),
   preferredLanguage: yup.string().required("required"),
   companyName: yup.string(),
-  clientRole_InCompany: yup.string(),
+  sharePercent: yup.string(),
   currentAddress: yup.string().required("required"),
   taxResidency: yup.string().required("required"),
   tinNumber: yup.string().required("required"),
@@ -339,10 +386,10 @@ const initialValues = {
   countryOfIssue: "",
   preferredLanguage: "",
   companyName: "",
-  clientRole_InCompany: "",
+  sharePercent: "",
   currentAddress: "",
-  taxResidency:"",
-  tinNumber:"",
+  taxResidency: "",
+  tinNumber: "",
 };
 
 export default ClientForm;
