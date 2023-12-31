@@ -294,7 +294,7 @@ const ClientForm = () => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.designation}
-                name="preferredLanguage"
+                name="designation"
                 error={!!touched.designation && !!errors.designation}
                 helperText={touched.designation && errors.designation}
                 sx={{ gridColumn: "span 1" }}
@@ -313,6 +313,83 @@ const ClientForm = () => {
                 name="sharePercent"
                 error={!!touched.sharePercent && !!errors.sharePercent}
                 helperText={touched.sharePercent && errors.sharePercent}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Introduer Name(If any)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.introducerName}
+                name="introducerName"
+                error={!!touched.introducerName && !!errors.introducerName}
+                helperText={touched.introducerName && errors.introducerName}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Introducer Email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.introducerEmail}
+                name="introducerEmail"
+                error={!!touched.introducerEmail && !!errors.introducerEmail}
+                helperText={touched.introducerEmail && errors.introducerEmail}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Contact Person Name(If any)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.contactPersonName}
+                name="contactPersonName"
+                error={
+                  !!touched.contactPersonName && !!errors.contactPersonName
+                }
+                helperText={
+                  touched.contactPersonName && errors.contactPersonName
+                }
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Contact Person Email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.contactPersonEmail}
+                name="contactPersonEmail"
+                error={
+                  !!touched.contactPersonEmail && !!errors.contactPersonEmail
+                }
+                helperText={
+                  touched.contactPersonEmail && errors.contactPersonEmail
+                }
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Contact Person Phone"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.contactPersonPhone}
+                name="contactPersonPhone"
+                error={
+                  !!touched.contactPersonPhone && !!errors.contactPersonPhone
+                }
+                helperText={
+                  touched.contactPersonPhone && errors.contactPersonPhone
+                }
                 sx={{ gridColumn: "span 1" }}
               />
             </Box>
@@ -372,6 +449,14 @@ const checkoutSchema = yup.object().shape({
   currentAddress: yup.string().required("required"),
   taxResidency: yup.string().required("required"),
   tinNumber: yup.string().required("required"),
+  designation: yup.string(),
+  introducerName: yup.string(),
+  introducerEmail: yup.string().email("Invalid email"),
+  contactPersonName: yup.string(),
+  contactPersonEmail: yup.string().email("Invalid email"),
+  contactPersonPhone: yup
+    .string()
+    .matches(phoneRegExp, "Phone number is not valid"),
 });
 const initialValues = {
   firstName: "",
@@ -390,6 +475,12 @@ const initialValues = {
   currentAddress: "",
   taxResidency: "",
   tinNumber: "",
+  designation: "",
+  introducerName: "",
+  introducerEmail: "",
+  contactPersonName: "",
+  contactPersonEmail: "",
+  contactPersonPhone: "",
 };
 
 export default ClientForm;
