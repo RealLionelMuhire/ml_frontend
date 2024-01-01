@@ -144,19 +144,17 @@ const Sidebar = () => {
                 />
               </Box>
               <Box padding="10px" justifyContent="left">
-                <Link to="/update-user">
-                  <Typography
-                    variant="h5"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    sx={{ m: "5px 0 0 0" }}
-                  >
-                    {userProfile.FirstName}
-                  </Typography>
-                  <Typography variant="h5" color={colors.greenAccent[500]}>
-                    {userProfile.accessLevel}
-                  </Typography>
-                </Link>
+                <Typography
+                  variant="h5"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  sx={{ m: "5px 0 0 0" }}
+                >
+                  {userProfile.FirstName}
+                </Typography>
+                <Typography variant="h5" color={colors.greenAccent[500]}>
+                  {userProfile.accessLevel}
+                </Typography>
               </Box>
             </Box>
           )}
