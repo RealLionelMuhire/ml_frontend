@@ -315,6 +315,110 @@ const LegalPersonForm = ({
         }
         sx={{ gridColumn: "span 1" }}
       />
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        borderBottom={`4px solid ${colors.primary[500]}`}
+        colors={colors.grey[100]}
+        p="15px"
+        sx={{ gridColumn: "span 4" }}
+      >
+        <Typography
+          color={colors.greenAccent[500]}
+          variant="h6"
+          fontWeight="600"
+        >
+          PEP Status (For the Ultimate Beneficial Owner/Shareholder)
+        </Typography>
+      </Box>
+
+      {/* PEP Status */}
+      {/* PEP Status Field */}
+      <TextField
+        fullWidth
+        variant="filled"
+        select
+        label="Is Politically Exposed Person (PEP)?"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={values.isPEP}
+        name="isPEP"
+        sx={{ gridColumn: "span 1" }}
+      >
+        <MenuItem value="Yes">Yes</MenuItem>
+        <MenuItem value="No">No</MenuItem>
+      </TextField>
+
+      {/* Additional Fields if PEP is Yes */}
+      {values.isPEP === "Yes" && (
+        <>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            colors={colors.grey[100]}
+            p="15px"
+            sx={{ gridColumn: "span 4" }}
+          >
+            <Typography
+              color={colors.greenAccent[500]}
+              variant="h6"
+              fontWeight="600"
+            >
+              Refer to PEP Self-Certification Form (Annexure 1) add{" "}
+              <Typography
+                color={colors.grey[100]}
+                variant="h7"
+                fontWeight="700"
+              >
+                last six months bank statements
+              </Typography>{" "}
+              and{" "}
+              <Typography
+                color={colors.grey[100]}
+                variant="h7"
+                fontWeight="700"
+              >
+                professional reference
+              </Typography>
+            </Typography>
+          </Box>
+
+          {/* Field for last six months bank statements */}
+          <TextField
+            fullWidth
+            variant="filled"
+            type="file" // Change the type to "file" for uploading documents
+            label="Last Six Months Bank Statements"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            name="bankStatements"
+            error={!!touched.bankStatements && !!errors.bankStatements}
+            helperText={touched.bankStatements && errors.bankStatements}
+            sx={{ gridColumn: "span 2" }}
+          />
+
+          {/* Field for professional reference */}
+          <TextField
+            fullWidth
+            variant="filled"
+            type="file" // Change the type to "file" for uploading documents
+            label="Professional Reference"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            name="professionalReference"
+            error={
+              !!touched.professionalReference && !!errors.professionalReference
+            }
+            helperText={
+              touched.professionalReference && errors.professionalReference
+            }
+            sx={{ gridColumn: "span 2" }}
+          />
+        </>
+      )}
     </Box>
   );
 };
