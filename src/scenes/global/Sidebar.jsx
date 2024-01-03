@@ -203,13 +203,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Roles & Permissions"
               to="/roles"
               icon={<GroupWorkOutlined />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
 
             <Typography
               variant="h6"
@@ -219,14 +219,14 @@ const Sidebar = () => {
               Reports
             </Typography>
             <Item
-              title="Reports"
+              title="Clients Data"
               to="/clients-data"
               icon={<DescriptionOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="FAQ Page"
+              title="Alerts"
               to="/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
