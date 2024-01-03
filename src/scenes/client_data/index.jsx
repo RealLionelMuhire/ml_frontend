@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import LegalPersonForm from "./PersonalInfoForm";
-import PassportInfoForm from "./PassportInfoForm";
+import OtherInfoForm from "./OtherInfoForm";
 import CompanyInfoForm from "./CompanyInfoForm";
 import AddressInfoForm from "./AddressInfoForm";
 import Header from "../../components/Header";
@@ -12,6 +12,17 @@ import { useState } from "react";
 
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+
+const allowedFileTypes = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "image/png",
+  "image/jpeg",
+  // MIME types as needed
+];
 
 const LegalPersonSchema = yup.object().shape({
   nameOfEntity: yup.string(),
@@ -35,9 +46,20 @@ const LegalPersonSchema = yup.object().shape({
     .matches(phoneRegExp, "Phone number is not valid"),
   authorizedSignatorySignature: yup.string(),
   designation: yup.string(),
+  isPEP: yup.boolean(),
+  professionalReference: yup
+    .mixed()
+    .test(
+      "fileType",
+      "Invalid file format, allowed types: PDF, Word, Excel, PNG, JPEG",
+      (value) => {
+        if (!value) return true; // Allow empty value
+        return value && allowedFileTypes.includes(value.type);
+      }
+    ),
 });
 
-const passportInfoSchema = yup.object().shape({
+const otherInfoSchema = yup.object().shape({
   passportIdNumber: yup.string().required("required"),
   birthDate: yup.date().required("required"),
   citizenship: yup.string().required("required"),
@@ -83,9 +105,10 @@ const initialLegalPersonValues = {
   authorizedPhoneNumber: "",
   authorizedSignatorySignature: "",
   designation: "",
+  isPEP: false,
 };
 
-const initialPassportInfoValues = {
+const initialOtherInfoValues = {
   passportIdNumberNumber: "",
   birthDate: "",
   citizenship: "",
@@ -141,8 +164,9 @@ const ClientsData = () => {
         };
       case 2:
         return {
-          title: "PASSPORT INFORMATION",
-          subtitle: "Subtitle for Passport Info Form",
+          title: "SECTION II - Other information",
+          subtitle:
+            "Background history and Other Infromation Related to Client",
         };
       case 3:
         return {
@@ -178,7 +202,7 @@ const ClientsData = () => {
           currentStep === 1
             ? initialLegalPersonValues
             : currentStep === 2
-            ? initialPassportInfoValues
+            ? initialOtherInfoValues
             : currentStep === 3
             ? initialCompanyInfoValues
             : initialAddressInfoValues
@@ -187,7 +211,7 @@ const ClientsData = () => {
           currentStep === 1
             ? LegalPersonSchema
             : currentStep === 2
-            ? passportInfoSchema
+            ? otherInfoSchema
             : currentStep === 3
             ? companyInfoSchema
             : addressInfoSchema
@@ -212,7 +236,7 @@ const ClientsData = () => {
               />
             )}
             {currentStep === 2 && (
-              <PassportInfoForm
+              <OtherInfoForm
                 values={values}
                 errors={errors}
                 touched={touched}
