@@ -10,6 +10,7 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import { DescriptionOutlined, GroupWorkOutlined } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
 import { useGetUserProfileQuery } from "../../state/api";
@@ -203,6 +204,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Alerts"
+              to="/alerts"
+              icon={<NotificationsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             {/* <Item
               title="Roles & Permissions"
               to="/roles"
@@ -226,7 +234,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Alerts"
+              title="FAQ"
               to="/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}

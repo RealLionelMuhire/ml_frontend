@@ -24,6 +24,9 @@ import ClientWithID from "./scenes/clients/clientByID";
 import ServiceByID from "./scenes/services/serviceByID";
 import ProfileUpdateForm from "./scenes/team/profile_update";
 import ClientsData from "./scenes/client_data";
+import Alerts from "./scenes/alerts";
+import AlertByID from "./scenes/alerts/alertByID";
+import AlertsForm from "./scenes/alerts_form";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -105,6 +108,30 @@ function App() {
                   element={
                     <AdminLayout>
                       <ServiceByID />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alerts-form"
+                  element={
+                    <AdminLayout>
+                      <AlertsForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alerts"
+                  element={
+                    <AdminLayout>
+                      <Alerts />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alert-id"
+                  element={
+                    <AdminLayout>
+                      <AlertByID />
                     </AdminLayout>
                   }
                 />
