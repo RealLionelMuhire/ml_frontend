@@ -9,6 +9,7 @@ export const api = createApi({
   }),
   reducerPath: "authApi",
   endpoints: (build) => ({
+    // Users
     getUsers: build.query({
       query: () => "/users/",
       providesTags: ["Team"],
@@ -21,6 +22,8 @@ export const api = createApi({
       }),
       invalidatesTags: ["Team"],
     }),
+
+    // Clients
     getClients: build.query({
       query: () => "/list-clients/",
       providesTags: ["Clients"],
@@ -52,13 +55,11 @@ export const api = createApi({
       }),
       invalidatesTags: ["Clients"],
     }),
+
+    // Services
     getServices: build.query({
       query: () => "/list-services/",
       providesTags: ["Services"],
-    }),
-    getDummyData: build.query({
-      query: () => "/list-clients/",
-      providesTags: ["DummyData"],
     }),
     createService: build.mutation({
       query: ({ clientId, serviceData }) => ({
@@ -74,21 +75,35 @@ export const api = createApi({
         method: "POST",
         body: { description },
       }),
+      invalidatesTags: ["Services"],
     }),
     getServicesByIds: build.query({
       query: (ids) => `/services-list-by-id/?ids=${ids.join(",")}`,
       providesTags: (result, error, ids) =>
         ids ? [{ type: "Services", id: "LIST" }] : [],
     }),
-    invalidatesTags: ["Services"],
+
+    // User Profile
     getUserProfile: build.query({
       query: () => "/user-profile/",
       providesTags: ["UserProfile"],
     }),
+    updateUserProfile: build.mutation({
+      query: (updatedProfile) => ({
+        url: "/update-user-profile/",
+        method: "PUT",
+        body: updatedProfile,
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
+
+    // Dashboard
     getDashboard: build.query({
       query: () => "/dashboard-data/",
       providesTags: ["Dashboard"],
     }),
+
+    // Events
     getAllEvents: build.query({
       query: () => "/events/",
       providesTags: ["Events"],
@@ -105,13 +120,11 @@ export const api = createApi({
       }),
       invalidatesTags: ["Events"],
     }),
-
     getEventById: build.query({
       query: (eventId) => `/events/${eventId}/`,
       providesTags: (result, error, eventId) =>
         eventId ? [{ type: "Events", id: eventId }] : [],
     }),
-
     updateEvent: build.mutation({
       query: ({ eventId, updatedEvent }) => ({
         url: `/events/${eventId}/`,
@@ -120,7 +133,6 @@ export const api = createApi({
       }),
       invalidatesTags: ["Events"],
     }),
-
     deleteEvent: build.mutation({
       query: (eventId) => ({
         url: `/events/${eventId}/`,
@@ -128,39 +140,41 @@ export const api = createApi({
       }),
       invalidatesTags: ["Events"],
     }),
-    updateUserProfile: build.mutation({
-      query: (updatedProfile) => ({
-        url: "/update-user-profile/",
-        method: "PUT",
-        body: updatedProfile,
-      }),
-      invalidatesTags: ["UserProfile"],
-    }),
   }),
 });
 
 export const {
+  // Users
   useGetUsersQuery,
   useCreateUserMutation,
+
+  // Clients
   useGetClientsQuery,
   useCreateClientMutation,
   useGetClientsByIdsQuery,
   useActivateClientMutation,
   useDeactivateClientMutation,
+
+  // Services
   useGetServicesQuery,
-  useGetDummyDataQuery,
   useCreateServiceMutation,
   useCloseServiceMutation,
   useGetServicesByIdsQuery,
+
+  // User Profile
   useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+
+  // Dashboard
   useGetDashboardQuery,
+
+  // Events
   useGetEventsQuery,
   useGetAllEventsQuery,
   useCreateEventMutation,
   useGetEventByIdQuery,
   useUpdateEventMutation,
   useDeleteEventMutation,
-  useUpdateUserProfileMutation,
 } = api;
 
 export default api;
