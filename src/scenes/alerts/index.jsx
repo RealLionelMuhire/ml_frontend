@@ -3,11 +3,6 @@ import {
   Typography,
   useTheme,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -22,34 +17,14 @@ import { useNavigate } from "react-router-dom";
 const Alerts = () => {
   const { data, isLoading, refetch } = useGetAlertQuery();
   const [closeAlert, { isLoading: isClosing }] = useCloseAlertMutation();
-  const [selectedServiceIds, setSelectedServiceIds] = useState([]);
-  const [description, setDescription] = useState("");
-  const [openDialog, setOpenDialog] = useState(false);
-  const [file, setFile] = useState(null);
+  const [selectedAlertIds, setSelectedAlertIds] = useState([]);
   const navigate = useNavigate();
-
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-  };
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
 
   const handleConfirmClose = async () => {
     try {
-      const formData = new FormData();
-      formData.append("description", description);
-      formData.append("file", file);
-
-      const promises = selectedServiceIds.map(async (serviceId) => {
+      const promises = selectedAlertIds.map(async (alertId) => {
         try {
-          const response = await closeAlert({ serviceId, formData });
+          const response = await closeAlert({ alertId });
           if (response?.error) {
             toast.error(response.error?.data?.message);
           }
@@ -63,40 +38,21 @@ const Alerts = () => {
 
       await Promise.all(promises);
       await refetch();
-      setOpenDialog(false); // Close the dialog after successful close
     } catch (error) {
-      // Handle error
       toast.error("Error closing service:");
     }
   };
 
   const handleSelectionModelChange = (selectionModel) => {
-    setSelectedServiceIds(selectionModel);
+    setSelectedAlertIds(selectionModel);
   };
 
   const handleViewMoreClick = () => {
-    navigate("/service-id", {
-      state: { selectedServiceIds },
+    navigate("/alert-id", {
+      state: { selectedAlertIds },
     });
   };
-
-  // Helper function to format time in hours and minutes
-  const formatTime = (hours) => {
-    const totalMinutes = hours * 60;
-    const formattedHours = Math.floor(totalMinutes / 60);
-    const formattedMinutes = totalMinutes % 60;
-
-    let result = "";
-    if (formattedHours > 0) {
-      result += `${formattedHours}h `;
-    }
-    if (formattedMinutes > 0 || formattedHours === 0) {
-      // Use toFixed(0) to remove decimal places
-      result += `${formattedMinutes.toFixed(0)}min`;
-    }
-
-    return result;
-  };
+  
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -132,20 +88,6 @@ const Alerts = () => {
         </Typography>
       ),
     },
-    // {
-    //   field: "total_elapsed_time",
-    //   headerName: "Time spent",
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <Typography
-    //       color={params.row.is_active ? colors.greenAccent[500] : undefined}
-    //     >
-    //       {params.row.is_active
-    //         ? "Still active"
-    //         : formatTime(params.row.total_elapsed_time)}
-    //     </Typography>
-    //   ),
-    // },
   ];
 
   return (
@@ -158,7 +100,7 @@ const Alerts = () => {
             color="secondary"
             variant="contained"
             onClick={handleViewMoreClick}
-            disabled={selectedServiceIds.length === 0}
+            disabled={selectedAlertIds.length === 0}
           >
             Select Service to view More
           </Button>
@@ -168,15 +110,15 @@ const Alerts = () => {
             type="button"
             color="secondary"
             variant="contained"
-            onClick={handleOpenDialog}
-            disabled={selectedServiceIds.length !== 1 || isClosing}
+            onClick={handleConfirmClose}
+            disabled={selectedAlertIds.length !== 1 || isClosing}
           >
-            Close selected
+            Take Action On selected Alert
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/services-form">Initiate a Service</Link>
+            <Link to="/alerts-form">Generate an Alert</Link>
           </Button>
         </Box>
       </Box>
@@ -222,37 +164,6 @@ const Alerts = () => {
           onSelectionModelChange={handleSelectionModelChange}
         />
       </Box>
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Add a short description and File (Optional)</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Description"
-            multiline
-            fullWidth
-            variant="outlined"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <input type="file" onChange={handleFileChange} />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleCloseDialog}
-            color="secondary"
-            variant="outlined"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmClose}
-            color="secondary"
-            variant="outlined"
-            disabled={!description.trim()}
-          >
-            Confirm Close
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

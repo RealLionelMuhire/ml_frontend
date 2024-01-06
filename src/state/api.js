@@ -156,7 +156,7 @@ export const api = createApi({
     }),
     closeAlert: build.mutation({
       query: ({ alertId }) => ({
-        url: `/close-service/${alertId}/`,
+        url: `/alert-action/${alertId}/`,
         method: "POST",
       }),
       invalidatesTags: ["Alerts"],
