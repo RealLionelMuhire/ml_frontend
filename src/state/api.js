@@ -140,6 +140,28 @@ export const api = createApi({
       }),
       invalidatesTags: ["Events"],
     }),
+
+    // Alerts
+    getAlert: build.query({
+      query: () => "/list-alerts/",
+      providesTags: ["Alerts"],
+    }),
+    createAlert: build.mutation({
+      query: ({ clientId, alertData }) => ({
+        url: `/alert-initiate/${clientId}/`,
+        method: "POST",
+        body: alertData,
+      }),
+      invalidatesTags: ["Alerts"],
+    }),
+    closeAlert: build.mutation({
+      query: ({ alertId }) => ({
+        url: `/close-service/${alertId}/`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Alerts"],
+    }),
+
   }),
 });
 
@@ -175,6 +197,11 @@ export const {
   useGetEventByIdQuery,
   useUpdateEventMutation,
   useDeleteEventMutation,
+
+  // Alerts
+  useGetAlertQuery,
+  useCreateAlertMutation,
+  useCloseAlertMutation,
 } = api;
 
 export default api;

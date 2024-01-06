@@ -13,15 +13,15 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
-import { useGetServicesQuery } from "../../state/api";
-import { useCloseServiceMutation } from "../../state/api";
+import { useGetAlertQuery } from "../../state/api";
+import { useCloseAlertMutation } from "../../state/api";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Alerts = () => {
-  const { data, isLoading, refetch } = useGetServicesQuery();
-  const [closeService, { isLoading: isClosing }] = useCloseServiceMutation();
+  const { data, isLoading, refetch } = useGetAlertQuery();
+  const [closeAlert, { isLoading: isClosing }] = useCloseAlertMutation();
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
   const [description, setDescription] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -49,7 +49,7 @@ const Alerts = () => {
 
       const promises = selectedServiceIds.map(async (serviceId) => {
         try {
-          const response = await closeService({ serviceId, formData });
+          const response = await closeAlert({ serviceId, formData });
           if (response?.error) {
             toast.error(response.error?.data?.message);
           }
@@ -104,13 +104,13 @@ const Alerts = () => {
     { field: "id", headerName: "ID" },
     {
       field: "title",
-      headerName: "Service",
+      headerName: "Alert Title",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "provider_name",
-      headerName: "Provider",
+      field: "setter_name",
+      headerName: "Setter",
       flex: 1,
     },
     {
@@ -119,33 +119,33 @@ const Alerts = () => {
       flex: 1,
     },
     {
-      field: "total_cost",
-      headerName: "Cost",
+      field: "schedule_date",
+      headerName: "Scheduled On",
       flex: 1,
       renderCell: (params) => (
         <Typography
-          color={params.row.is_active ? colors.greenAccent[500] : undefined}
+          color={params.row.is_active ? colors.redAccent[500] : undefined}
         >
           {params.row.is_active
-            ? "Still active"
-            : `${params.row.currency} ${params.row.total_cost}`}
+            ? `Scheduled on ${params.row.schedule_date}`
+            : `Expired on ${params.row.expiration_date}`}
         </Typography>
       ),
     },
-    {
-      field: "total_elapsed_time",
-      headerName: "Time spent",
-      flex: 1,
-      renderCell: (params) => (
-        <Typography
-          color={params.row.is_active ? colors.greenAccent[500] : undefined}
-        >
-          {params.row.is_active
-            ? "Still active"
-            : formatTime(params.row.total_elapsed_time)}
-        </Typography>
-      ),
-    },
+    // {
+    //   field: "total_elapsed_time",
+    //   headerName: "Time spent",
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <Typography
+    //       color={params.row.is_active ? colors.greenAccent[500] : undefined}
+    //     >
+    //       {params.row.is_active
+    //         ? "Still active"
+    //         : formatTime(params.row.total_elapsed_time)}
+    //     </Typography>
+    //   ),
+    // },
   ];
 
   return (
