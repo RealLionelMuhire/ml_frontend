@@ -12,13 +12,13 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useGetClientsQuery } from "../../state/api";
-import { useCreateServiceMutation } from "../../state/api";
+import { useCreateAlertMutation } from "../../state/api";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 const AlertsForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createService] = useCreateServiceMutation();
+  const [createAlert] = useCreateAlertMutation();
   const navigate = useNavigate();
 
   const { data: clientData } = useGetClientsQuery();
@@ -28,13 +28,13 @@ const AlertsForm = () => {
         (client) => client.firstName === values.clientName
       );
 
-      const result = await createService({
+      const result = await createAlert({
         clientId: selectedClient.id,
-        serviceData: {
-          title: values.activityTitle,
-          objective: values.objective,
-          service_cost_per_hour: values.service_cost_per_hour,
-          currency: values.currency,
+        alertData: {
+          title: values.title,
+          description: values.description,
+          schedule_date: values.schedule_date,
+          expiration_date: values.expiration_date,
         },
       });
       if (result?.error) {
@@ -43,36 +43,22 @@ const AlertsForm = () => {
       if (result?.data) {
         toast.success(result.data?.message);
       }
-      navigate("/services");
+      navigate("/alerts");
     } catch (error) {
       toast.error(error);
     }
   };
 
-  const serviceTitles = [
-    "Setting up and incorporation",
-    "Corporate Governance",
-    "Legal and Compliance Assistance",
-    "Private Notary Services",
-    "Taxation",
-    "Accounting",
-    "Fund Services",
-    "Intellectual property",
-    "Training",
-  ];
-
-  const currencies = ["RWF", "USD", "EUR", "GBP", "JPY"];
-
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="INITIATION OF A NEW SERVICE"
-          subtitle="Starting a new service.. Note that logging out will automatically close all initiated services"
+          title="SCHEDULE AN ALERT"
+          subtitle="Schedule an alert for a client and set the expiration date"
         />
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/services">Back to Services</Link>
+            <Link to="/alerts">Back to Alerts</Link>
           </Button>
         </Box>
       </Box>
@@ -126,80 +112,59 @@ const AlertsForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Service Title"
-                select
+                type="text"
+                label="Alert Title"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.activityTitle}
-                name="activityTitle"
-                error={!!touched.activityTitle && !!errors.activityTitle}
-                helperText={touched.activityTitle && errors.activityTitle}
+                value={values.title}
+                name="title"
+                error={!!touched.title && !!errors.title}
+                helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
-              >
-                {serviceTitles.map((title) => (
-                  <MenuItem key={title} value={title}>
-                    {title}
-                  </MenuItem>
-                ))}
-              </TextField>
+              />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Objective"
+                label="Description"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.objective}
-                name="objective"
-                error={!!touched.objective && !!errors.objective}
-                helperText={touched.objective && errors.objective}
+                value={values.description}
+                name="description"
+                error={!!touched.description && !!errors.description}
+                helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="number"
-                label="Cost Per Hour"
+                type="date"
+                label="Schedule Date"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.service_cost_per_hour}
-                name="service_cost_per_hour"
-                error={
-                  !!touched.service_cost_per_hour &&
-                  !!errors.service_cost_per_hour
-                }
-                helperText={
-                  touched.service_cost_per_hour && errors.service_cost_per_hour
-                }
+                value={values.schedule_date}
+                name="schedule_date"
+                error={!!touched.schedule_date && !!errors.schedule_date}
+                helperText={touched.schedule_date && errors.schedule_date}
                 sx={{ gridColumn: "span 4" }}
               />
-
-              <FormControl
+              <TextField
                 fullWidth
                 variant="filled"
+                type="date"
+                label="Expiration Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.expiration_date}
+                name="expiration_date"
+                error={!!touched.expiration_date && !!errors.expiration_date}
+                helperText={touched.expiration_date && errors.expiration_date}
                 sx={{ gridColumn: "span 4" }}
-              >
-                <InputLabel id="currencyLabel">Currency</InputLabel>
-                <Select
-                  labelId="currencyLabel"
-                  id="currency"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.currency}
-                  name="currency"
-                  error={!!touched.currency && !!errors.currency}
-                >
-                  {currencies.map((currency) => (
-                    <MenuItem key={currency} value={currency}>
-                      {currency}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Initiate a new service
+                Create an Alert
               </Button>
             </Box>
           </form>
@@ -211,21 +176,18 @@ const AlertsForm = () => {
 
 const checkoutSchema = yup.object().shape({
   clientName: yup.string().required("Required"),
-  activityTitle: yup.string().required("Required"),
-  objective: yup.string(),
-  service_cost_per_hour: yup
-    .number()
-    .required("Required")
-    .min(0, "Cannot be negative"),
-  currency: yup.string(),
+  title: yup.string().required("Required"),
+  description: yup.string(),
+  schedule_date: yup.date().required("Required").min(new Date(), "Must be in the future"),
+  expiration_date: yup.date().required("Required").min(new Date(), "Must be in the future"),
 });
 
 const initialValues = {
   clientName: "",
-  activityTitle: "",
-  objective: "",
-  service_cost_per_hour: "",
-  currency: "",
+  title: "",
+  description: "",
+  schedule_date: "",
+  expiration_date: "",
 };
 
 export default AlertsForm;
