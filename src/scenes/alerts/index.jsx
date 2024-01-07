@@ -39,7 +39,7 @@ const Alerts = () => {
       await Promise.all(promises);
       await refetch();
     } catch (error) {
-      toast.error("Error closing service:");
+      toast.error("Error closing alert:");
     }
   };
 
@@ -102,7 +102,7 @@ const Alerts = () => {
             onClick={handleViewMoreClick}
             disabled={selectedAlertIds.length === 0}
           >
-            Select Service to view More
+            Select Alert to view More
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">

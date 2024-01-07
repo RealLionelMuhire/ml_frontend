@@ -161,6 +161,11 @@ export const api = createApi({
       }),
       invalidatesTags: ["Alerts"],
     }),
+    getAlertById: build.query({
+      query: (alertId) => `/alert-detail/?ids=${alertId}`,
+      providesTags: (result, error, alertId) =>
+        alertId ? [{ type: "Alerts", id: alertId }] : [],
+    }),
 
   }),
 });
@@ -202,6 +207,7 @@ export const {
   useGetAlertQuery,
   useCreateAlertMutation,
   useCloseAlertMutation,
+  useGetAlertByIdQuery,
 } = api;
 
 export default api;
