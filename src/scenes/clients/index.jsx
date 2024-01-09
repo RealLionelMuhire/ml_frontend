@@ -31,24 +31,19 @@ const Clients = () => {
 
       await refetch();
     } catch (error) {
-      // Handle error
       console.error("Error activating/deactivating clients:", error);
     }
   };
 
   const handleDeactivateClick = async () => {
     try {
-      // Map over selectedClientIds and deactivate each client
       const promises = selectedClientIds.map(async (clientId) => {
         await deactivateClient(clientId);
       });
-      // Wait for all promises to resolve
       await Promise.all(promises);
 
-      // Deactivation successful
-      refetch(); // Refetch the client list after deactivation
+      refetch();
     } catch (error) {
-      // Handle error
       console.error("Error deactivating clients:", error);
     }
   };

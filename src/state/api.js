@@ -22,6 +22,20 @@ export const api = createApi({
       }),
       invalidatesTags: ["Team"],
     }),
+    activateUser: build.mutation({
+      query: (userId) => ({
+        url: `/activate-user/${userId}/`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    deactivateUser: build.mutation({
+      query: (userId) => ({
+        url: `/deactivate-user/${userId}/`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Users"],
+    }),
 
     // Clients
     getClients: build.query({
@@ -174,6 +188,8 @@ export const {
   // Users
   useGetUsersQuery,
   useCreateUserMutation,
+  useActivateUserMutation,
+  useDeactivateUserMutation,
 
   // Clients
   useGetClientsQuery,

@@ -7,14 +7,52 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
 import { useGetUsersQuery } from "../../state/api";
+import { useActivateUserMutation } from "../../state/api";
+import { useDeactivateUserMutation } from "../../state/api";
+import { useState } from "react";
 
 const Team = () => {
-  const { data, isLoading } = useGetUsersQuery();
+  const { data, isLoading, refetch } = useGetUsersQuery();
+  const [activateUser, { isLoading: isActivating }] =
+    useActivateUserMutation();
+  const [deactivateUser, { isLoading: isDeactivating }] = useDeactivateUserMutation();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+
+  const handleActivateClick = async (activate) => {
+    try {
+      const promises = selectedUserIds.map(async (userId) => {
+        await activateUser(userId);
+      });
+      await Promise.all(promises);
+
+      await refetch();
+    } catch (error) {
+      console.error("Error activating/deactivating user:", error);
+    }
+  };
+
+  const handleDeactivateClick = async () => {
+    try {
+      const promises = selectedUserIds.map(async (userId) => {
+        await deactivateUser(userId);
+      });
+      await Promise.all(promises);
+
+      refetch();
+    } catch (error) {
+      console.error("Error deactivating clients:", error);
+    }
+  };
+
+  const handleSelectionModelChange = (selectionModel) => {
+    setSelectedUserIds(selectionModel);
+  };
+
   const columns = [
-    { field: "UserID", headerName: "ID" },
+    { field: "UserID", headerName: "ID", flex: 0.25 },
     {
       field: "FirstName",
       headerName: "First Name",
@@ -45,11 +83,6 @@ const Team = () => {
     {
       field: "isActive ",
       headerName: "Is Active",
-      flex: 1,
-    },
-    {
-      field: "isStaff",
-      headerName: "Is Staff",
       flex: 1,
     },
     {
@@ -100,6 +133,28 @@ const Team = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="TEAM" subtitle="Managing the Team Members" />
         <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleActivateClick}
+            disabled={selectedUserIds.length !== 1 || isActivating}
+          >
+            Activate Selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={handleDeactivateClick}
+            disabled={selectedUserIds.length !== 1 || isDeactivating}
+          >
+            Deactivate Selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
             <Link to="/user-form">Create New User</Link>
           </Button>
@@ -139,11 +194,13 @@ const Team = () => {
         }}
       >
         <DataGrid
+          checkboxSelection
           loading={isLoading || !data}
           getRowId={(row) => row.UserID}
           rows={data || []}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
+          onSelectionModelChange={handleSelectionModelChange}
         />
       </Box>
     </Box>
