@@ -25,6 +25,7 @@
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^3.9.1",
     "date-fns": "^3.0.6",
+    "firebase": "^10.7.2",
     "formik": "^2.2.9",
     "install": "^0.13.0",
     "moment-timezone": "^0.5.43",

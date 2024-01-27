@@ -1,24 +1,29 @@
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
+import { ColorModeContext, tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
 
 const UserForm = () => {
-  console.log("UserForm component rendered");
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = async (values) => {
     console.log("Form submission initiated. Values:", values);
     try {
-      console.log("Before mutation call");
-
-      const response = await createUser(values);
-
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+  
+      const response = await createUser(formData);
       console.log("After mutation call. response from backend:", response);
       navigate("/team");
     } catch (error) {
@@ -49,6 +54,7 @@ const UserForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -176,6 +182,43 @@ const UserForm = () => {
                 helperText={touched.Address && errors.Address}
                 sx={{ gridColumn: "span 2" }}
               />
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  {values.cv ? values.cv.name : <label htmlFor="cv">Upload CV</label>}
+                </Typography>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  name="cv"
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue("cv", e.currentTarget.files[0]);
+                  }}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                {touched.cv && errors.cv && (
+                  <div>{errors.cv}</div>
+                )}
+              </Box>
+
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500" sx={{ gridColumn: "span 2" }}>
+                  {values.contract ? values.contract.name : <label htmlFor="contract">Upload Contract</label>}
+                </Typography>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  name="contract"
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue("contract", e.currentTarget.files[0]);
+                  }}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                {touched.contract && errors.contract && (
+                  <div>{errors.contract}</div>
+                )}
+              </Box>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button
@@ -226,6 +269,13 @@ const checkoutSchema = yup.object().shape({
   BirthDate: yup.date().required("required"),
   UserRoles: yup.string().required("required"),
   Address: yup.string().required("required"),
+  cv: yup.mixed().test("fileType", "Invalid file format", (value) => {
+    return value && value.length > 0 && value[0].type === "application/pdf";
+  }),
+  contract: yup.mixed().test("fileType", "Invalid file format", (value) => {
+    return value && value.length > 0 && value[0].type === "application/pdf";
+  }),
+  
 });
 const initialValues = {
   FirstName: "",
@@ -237,6 +287,8 @@ const initialValues = {
   BirthDate: "",
   UserRoles: "",
   Address: "",
+  cv: null,
+  contract: null,
 };
 
 export default UserForm;

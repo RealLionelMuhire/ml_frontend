@@ -129,7 +129,7 @@ const Sidebar = () => {
             >
               <Box
                 display="flex"
-                justifyContent="flex-start"
+                justifyContent="inherit"
                 alignItems="center"
                 width="100%"
                 padding="10px"
@@ -144,7 +144,7 @@ const Sidebar = () => {
                   style={{ width: "50px", height: "50px", borderRadius: "50%" }}
                 />
               </Box>
-              <Box padding="10px" justifyContent="left">
+              <Box padding="10px" justifyContent="center">
                 <Typography
                   variant="h5"
                   color={colors.grey[100]}

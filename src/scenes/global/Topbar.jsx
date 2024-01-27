@@ -75,7 +75,7 @@ const Topbar = () => {
       } catch (error) {}
     } else if (choice === "Profile") {
       setProfileDialogOpen(true);
-    } else if (choice === "Change Password") {
+    } else if (choice === "Change src/scenes/faq/index.jsxPassword") {
       try {
         const changePassordResponse = await fetch(
           "http://localhost:8000/api/forgot-password/",
@@ -130,7 +130,7 @@ const Topbar = () => {
           <MessageIcon />
         </IconButton>
         <IconButton>
-          <NotificationsOutlinedIcon />
+          <Link to="/alerts-page"><NotificationsOutlinedIcon /></Link>
         </IconButton>
         <IconButton onClick={handleOpenUserMenu}>
           <PersonOutlinedIcon />

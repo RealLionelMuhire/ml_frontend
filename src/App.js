@@ -27,6 +27,7 @@ import ClientsData from "./scenes/client_data";
 import Alerts from "./scenes/alerts";
 import AlertByID from "./scenes/alerts/alertByID";
 import AlertsForm from "./scenes/alerts_form";
+import AlertPage from "./scenes/alerts/alert_plane_text";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -148,6 +149,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <UserForm />
+                    </AdminLayout>
+                  }
+                />
+                 <Route
+                  path="/alerts-page"
+                  element={
+                    <AdminLayout>
+                      <AlertPage />
                     </AdminLayout>
                   }
                 />
