@@ -20,6 +20,10 @@ export const api = createApi({
         method: "POST",
         body: newUser,
       }),
+      headers:{
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `token ${localStorage.getItem("token")}`,
+      },
       invalidatesTags: ["Team"],
     }),
     activateUser: build.mutation({

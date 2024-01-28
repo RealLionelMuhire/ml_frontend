@@ -5,7 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
-import { ColorModeContext, tokens } from "../../theme";
+import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 
 const UserForm = () => {
@@ -184,39 +184,39 @@ const UserForm = () => {
               />
               <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
                 <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-                  {values.cv ? values.cv.name : <label htmlFor="cv">Upload CV</label>}
+                  {values.cv_file ? values.cv_file.name : <label htmlFor="cv_file">Upload CV</label>}
                 </Typography>
                 <input
                   type="file"
                   accept=".pdf"
-                  name="cv"
+                  name="cv_file"
                   onChange={(e) => {
                     handleChange(e);
-                    setFieldValue("cv", e.currentTarget.files[0]);
+                    setFieldValue("cv_file", e.currentTarget.files[0]);
                   }}
                   sx={{ gridColumn: "span 2" }}
                 />
-                {touched.cv && errors.cv && (
-                  <div>{errors.cv}</div>
+                {touched.cv_file && errors.cv_file && (
+                  <div>{errors.cv_file}</div>
                 )}
               </Box>
 
               <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
                 <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500" sx={{ gridColumn: "span 2" }}>
-                  {values.contract ? values.contract.name : <label htmlFor="contract">Upload Contract</label>}
+                  {values.contract_file ? values.contract_file.name : <label htmlFor="contract_file">Upload Contract</label>}
                 </Typography>
                 <input
                   type="file"
                   accept=".pdf"
-                  name="contract"
+                  name="contract_file"
                   onChange={(e) => {
                     handleChange(e);
-                    setFieldValue("contract", e.currentTarget.files[0]);
+                    setFieldValue("contract_file", e.currentTarget.files[0]);
                   }}
                   sx={{ gridColumn: "span 2" }}
                 />
-                {touched.contract && errors.contract && (
-                  <div>{errors.contract}</div>
+                {touched.contract_file && errors.contract_file && (
+                  <div>{errors.contract_file}</div>
                 )}
               </Box>
             </Box>
@@ -269,11 +269,23 @@ const checkoutSchema = yup.object().shape({
   BirthDate: yup.date().required("required"),
   UserRoles: yup.string().required("required"),
   Address: yup.string().required("required"),
-  cv: yup.mixed().test("fileType", "Invalid file format", (value) => {
-    return value && value.length > 0 && value[0].type === "application/pdf";
+  cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
   }),
-  contract: yup.mixed().test("fileType", "Invalid file format", (value) => {
-    return value && value.length > 0 && value[0].type === "application/pdf";
+  contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
   }),
   
 });
@@ -287,8 +299,8 @@ const initialValues = {
   BirthDate: "",
   UserRoles: "",
   Address: "",
-  cv: null,
-  contract: null,
+  cv_file: null,
+  contract_file: null,
 };
 
 export default UserForm;
