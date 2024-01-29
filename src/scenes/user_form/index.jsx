@@ -7,6 +7,8 @@ import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { SHA256 } from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
 const UserForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -15,14 +17,55 @@ const UserForm = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const calculateChecksum = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+  
+      reader.onload = (e) => {
+        try {
+          const arrayBuffer = e.target.result;
+          const data = new Uint8Array(arrayBuffer);
+          const calculatedChecksum = SHA256(CryptoJS.lib.WordArray.create(data)).toString(CryptoJS.enc.Hex);
+          resolve(calculatedChecksum);
+        } catch (error) {
+          reject(error);
+        }
+      };
+  
+      reader.onerror = (error) => {
+        reject(error);
+      };
+  
+      reader.readAsArrayBuffer(file);
+    });
+  };
+  
+
   const handleFormSubmit = async (values) => {
-    console.log("Form submission initiated. Values:", values);
     try {
+      // Calculate checksum for cv_file
+      const cvFileChecksum = values.cv_file
+      ? await calculateChecksum(values.cv_file)
+      : null;
+      
+      // Calculate checksum for contract_file
+      const contractFileChecksum = values.contract_file
+      ? await calculateChecksum(values.contract_file)
+      : null;
+      
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
-  
+      
+      // Append checksums to FormData
+      formData.append('cv_file_checksum', cvFileChecksum);
+      formData.append('contract_file_checksum', contractFileChecksum);
+
+      console.log("The cv file checksum is:", cvFileChecksum);
+      console.log("The contract file checksum is:", contractFileChecksum);
+      
+      console.log("Form submission initiated. Values:", values);
       const response = await createUser(formData);
       console.log("After mutation call. response from backend:", response);
       navigate("/team");
