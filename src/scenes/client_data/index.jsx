@@ -1,221 +1,213 @@
-import { Box, Button, CircularProgress } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import LegalPersonForm from "./PersonalInfoForm";
-import OtherInfoForm from "./OtherInfoForm";
-import CompanyInfoForm from "./CompanyInfoForm";
-import AddressInfoForm from "./AddressInfoForm";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-import { useCreateClientMutation } from "../../state/api";
+import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
+import { SHA256 } from "crypto-js";
+import CryptoJS from "crypto-js";
+import ReusableTextField from "./ReusableTextField"; // Import the reusable text field component
+import ReusableFileUploadField from "./ReusableFileUploadField"; // Import the reusable file upload field component
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
-const allowedFileTypes = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "image/png",
-  "image/jpeg",
-  // MIME types as needed
-];
-
-const LegalPersonSchema = yup.object().shape({
-  nameOfEntity: yup.string(),
-  previousName: yup.string(),
-  typeOfEntity: yup.string(),
-  typeOfLicence: yup.string(),
-  dateOfIncorporation: yup.date(),
-  countryOfIncorporation: yup.string(),
-  taxResidency: yup.string(),
-  registeredOfficeAddress: yup.string(),
-  businessActivity: yup.string(),
-  countryOfOperation: yup.string(),
-  phoneNumber: yup.string().matches(phoneRegExp, "Phone number is not valid"),
-  // Authorised Person Information
-  authorizedName: yup.string(),
-  authorizedAddress: yup.string(),
-  authorizedEmail: yup.string().email("Invalid email"),
-  relationshipWithClient: yup.string(),
-  authorizedPhoneNumber: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid"),
-  authorizedSignatorySignature: yup.string(),
-  designation: yup.string(),
-  isPEP: yup.boolean(),
-  professionalReference: yup
-    .mixed()
-    .test(
-      "fileType",
-      "Invalid file format, allowed types: PDF, Word, Excel, PNG, JPEG",
-      (value) => {
-        if (!value) return true; // Allow empty value
-        return value && allowedFileTypes.includes(value.type);
-      }
-    ),
-});
-
-const otherInfoSchema = yup.object().shape({
-  passportIdNumber: yup.string().required("required"),
-  birthDate: yup.date().required("required"),
-  citizenship: yup.string().required("required"),
-  countryOfResidence: yup.string(),
-  // ... (define validation for passport info fields)
-});
-
-const companyInfoSchema = yup.object().shape({
-  passportExpiryDate: yup.date(),
-  countryOfIssue: yup.string(),
-  preferredLanguage: yup.string().required("required"),
-  companyName: yup.string(),
-  clientRole_InCompany: yup.string(),
-  // ... (define validation for company info fields)
-});
-
-const addressInfoSchema = yup.object().shape({
-  currentAddress: yup.string().required("required"),
-  taxResidency: yup.string().required("required"),
-  tinNumber: yup.string().required("required"),
-  // ... (define validation for address info fields)
-});
-// const checkoutSchema = yup.object().shape({});
-
-const initialLegalPersonValues = {
-  nameOfEntity: "",
-  previousName: "",
-  typeOfEntity: "",
-  typeOfLicence: "",
-  dateOfIncorporation: "",
-  countryOfIncorporation: "",
-  taxResidency: "",
-  registeredOfficeAddress: "",
-  businessActivity: "",
-  countryOfOperation: "",
-  phoneNumber: "",
-
-  // Authorised Person Information
-  authorizedName: "",
-  authorizedAddress: "",
-  authorizedEmail: "",
-  relationshipWithClient: "",
-  authorizedPhoneNumber: "",
-  authorizedSignatorySignature: "",
-  designation: "",
-  isPEP: false,
-};
-
-const initialOtherInfoValues = {
-  passportIdNumberNumber: "",
-  birthDate: "",
-  citizenship: "",
-  countryOfResidence: "",
-  // ... (initialize passport info fields)
-};
-
-const initialCompanyInfoValues = {
-  passportExpiryDate: "",
-  countryOfIssue: "",
-  preferredLanguage: "",
-  companyName: "",
-  clientRole_InCompany: "",
-  // ... (initialize company info fields)
-};
-
-const initialAddressInfoValues = {
-  currentAddress: "",
-  taxResidency: "",
-  tinNumber: "",
-  // ... (initialize address info fields)
-};
-
-const ClientsData = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [createUser, { isLoading, isError, data }] = useCreateClientMutation();
+const UserForm = () => {
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
-  const handleFormSubmit = async (values) => {
+  const [currentSection, setCurrentSection] = useState(0);
+
+  const calculateChecksum = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const arrayBuffer = e.target.result;
+          const data = new Uint8Array(arrayBuffer);
+          const calculatedChecksum = SHA256(
+            CryptoJS.lib.WordArray.create(data)
+          ).toString(CryptoJS.enc.Hex);
+          resolve(calculatedChecksum);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  const handleFormSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await createUser(values);
-      navigate("/clients");
+      // Calculate checksum for cv_file
+      const cvFileChecksum = values.file_cv_file
+        ? await calculateChecksum(values.file_cv_file)
+        : null;
+
+      // Calculate checksum for contract_file
+      const contractFileChecksum = values.file_contract_file
+        ? await calculateChecksum(values.file_contract_file)
+        : null;
+
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      // Append checksums to FormData
+      formData.append("cv_file_checksum", cvFileChecksum);
+      formData.append("contract_file_checksum", contractFileChecksum);
+
+      console.log("The cv file checksum is:", cvFileChecksum);
+      console.log("The contract file checksum is:", contractFileChecksum);
+
+      console.log("Form submission initiated. Values:", values);
+      const response = await createUser(formData);
+      console.log(
+        "After mutation call. response from backend:",
+        response
+      );
+      navigate("/team");
     } catch (error) {
-      console.error(error);
+      console.error("Error creating user:", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleNextStep = () => {
-    setCurrentStep((prevStep) => prevStep + 1);
+  const sections = [
+    { title: "SECTION 1", subtitle: "Personal Information", fields: ["text_FirstName", "text_LastName", "text_email", "text_contact", "file_test_file"] },
+    { title: "SECTION 2", subtitle: "Security Information", fields: ["text_password", "text_NationalID", "text_BirthDate"] },
+    { title: "SECTION 3", subtitle: "Additional Information", fields: ["text_UserRoles", "text_Address"] },
+    { title: "SECTION 4", subtitle: "Document Upload", fields: ["file_cv_file", "file_contract_file"] },
+  ];
+
+  const renderFields = (values, errors, touched, handleBlur, handleChange, setFieldValue) => {
+    const currentSectionFields = sections[currentSection].fields;
+    return currentSectionFields.map((field) => {
+      const [type, fieldName] = field.split('_');
+      return type === 'text' ? (
+        <ReusableTextField
+          key={fieldName}
+          values={values}
+          fieldName={fieldName}
+          label={fieldName}
+          handleChange={handleChange}
+          setFieldValue={setFieldValue}
+          touched={touched}
+          errors={errors}
+        />
+      ) : (
+        <ReusableFileUploadField
+          key={fieldName}
+          values={values}
+          fieldName={fieldName}
+          label={`Upload ${fieldName}`}
+          handleChange={handleChange}
+          setFieldValue={setFieldValue}
+          touched={touched}
+          errors={errors}
+        />
+      );
+    });
   };
 
-  const handlePrevStep = () => {
-    setCurrentStep((prevStep) => prevStep - 1);
+  const initialValues = {
+    text_FirstName: "",
+    text_LastName: "",
+    text_email: "",
+    text_contact: "",
+    text_password: "",
+    text_NationalID: "",
+    text_BirthDate: "",
+    text_UserRoles: "",
+    text_Address: "",
+    file_cv_file: null,
+    file_contract_file: null,
   };
 
-  const getTitleAndSubtitle = () => {
-    switch (currentStep) {
-      case 1:
-        return {
-          title: "LEGAL PERSON INFORMATION",
-          subtitle:
-            "Complete this section if the Shareholder is a legal entity",
-        };
-      case 2:
-        return {
-          title: "SECTION II - Other information",
-          subtitle:
-            "Background history and Other Infromation Related to Client",
-        };
-      case 3:
-        return {
-          title: "COMPANY INFORMATION",
-          subtitle: "Subtitle for Company Info Form",
-        };
-      case 4:
-        return {
-          title: "ADDRESS INFORMATION",
-          subtitle: "Subtitle for Address Info Form",
-        };
-      default:
-        return { title: "", subtitle: "" };
-    }
-  };
-
-  const { title, subtitle } = getTitleAndSubtitle();
+  const validationSchema = yup.object().shape({
+    text_FirstName: yup.string().required("required"),
+    text_LastName: yup.string().required("required"),
+    text_email: yup.string().email("invalid email").required("required"),
+    text_contact: yup
+      .string()
+      .matches(phoneRegExp, "Phone number is not valid")
+      .required("required"),
+    text_password: yup.string().required("required"),
+    text_NationalID: yup.string().required("required"),
+    text_BirthDate: yup.date().required("required"),
+    text_UserRoles: yup.string().required("required"),
+    text_Address: yup.string().required("required"),
+    file_cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+      if (!value || value.length === 0 || !value[0]) {
+        return true; // No file provided or empty array, validation passes
+      }
+      if (value[0].type !== "application/pdf") {
+        return false; // File type is not PDF, validation fails
+      }
+      return true; // Validation passes
+    }),
+    file_contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+      if (!value || value.length === 0 || !value[0]) {
+        return true; // No file provided or empty array, validation passes
+      }
+      if (value[0].type !== "application/pdf") {
+        return false; // File type is not PDF, validation fails
+      }
+      return true; // Validation passes
+    }),
+  });
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title={title} subtitle={subtitle} />
+        <Header
+          title={sections[currentSection].title}
+          subtitle={sections[currentSection].subtitle}
+        />
         <Box display="flex" justifyContent="end" mt="20px">
-          <Button type="submit" color="secondary" variant="contained">
-            <Link to="/clients">Back to Client List</Link>
-          </Button>
+          {currentSection > 0 && (
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setCurrentSection((prev) => prev - 1)}
+            >
+              Previous
+            </Button>
+          )}
+          {currentSection < sections.length - 1 && (
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setCurrentSection((prev) => prev + 1)}
+            >
+              Next
+            </Button>
+          )}
         </Box>
       </Box>
 
       <Formik
         onSubmit={handleFormSubmit}
-        initialValues={
-          currentStep === 1
-            ? initialLegalPersonValues
-            : currentStep === 2
-            ? initialOtherInfoValues
-            : currentStep === 3
-            ? initialCompanyInfoValues
-            : initialAddressInfoValues
-        }
-        validationSchema={
-          currentStep === 1
-            ? LegalPersonSchema
-            : currentStep === 2
-            ? otherInfoSchema
-            : currentStep === 3
-            ? companyInfoSchema
-            : addressInfoSchema
-        }
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
         {({
           values,
@@ -224,95 +216,54 @@ const ClientsData = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          isSubmitting,
+          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
-            {currentStep === 1 && (
-              <LegalPersonForm
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-              />
-            )}
-            {currentStep === 2 && (
-              <OtherInfoForm
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-              />
-            )}
-            {currentStep === 3 && (
-              <CompanyInfoForm
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-              />
-            )}
-            {currentStep === 4 && (
-              <AddressInfoForm
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-              />
-            )}
+            <Box
+              display="grid"
+              gap="30px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+              }}
+            >
+              {renderFields(values, errors, touched, handleBlur, handleChange)}
 
-            <Box display="flex" justifyContent="space-between" mt="20px">
-              {currentStep > 1 && (
-                <Button
-                  type="button"
-                  color="secondary"
-                  variant="outlined"
-                  onClick={handlePrevStep}
-                >
-                  Previous
-                </Button>
-              )}
-
-              {currentStep < 4 && (
-                <Button
-                  type="button"
-                  color="secondary"
-                  variant="contained"
-                  onClick={handleNextStep}
-                >
-                  Next
-                </Button>
-              )}
-
-              {currentStep === 4 && (
+              <Box
+                display="flex"
+                justifyContent="end"
+                mt="20px"
+                gridColumn="span 4"
+              >
                 <Button
                   type="submit"
                   color="secondary"
                   variant="contained"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                 >
-                  {isLoading ? (
+                  {isSubmitting ? (
                     <CircularProgress size={24} color="inherit" />
+                  ) : currentSection === sections.length - 1 ? (
+                    "Create New User"
                   ) : (
-                    "Register a New Client"
+                    "Next"
                   )}
                 </Button>
+              </Box>
+
+              {isError && (
+                <Box mt="20px" color="error.main">
+                  Error creating user. Please try again.
+                </Box>
+              )}
+
+              {data && (
+                <Box mt="20px" color="success.main">
+                  User created successfully!
+                </Box>
               )}
             </Box>
-
-            {isError && (
-              <Box mt="20px" color="error.main">
-                Error registering client. Please try again.
-              </Box>
-            )}
-
-            {data && (
-              <Box mt="20px" color="success.main">
-                Client registered successfully!
-              </Box>
-            )}
           </form>
         )}
       </Formik>
@@ -320,4 +271,7 @@ const ClientsData = () => {
   );
 };
 
-export default ClientsData;
+const phoneRegExp =
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+
+export default UserForm;
