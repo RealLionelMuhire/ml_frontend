@@ -1,10 +1,4 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -13,201 +7,88 @@ import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { SHA256 } from "crypto-js";
-import CryptoJS from "crypto-js";
-import ReusableTextField from "./ReusableTextField"; // Import the reusable text field component
-import ReusableFileUploadField from "./ReusableFileUploadField"; // Import the reusable file upload field component
+import { SHA256 } from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
-
-const UserForm = () => {
+const ClientsData = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [currentSection, setCurrentSection] = useState(0);
-
   const calculateChecksum = async (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-
+  
       reader.onload = (e) => {
         try {
           const arrayBuffer = e.target.result;
           const data = new Uint8Array(arrayBuffer);
-          const calculatedChecksum = SHA256(
-            CryptoJS.lib.WordArray.create(data)
-          ).toString(CryptoJS.enc.Hex);
+          const calculatedChecksum = SHA256(CryptoJS.lib.WordArray.create(data)).toString(CryptoJS.enc.Hex);
           resolve(calculatedChecksum);
         } catch (error) {
           reject(error);
         }
       };
-
+  
       reader.onerror = (error) => {
         reject(error);
       };
-
+  
       reader.readAsArrayBuffer(file);
     });
   };
+  
 
-  const handleFormSubmit = async (values, { setSubmitting }) => {
+  const handleFormSubmit = async (values) => {
     try {
       // Calculate checksum for cv_file
-      const cvFileChecksum = values.file_cv_file
-        ? await calculateChecksum(values.file_cv_file)
-        : null;
-
+      const cvFileChecksum = values.cv_file
+      ? await calculateChecksum(values.cv_file)
+      : null;
+      
       // Calculate checksum for contract_file
-      const contractFileChecksum = values.file_contract_file
-        ? await calculateChecksum(values.file_contract_file)
-        : null;
-
+      const contractFileChecksum = values.contract_file
+      ? await calculateChecksum(values.contract_file)
+      : null;
+      
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
-
+      
       // Append checksums to FormData
-      formData.append("cv_file_checksum", cvFileChecksum);
-      formData.append("contract_file_checksum", contractFileChecksum);
+      formData.append('cv_file_checksum', cvFileChecksum);
+      formData.append('contract_file_checksum', contractFileChecksum);
 
       console.log("The cv file checksum is:", cvFileChecksum);
       console.log("The contract file checksum is:", contractFileChecksum);
-
+      
       console.log("Form submission initiated. Values:", values);
       const response = await createUser(formData);
-      console.log(
-        "After mutation call. response from backend:",
-        response
-      );
+      console.log("After mutation call. response from backend:", response);
       navigate("/team");
     } catch (error) {
       console.error("Error creating user:", error);
-    } finally {
-      setSubmitting(false);
     }
   };
-
-  const sections = [
-    { title: "SECTION 1", subtitle: "Personal Information", fields: ["text_FirstName", "text_LastName", "text_email", "text_contact", "file_test_file"] },
-    { title: "SECTION 2", subtitle: "Security Information", fields: ["text_password", "text_NationalID", "text_BirthDate"] },
-    { title: "SECTION 3", subtitle: "Additional Information", fields: ["text_UserRoles", "text_Address"] },
-    { title: "SECTION 4", subtitle: "Document Upload", fields: ["file_cv_file", "file_contract_file"] },
-  ];
-
-  const renderFields = (values, errors, touched, handleBlur, handleChange, setFieldValue) => {
-    const currentSectionFields = sections[currentSection].fields;
-    return currentSectionFields.map((field) => {
-      const [type, fieldName] = field.split('_');
-      return type === 'text' ? (
-        <ReusableTextField
-          key={fieldName}
-          values={values}
-          fieldName={fieldName}
-          label={fieldName}
-          handleChange={handleChange}
-          setFieldValue={setFieldValue}
-          touched={touched}
-          errors={errors}
-        />
-      ) : (
-        <ReusableFileUploadField
-          key={fieldName}
-          values={values}
-          fieldName={fieldName}
-          label={`Upload ${fieldName}`}
-          handleChange={handleChange}
-          setFieldValue={setFieldValue}
-          touched={touched}
-          errors={errors}
-        />
-      );
-    });
-  };
-
-  const initialValues = {
-    text_FirstName: "",
-    text_LastName: "",
-    text_email: "",
-    text_contact: "",
-    text_password: "",
-    text_NationalID: "",
-    text_BirthDate: "",
-    text_UserRoles: "",
-    text_Address: "",
-    file_cv_file: null,
-    file_contract_file: null,
-  };
-
-  const validationSchema = yup.object().shape({
-    text_FirstName: yup.string().required("required"),
-    text_LastName: yup.string().required("required"),
-    text_email: yup.string().email("invalid email").required("required"),
-    text_contact: yup
-      .string()
-      .matches(phoneRegExp, "Phone number is not valid")
-      .required("required"),
-    text_password: yup.string().required("required"),
-    text_NationalID: yup.string().required("required"),
-    text_BirthDate: yup.date().required("required"),
-    text_UserRoles: yup.string().required("required"),
-    text_Address: yup.string().required("required"),
-    file_cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-      if (!value || value.length === 0 || !value[0]) {
-        return true; // No file provided or empty array, validation passes
-      }
-      if (value[0].type !== "application/pdf") {
-        return false; // File type is not PDF, validation fails
-      }
-      return true; // Validation passes
-    }),
-    file_contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-      if (!value || value.length === 0 || !value[0]) {
-        return true; // No file provided or empty array, validation passes
-      }
-      if (value[0].type !== "application/pdf") {
-        return false; // File type is not PDF, validation fails
-      }
-      return true; // Validation passes
-    }),
-  });
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header
-          title={sections[currentSection].title}
-          subtitle={sections[currentSection].subtitle}
-        />
+        <Header title="CREATE USER" subtitle="Create a New User Profile" />
         <Box display="flex" justifyContent="end" mt="20px">
-          {currentSection > 0 && (
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setCurrentSection((prev) => prev - 1)}
-            >
-              Previous
-            </Button>
-          )}
-          {currentSection < sections.length - 1 && (
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setCurrentSection((prev) => prev + 1)}
-            >
-              Next
-            </Button>
-          )}
+          <Button type="submit" color="secondary" variant="contained">
+            <Link to="/team">Back to Team</Link>
+          </Button>
         </Box>
       </Box>
 
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={checkoutSchema}
       >
         {({
           values,
@@ -216,7 +97,6 @@ const UserForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
-          isSubmitting,
           setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
@@ -228,42 +108,187 @@ const UserForm = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              {renderFields(values, errors, touched, handleBlur, handleChange)}
-
-              <Box
-                display="flex"
-                justifyContent="end"
-                mt="20px"
-                gridColumn="span 4"
-              >
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : currentSection === sections.length - 1 ? (
-                    "Create New User"
-                  ) : (
-                    "Next"
-                  )}
-                </Button>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="First Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.FirstName}
+                name="FirstName"
+                error={!!touched.FirstName && !!errors.FirstName}
+                helperText={touched.FirstName && errors.FirstName}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Last Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.LastName}
+                name="LastName"
+                error={!!touched.LastName && !!errors.LastName}
+                helperText={touched.LastName && errors.LastName}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.email}
+                name="email"
+                error={!!touched.email && !!errors.email}
+                helperText={touched.email && errors.email}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Contact Number"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.contact}
+                name="contact"
+                error={!!touched.contact && !!errors.contact}
+                helperText={touched.contact && errors.contact}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="password"
+                label="Temporal Password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="National ID or Passport"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.NationalID}
+                name="NationalID"
+                error={!!touched.NationalID && !!errors.NationalID}
+                helperText={touched.NationalID && errors.NationalID}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Birth Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.BirthDate}
+                name="BirthDate"
+                error={!!touched.BirthDate && !!errors.BirthDate}
+                helperText={touched.BirthDate && errors.BirthDate}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="User Role"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.UserRoles}
+                name="UserRoles"
+                error={!!touched.UserRoles && !!errors.UserRoles}
+                helperText={touched.UserRoles && errors.UserRoles}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Address"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.Address}
+                name="Address"
+                error={!!touched.Address && !!errors.Address}
+                helperText={touched.Address && errors.Address}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  {values.cv_file ? values.cv_file.name : <label htmlFor="cv_file">Upload CV</label>}
+                </Typography>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  name="cv_file"
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue("cv_file", e.currentTarget.files[0]);
+                  }}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                {touched.cv_file && errors.cv_file && (
+                  <div>{errors.cv_file}</div>
+                )}
               </Box>
 
-              {isError && (
-                <Box mt="20px" color="error.main">
-                  Error creating user. Please try again.
-                </Box>
-              )}
-
-              {data && (
-                <Box mt="20px" color="success.main">
-                  User created successfully!
-                </Box>
-              )}
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500" sx={{ gridColumn: "span 2" }}>
+                  {values.contract_file ? values.contract_file.name : <label htmlFor="contract_file">Upload Contract</label>}
+                </Typography>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  name="contract_file"
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue("contract_file", e.currentTarget.files[0]);
+                  }}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                {touched.contract_file && errors.contract_file && (
+                  <div>{errors.contract_file}</div>
+                )}
+              </Box>
             </Box>
+            <Box display="flex" justifyContent="end" mt="20px">
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Create New User"
+                )}
+              </Button>
+            </Box>
+
+            {isError && (
+              <Box mt="20px" color="error.main">
+                Error creating user. Please try again.
+              </Box>
+            )}
+
+            {data && (
+              <Box mt="20px" color="success.main">
+                User created successfully!
+              </Box>
+            )}
           </form>
         )}
       </Formik>
@@ -274,4 +299,51 @@ const UserForm = () => {
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
-export default UserForm;
+const checkoutSchema = yup.object().shape({
+  FirstName: yup.string().required("required"),
+  LastName: yup.string().required("required"),
+  email: yup.string().email("invalid email").required("required"),
+  contact: yup
+    .string()
+    .matches(phoneRegExp, "Phone number is not valid")
+    .required("required"),
+  password: yup.string().required("required"),
+  NationalID: yup.string().required("required"),
+  BirthDate: yup.date().required("required"),
+  UserRoles: yup.string().required("required"),
+  Address: yup.string().required("required"),
+  cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
+  }),
+  contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
+  }),
+  
+});
+const initialValues = {
+  FirstName: "",
+  LastName: "",
+  email: "",
+  contact: "",
+  password: "",
+  NationalID: "",
+  BirthDate: "",
+  UserRoles: "",
+  Address: "",
+  cv_file: null,
+  contract_file: null,
+};
+
+export default ClientsData;

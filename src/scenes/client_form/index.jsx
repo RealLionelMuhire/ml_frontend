@@ -4,6 +4,8 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
+  Typography,
+  Select,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -12,11 +14,17 @@ import Header from "../../components/Header";
 import { CountryDropdown } from "react-country-region-selector";
 import { useCreateClientMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
+import { SHA256 } from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isLoading, isError, data }] = useCreateClientMutation();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = async (values) => {
     try {
@@ -32,7 +40,7 @@ const ClientForm = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
           title="REGISTER A CLIENT"
-          subtitle="Register a new client and Company information"
+          subtitle="Register a new client and Company information (Ultimate Beneficiary Owner / Shareholder)"
         />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
@@ -53,6 +61,7 @@ const ClientForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -276,21 +285,8 @@ const ClientForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Company Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.companyName}
-                name="companyName"
-                error={!!touched.companyName && !!errors.companyName}
-                helperText={touched.companyName && errors.companyName}
-                sx={{ gridColumn: "span 1" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
                 select
-                label="Designation in Company"
+                label="Designation"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.designation}
@@ -303,7 +299,7 @@ const ClientForm = () => {
                 <MenuItem value="french">Shareholder</MenuItem>
               </TextField>
               <TextField
-                fullWidth
+                fullWidthvalue={values.preferredLanguage}
                 variant="filled"
                 type="text"
                 label="Percentage Shareholding (%)"
@@ -392,6 +388,196 @@ const ClientForm = () => {
                 }
                 sx={{ gridColumn: "span 1" }}
               />
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  Legal Person (Complete this section if the Shareholder is a legal entity)
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Name of Entity"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.NameOfEntity}
+                name="NameOfEntity"
+                error={!!touched.NameOfEntity && !!errors.NameOfEntity}
+                helperText={touched.NameOfEntity && errors.NameOfEntity}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Any Name of Entity(If any)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.PrevNameOfEntity}
+                name="PrevNameOfEntity"
+                error={!!touched.PrevNameOfEntity && !!errors.PrevNameOfEntity}
+                helperText={touched.PrevNameOfEntity && errors.PrevNameOfEntity}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  Authorised Person to deal on behalf of the Legal Person
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Authorised Person Names"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.authorisedName}
+                name="authorisedName"
+                error={!!touched.authorisedName && !!errors.authorisedName}
+                helperText={touched.authorisedName && errors.authorisedName}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Authorised Person Email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.authorisedEmail}
+                name="authorisedEmail"
+                error={!!touched.authorisedEmail && !!errors.authorisedEmail}
+                helperText={touched.authorisedEmail && errors.authorisedEmail}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Authorised Person Contact Phone"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.authorisedPersonContact}
+                name="authorisedPersonContact"
+                error={!!touched.authorisedPersonContact && !!errors.authorisedPersonContact}
+                helperText={touched.authorisedPersonContact && errors.authorisedPersonContact}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Authorised Person Current Address"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.authorisedCurrentAddress}
+                name="authorisedCurrentAddress"
+                error={!!touched.authorisedCurrentAddress && !!errors.authorisedCurrentAddress}
+                helperText={touched.authorisedCurrentAddress && errors.authorisedCurrentAddress}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Relationship of Authorised Person with Client"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.authorisedRelationship}
+                name="authorisedRelationship"
+                error={!!touched.authorisedRelationship && !!errors.authorisedRelationship}
+                helperText={touched.authorisedRelationship && errors.authorisedRelationship}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h6">
+                  {values.signature_file ? values.signature_file.name : <label htmlFor="signature_file">Upload Authorising signatory specimen signature</label>}
+                </Typography>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  name="signature_file"
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldValue("signature_file", e.currentTarget.files[0]);
+                  }}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                {touched.signature_file && errors.signature_file && (
+                  <div>{errors.signature_file}</div>
+                )}
+              </Box>
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  PEP Status (For the Ultimate Beneficial Owner/Shareholder)
+                </Typography>
+              </Box>
+              {/* PEP Status */}
+              <TextField
+                fullWidth
+                variant="filled"
+                select
+                label="PEP Status"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.isPep}
+                name="isPep"
+                error={
+                  !!touched.isPep && !!errors.isPep
+                }
+                helperText={
+                  touched.isPep && errors.isPep
+                }
+                sx={{ gridColumn: "span 1" }}
+              >
+                <MenuItem value="yes">Yes</MenuItem>
+                <MenuItem value="no">No</MenuItem>
+              </TextField>
+
+              {/* Conditional rendering for certificate upload */}
+              {values.isPep === "yes" && (
+                <>
+                  <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                    <Typography variant="h6">
+                      {values.bankStatement_file ? values.bankStatement_file.name : <label htmlFor="signature_file">Upload last six months bank statements</label>}
+                    </Typography>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      name="bankStatement_file"
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldValue("bankStatement_file", e.currentTarget.files[0]);
+                      }}
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    {touched.bankStatement_file && errors.bankStatement_file && (
+                      <div>{errors.bankStatement_file}</div>
+                    )}
+                  </Box>
+
+                  <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                    <Typography variant="h6">
+                      {values.professionalReference_file ? values.professionalReference_file.name : <label htmlFor="signature_file">Upload professional reference</label>}
+                    </Typography>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      name="professionalReference_file"
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldValue("professionalReference_file", e.currentTarget.files[0]);
+                      }}
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    {touched.professionalReference_file && errors.professionalReference_file && (
+                      <div>{errors.professionalReference_file}</div>
+                    )}
+                  </Box>
+                </>
+              )}
+
+              
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button
@@ -444,7 +630,8 @@ const checkoutSchema = yup.object().shape({
   passportExpiryDate: yup.date(),
   countryOfIssue: yup.string(),
   preferredLanguage: yup.string().required("required"),
-  companyName: yup.string(),
+  NameOfEntity: yup.string(),
+  PrevNameOfEntity: yup.string(),
   sharePercent: yup.string(),
   currentAddress: yup.string().required("required"),
   taxResidency: yup.string().required("required"),
@@ -457,6 +644,41 @@ const checkoutSchema = yup.object().shape({
   contactPersonPhone: yup
     .string()
     .matches(phoneRegExp, "Phone number is not valid"),
+  authorisedName: yup.string(),
+  authorisedEmail: yup.string().email("Invalid email"),
+  authorisedPersonContact: yup
+  .string()
+  .matches(phoneRegExp, "Phone number is not valid"),
+  authorisedCurrentAddress: yup.string(),
+  authorisedRelationship: yup.string(),
+  signature_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
+  }),
+  isPep: yup.string().required("required"),
+  bankStatement_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
+  }),
+  professionalReference_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
+    if (!value || value.length === 0 || !value[0]) {
+      return true; // No file provided or empty array, validation passes
+    }
+    if (value[0].type !== "application/pdf") {
+      return false; // File type is not PDF, validation fails
+    }
+    return true; // Validation passes
+  }),
 });
 const initialValues = {
   firstName: "",
@@ -470,7 +692,8 @@ const initialValues = {
   passportExpiryDate: "",
   countryOfIssue: "",
   preferredLanguage: "",
-  companyName: "",
+  NameOfEntity: "",
+  PrevNameOfEntity: "",
   sharePercent: "",
   currentAddress: "",
   taxResidency: "",
@@ -481,6 +704,15 @@ const initialValues = {
   contactPersonName: "",
   contactPersonEmail: "",
   contactPersonPhone: "",
+  authorisedName: "",
+  authorisedEmail: "",
+  authorisedPersonContact: "",
+  authorisedCurrentAddress: "",
+  authorisedRelationship: "",
+  signature_file: null,
+  isPep: "",
+  bankStatement_file: null,
+  professionalReference_file: null,
 };
 
 export default ClientForm;
