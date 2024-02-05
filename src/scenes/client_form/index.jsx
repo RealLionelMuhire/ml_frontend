@@ -21,26 +21,89 @@ import CryptoJS from 'crypto-js';
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createUser, { isLoading, isError, data }] = useCreateClientMutation();
+  const [createClient, { isLoading, isError, data }] = useCreateClientMutation();
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const calculateChecksum = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+  
+      reader.onload = (e) => {
+        try {
+          const arrayBuffer = e.target.result;
+          const data = new Uint8Array(arrayBuffer);
+          const calculatedChecksum = SHA256(CryptoJS.lib.WordArray.create(data)).toString(CryptoJS.enc.Hex);
+          resolve(calculatedChecksum);
+        } catch (error) {
+          reject(error);
+        }
+      };
+  
+      reader.onerror = (error) => {
+        reject(error);
+      };
+  
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
   const handleFormSubmit = async (values) => {
     try {
-      const response = await createUser(values);
+      // Calculate checksum for bankStatement_file
+      const signature_fileChecksum = values.signature_file
+      ? await calculateChecksum(values.signature_file)
+      : null;
+
+      // Calculate checksum for bankStatement_file
+      const bankStatementfileChecksum = values.bankStatement_file
+      ? await calculateChecksum(values.bankStatement_file)
+      : null;
+      
+      // Calculate checksum for contract_file
+      const professionalReference_fileChecksum = values.professionalReference_file
+      ? await calculateChecksum(values.professionalReference_file)
+      : null;
+      
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      
+      // Append checksums to FormData
+      formData.append('signature_file_checksum', signature_fileChecksum);
+      formData.append('bankStatement_file_checksum', bankStatementfileChecksum);
+      formData.append('professionalReference_file_checksum', professionalReference_fileChecksum);
+
+      console.log("The signature file checksum is:", signature_fileChecksum);
+      console.log("The bank statement file checksum is:", bankStatementfileChecksum);
+      console.log("The professional reference file checksum is:", professionalReference_fileChecksum);
+      
+      console.log("Form submission initiated. Values:", values);
+      const response = await createClient(formData);
+      console.log("After mutation call. response from backend:", response);
       navigate("/clients");
     } catch (error) {
-      console.error(error);
+      console.error("Error creating user:", error);
     }
   };
+
+  // const handleFormSubmit = async (values) => {
+  //   try {
+  //     const response = await createUser(values);
+  //     navigate("/clients");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
           title="REGISTER A CLIENT"
-          subtitle="Register a new client and Company information (Ultimate Beneficiary Owner / Shareholder)"
+          subtitle="Register a new client and Entity information (Ultimate Beneficiary Owner / Shareholder)"
         />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
@@ -138,20 +201,6 @@ const ClientForm = () => {
                 helperText={touched.citizenship && errors.citizenship}
                 sx={{ gridColumn: "span 1" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Tax Residency"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.taxResidency}
-                name="taxResidency"
-                error={!!touched.taxResidency && !!errors.taxResidency}
-                helperText={touched.taxResidency && errors.taxResidency}
-                sx={{ gridColumn: "span 1" }}
-              />
-
               <TextField
                 fullWidth
                 variant="filled"
@@ -299,7 +348,7 @@ const ClientForm = () => {
                 <MenuItem value="french">Shareholder</MenuItem>
               </TextField>
               <TextField
-                fullWidthvalue={values.preferredLanguage}
+                fullWidth
                 variant="filled"
                 type="text"
                 label="Percentage Shareholding (%)"
@@ -419,6 +468,140 @@ const ClientForm = () => {
                 helperText={touched.PrevNameOfEntity && errors.PrevNameOfEntity}
                 sx={{ gridColumn: "span 1" }}
               />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Type of Entity"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.TypeOfEntity}
+                name="TypeOfEntity"
+                error={!!touched.TypeOfEntity && !!errors.TypeOfEntity}
+                helperText={touched.TypeOfEntity && errors.TypeOfEntity}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Type of licence (if any)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.TypeOfLicense}
+                name="TypeOfLicense"
+                error={!!touched.TypeOfLicense && !!errors.TypeOfLicense}
+                helperText={touched.TypeOfLicense && errors.TypeOfLicense}
+                sx={{ gridColumn: "span 1" }}
+              />
+               <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Tax Residency (ies)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.taxResidency}
+                name="taxResidency"
+                error={!!touched.taxResidency && !!errors.taxResidency}
+                helperText={touched.taxResidency && errors.taxResidency}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Date of Incorporation/registration"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.incorporationDate}
+                name="incorporationDate"
+                error={
+                  !!touched.incorporationDate && !!errors.incorporationDate
+                }
+                helperText={
+                  touched.incorporationDate && errors.incorporationDate
+                }
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Country of Iconporation"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                name="countryOfIncorporation"
+                error={
+                  !!touched.countryOfIncorporation && !!errors.countryOfIncorporation
+                }
+                helperText={
+                  touched.countryOfIncorporation && errors.countryOfIncorporation
+                }
+                sx={{ gridColumn: "span 1" }}
+              >
+                <CountryDropdown
+                  value={values.countryOfIncorporation}
+                  onChange={(val) =>
+                    handleChange({
+                      target: { name: "countryOfIncorporation", value: val },
+                    })
+                  }
+                  classes="form-control"
+                />
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Registered office address"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.registeredOfficeAddress}
+                name="registeredOfficeAddress"
+                error={!!touched.registeredOfficeAddress && !!errors.registeredOfficeAddress}
+                helperText={touched.registeredOfficeAddress && errors.registeredOfficeAddress}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Business activity"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.businessActivity}
+                name="businessActivity"
+                error={!!touched.businessActivity && !!errors.businessActivity}
+                helperText={touched.businessActivity && errors.businessActivity}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Country of operation"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                name="countryOfOperation"
+                error={
+                  !!touched.countryOfOperation && !!errors.countryOfOperation
+                }
+                helperText={
+                  touched.countryOfOperation && errors.countryOfOperation
+                }
+                sx={{ gridColumn: "span 1" }}
+              >
+                <CountryDropdown
+                  value={values.countryOfOperation}
+                  onChange={(val) =>
+                    handleChange({
+                      target: { name: "countryOfIncorporation", value: val },
+                    })
+                  }
+                  classes="form-control"
+                />
+              </TextField>
               <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
                 <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
                   Authorised Person to deal on behalf of the Legal Person
@@ -632,9 +815,11 @@ const checkoutSchema = yup.object().shape({
   preferredLanguage: yup.string().required("required"),
   NameOfEntity: yup.string(),
   PrevNameOfEntity: yup.string(),
+  TypeOfEntity: yup.string(),
+  TypeOfLicense: yup.string(),
   sharePercent: yup.string(),
   currentAddress: yup.string().required("required"),
-  taxResidency: yup.string().required("required"),
+  taxResidency: yup.string(),
   tinNumber: yup.string().required("required"),
   designation: yup.string(),
   introducerName: yup.string(),
@@ -679,13 +864,18 @@ const checkoutSchema = yup.object().shape({
     }
     return true; // Validation passes
   }),
+  countryOfIncorporation: yup.string(),
+  incorporationDate: yup.date(),
+  registeredOfficeAddress: yup.string(),
+  businessActivity: yup.string(),
+  countryOfOperation: yup.string(),
 });
 const initialValues = {
   firstName: "",
   lastName: "",
   clientEmail: "",
   clientContact: "",
-  passportIdNumberNumber: "",
+  passportIdNumber: "",
   birthDate: "",
   citizenship: "",
   countryOfResidence: "",
@@ -694,6 +884,8 @@ const initialValues = {
   preferredLanguage: "",
   NameOfEntity: "",
   PrevNameOfEntity: "",
+  TypeOfEntity: "",
+  TypeOfLicense: "",
   sharePercent: "",
   currentAddress: "",
   taxResidency: "",
@@ -713,6 +905,11 @@ const initialValues = {
   isPep: "",
   bankStatement_file: null,
   professionalReference_file: null,
+  countryOfIncorporation: "",
+  incorporationDate: "",
+  registeredOfficeAddress: "",
+  businessActivity: "",
+  countryOfOperation: "",
 };
 
 export default ClientForm;
