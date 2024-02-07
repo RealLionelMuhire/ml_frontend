@@ -26,24 +26,42 @@ const ClientWithID = () => {
     field: `client${index + 1}`,
     headerName: `Client ${index + 1}`,
     flex: 2,
+    renderCell: (params) => {
+      // Check if the cell data is a link to a PDF file
+      const isPdfLink = typeof params.value === 'string' && params.value.endsWith(".pdf");
+  
+      if (isPdfLink) {
+        return (
+          <a
+            href={params.value}
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+          >
+            Download PDF
+          </a>
+        );
+      }
+  
+      return params.value;
+    },
   }));
+  
 
   const columns = [...commonColumns, ...clientColumns];
 
   const rows =
-    data && data.length > 0
-      ? Object.keys(data[0]).map((property) => ({
-          id: property,
-          property,
-          ...data.reduce((clients, client, index) => {
-            clients[`client${index + 1}`] = client[property];
-            return clients;
-          }, {}),
-        }))
-      : [];
-  useEffect(() => {
-    // Set selected client IDs here or fetch them based on your logic
-  }, [selectedClientIds]); // Add dependencies based on your logic
+  data && data.length > 0
+    ? Object.keys(data[0]).map((property) => ({
+        id: property,
+        property,
+        ...data.reduce((clients, client, index) => {
+          clients[`client${index + 1}`] = client[property];
+          return clients;
+        }, {}),
+      }))
+    : [];
+
 
   return (
     <Box m="20px">
@@ -51,7 +69,7 @@ const ClientWithID = () => {
         <Header title="CLIENTS" subtitle="View more data on selected clients" />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/clients">Back To Clients Listt</Link>
+            <Link to="/clients">Back To Clients List</Link>
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
@@ -106,3 +124,4 @@ const ClientWithID = () => {
 };
 
 export default ClientWithID;
+
