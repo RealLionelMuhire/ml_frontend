@@ -168,11 +168,16 @@ const Calendar = () => {
                     fontWeight="600"
                   >
                     {areDatesEqual(event.start, event.end)
-                      ? formatDate(event.start, {
+                      ? `${formatDate(event.start, {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
-                        })
+                          hour: "numeric",
+                          minute: "numeric",
+                        })} - ${formatDate(event.end, {
+                          hour: "numeric",
+                          minute: "numeric",
+                        })}`
                       : `${formatDate(event.start, {
                           year: "numeric",
                           month: "short",
