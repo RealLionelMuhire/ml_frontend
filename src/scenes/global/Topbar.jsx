@@ -28,6 +28,7 @@ import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery } from "../../state/api";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -39,6 +40,7 @@ const Topbar = () => {
   const dispatch = useDispatch();
 
   const choices = ["Profile", "Logout", "Change Password"];
+  const navigate = useNavigate();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -129,8 +131,8 @@ const Topbar = () => {
         <IconButton>
           <MessageIcon />
         </IconButton>
-        <IconButton>
-          <Link to="/alerts-page"><NotificationsOutlinedIcon /></Link>
+        <IconButton onClick={() => navigate("/alerts-page")}>
+          <NotificationsOutlinedIcon />
         </IconButton>
         <IconButton onClick={handleOpenUserMenu}>
           <PersonOutlinedIcon />
