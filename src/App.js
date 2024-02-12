@@ -28,6 +28,8 @@ import Alerts from "./scenes/alerts";
 import AlertByID from "./scenes/alerts/alertByID";
 import AlertsForm from "./scenes/alerts_form";
 import AlertPage from "./scenes/alerts/alert_plane_text";
+import Reservation from "./scenes/reservations";
+import TestCalendar from "./scenes/reservations/TestCalendar";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -53,6 +55,13 @@ function App() {
           <CssBaseline />
           {!isLoading ? (
             <Routes>
+              {/* Routes accessible to non-authenticated users */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/reservation" element={<Reservation />} />
+              <Route path="/testCal" element={<TestCalendar />} />
+              
+
+              {/* Routes accessible only to authenticated users */}
               <Route
                 element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
               >
