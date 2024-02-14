@@ -1,5 +1,3 @@
-// Form.js
-
 import React, { useState } from "react";
 import {
   Box,
@@ -10,12 +8,12 @@ import {
   useTheme,
   MenuItem,
 } from "@mui/material";
-import { Formik } from "formik";
+import { Formik, useFormik } from "formik";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { tokens } from "../../theme";
 import TestCalendar from "./TestCalendar";
-
+import { format } from "date-fns";
 
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -27,29 +25,34 @@ const appointmentSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("Required"),
-
+  servicesToDiscuss: yup.string().required("Required").notOneOf(["Choose a service"], "Required"),
   otherServices: yup.string().when("servicesToDiscuss", {
-    is: (servicesToDiscuss) => servicesToDiscuss.includes("Other"),
-    then: yup.string().required("Please specify other services."),
-    otherwise: yup.string().notRequired(),
-  
-  servicesToDiscuss: yup.string().when("otherServices", {
     is: "Other",
     then: yup.string().required("Please specify other services."),
-    otherwise: yup.string().notRequired(), }),
+    otherwise: yup.string().notRequired(),
   }),
+  selectedTime: yup
+    .object({
+      start: yup.date().required("Please choose a time for the appointment"),
+      end: yup.date().required("Please choose a time for the appointment"),
+    })
+    .required("Please choose a time for the appointment"),
 });
-
 
 const initialValuesAppointment = {
   email: "",
   fullName: "",
   clientContact: "",
-  servicesToDiscuss: "",
+  servicesToDiscuss: "Choose a service",
   otherServices: "",
+  selectedTime: {
+    start: null,
+    end: null,
+  },
 };
 
 const servicesOptions = [
+  "Choose a service",
   "Setting up and incorporation of companies and structures",
   "Corporate Governance",
   "Legal and Compliance Assistance",
@@ -63,38 +66,78 @@ const servicesOptions = [
 ];
 
 const Form = () => {
-  const [pageType] = useState("appointment");
+  const formik = useFormik({
+    // ... other Formik configuration
+  });
+
+  
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedTime, setSelectedTime] = useState("");
+
+  const handleTimeSelect = (selectInfo) => {
+    console.log("Selected Time Info:", selectInfo);
+  
+    const formattedStartTime = format(selectInfo.start, "h:mm a");
+    const formattedEndTime = format(selectInfo.end, "h:mm a");
+    const selectedTimeRange = `${formattedStartTime} - ${formattedEndTime}`;
+  
+    console.log("Starting time: ");
+  
+    setSelectedTime({
+      start: selectInfo.start,
+      end: selectInfo.end,
+    });
+  
+    // Set selectedTime in formik values
+    formik.setValues((prevValues) => ({
+      ...prevValues,
+      selectedTime: {
+        start: selectInfo.start,
+        end: selectInfo.end,
+      },
+    }));
+  
+    setShowCalendar(false);
+  };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
-      // ... (same as before)
-
+      // Check if selectedTime is empty
+      if (!values.selectedTime) {
+        toast.error("Please choose a time for the appointment.");
+        return;
+      }
+  
+      // Rest of the code (unchanged)
+      console.log({ ...values, selectedTime });
+  
       const bookingResponse = await fetch(
         "http://localhost:8000/api/book-appointment/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          body: JSON.stringify({ ...values, selectedTime }), // Update to include selectedTime
         }
       );
-
+  
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json();
         toast.error(errorData.message);
         return;
       }
-
+  
       toast.success("Appointment booked successfully.");
       onSubmitProps.resetForm();
     } catch (error) {
       toast.error("Error booking appointment. Please try again.");
     }
   };
+  
 
   return (
     <Formik
@@ -196,12 +239,46 @@ const Form = () => {
               />
             )}
 
-            <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
-              <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-                Choose the time and date For the appointment
-              </Typography>
-            </Box>
-          
+<Box
+  variant="outlined"
+  display="flex"
+  justifyContent="space-between"
+  sx={{
+    backgroundColor: colors.primary[400],
+    gridColumn: "span 4",
+    margin: "1px 0px 1px",
+    borderRadius: "4px",
+    padding: "13px 5px",
+    cursor: "pointer",
+  }}
+  onClick={() => setShowCalendar(true)}
+>
+  <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+    {values.selectedTime.start ? (
+      <>
+        {`Booked period is at ${format(values.selectedTime.start, "h:mm a")} - ${format(
+          values.selectedTime.end,
+          "h:mm a"
+        )} on ${format(new Date(), "EEE d MMM yyyy")}.`}
+      </>
+    ) : (
+      "Choose the time and date for the appointment"
+    )}
+  </Typography>
+  {touched.selectedTime && errors.selectedTime && (
+    <Typography color="error" variant="body2">
+      {errors.selectedTime}
+    </Typography>
+  )}
+</Box>
+
+            {showCalendar && (
+              <TestCalendar
+                onTimeSelect={handleTimeSelect}
+                style={{ maxWidth: "10%" }}
+              />
+            )}
+
           </Box>
 
           <Box>
@@ -216,6 +293,8 @@ const Form = () => {
                 backgroundColor: palette.secondary.main,
                 color: palette.background.alt,
                 "&:hover": { color: palette.primary.main },
+                // marginBottom: "20px",
+                // marginTop: "150px",
               }}
             >
               BOOK APPOINTMENT
