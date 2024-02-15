@@ -95,20 +95,18 @@ const TestCalendar = ({ onTimeSelect }) => {
               selectable={true}
               selectMirror={true}
               dayMaxEvents={true}
+              // Inside TestCalendar component
               select={(selectInfo) => {
                 const isSingleSlot = selectInfo.start.getTime() === selectInfo.end.getTime() - 3600000;
-  
+
                 if (isSingleSlot) {
                   const selectedSlot = {
                     start: selectInfo.start,
                     end: selectInfo.end,
                   };
-  
-                  console.log('Selected a single slot:', selectedSlot);
-  
-                  // Update state with selected time
-                  setSelectedTime(selectedSlot);
-  
+
+                  // console.log('Selected a single slot:', selectedSlot);
+
                   // Invoke the callback to pass the selected time to the parent component
                   onTimeSelect(selectedSlot);
                 } else {
@@ -116,6 +114,7 @@ const TestCalendar = ({ onTimeSelect }) => {
                   selectInfo.jsEvent.preventDefault();
                 }
               }}
+
               eventsSet={(events) => setCurrentEvents(events)}
               slotDuration="01:00:00"
               slotLabelInterval={{ hours: 1 }}

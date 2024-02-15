@@ -31,12 +31,8 @@ const appointmentSchema = yup.object().shape({
     then: yup.string().required("Please specify other services."),
     otherwise: yup.string().notRequired(),
   }),
-  selectedTime: yup
-    .object({
-      start: yup.date().required("Please choose a time for the appointment"),
-      end: yup.date().required("Please choose a time for the appointment"),
-    })
-    .required("Please choose a time for the appointment"),
+  startTime: yup.mixed().required("Required"),
+  endTime: yup.mixed().required("Required"),
 });
 
 const initialValuesAppointment = {
@@ -45,10 +41,8 @@ const initialValuesAppointment = {
   clientContact: "",
   servicesToDiscuss: "Choose a service",
   otherServices: "",
-  selectedTime: {
-    start: null,
-    end: null,
-  },
+  startTime: null,
+  endTime: null,
 };
 
 const servicesOptions = [
@@ -70,67 +64,70 @@ const Form = () => {
     // ... other Formik configuration
   });
 
-  
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedTime, setSelectedTime] = useState("");
 
   const handleTimeSelect = (selectInfo) => {
     console.log("Selected Time Info:", selectInfo);
   
-    const formattedStartTime = format(selectInfo.start, "h:mm a");
-    const formattedEndTime = format(selectInfo.end, "h:mm a");
-    const selectedTimeRange = `${formattedStartTime} - ${formattedEndTime}`;
+    if (!selectInfo.start || !selectInfo.end) {
+      console.error("Invalid time selection. Please try again.");
+      return;
+    }
   
-    console.log("Starting time: ");
+    const startTime = selectInfo.start.toISOString();
+    const endTime = selectInfo.end.toISOString();
   
-    setSelectedTime({
-      start: selectInfo.start,
-      end: selectInfo.end,
-    });
+    console.log("Start Time (before setting values):", startTime);
+    console.log("End Time (before setting values):", endTime);
   
-    // Set selectedTime in formik values
     formik.setValues((prevValues) => ({
       ...prevValues,
-      selectedTime: {
-        start: selectInfo.start,
-        end: selectInfo.end,
-      },
+      startTime,
+      endTime,
     }));
   
     setShowCalendar(false);
   };
 
+
+  const { startTime, endTime } = formik.values || {};
+
+  console.log("Formik Values:", formik.values);
+  console.log("Start Time (after setting values):", startTime, typeof startTime);
+  console.log("End Time (after setting values):", endTime, typeof endTime);
+  
+
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
-      // Check if selectedTime is empty
-      if (!values.selectedTime) {
+      // Check if startTime and endTime are empty
+      if (!values.startTime || !values.endTime) {
         toast.error("Please choose a time for the appointment.");
         return;
       }
-  
+
       // Rest of the code (unchanged)
-      console.log({ ...values, selectedTime });
-  
+      console.log({ ...values });
+
       const bookingResponse = await fetch(
         "http://localhost:8000/api/book-appointment/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values, selectedTime }), // Update to include selectedTime
+          body: JSON.stringify({ ...values, startTime, endTime }),
         }
       );
-  
+
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json();
         toast.error(errorData.message);
         return;
       }
-  
+
       toast.success("Appointment booked successfully.");
       onSubmitProps.resetForm();
     } catch (error) {
@@ -152,7 +149,7 @@ const Form = () => {
         handleBlur,
         handleChange,
         handleSubmit,
-        resetForm,
+        setValues,
       }) => (
         <form onSubmit={handleSubmit}>
           <Box
@@ -239,45 +236,66 @@ const Form = () => {
               />
             )}
 
-<Box
-  variant="outlined"
-  display="flex"
-  justifyContent="space-between"
-  sx={{
-    backgroundColor: colors.primary[400],
-    gridColumn: "span 4",
-    margin: "1px 0px 1px",
-    borderRadius: "4px",
-    padding: "13px 5px",
-    cursor: "pointer",
-  }}
-  onClick={() => setShowCalendar(true)}
->
-  <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-    {values.selectedTime.start ? (
-      <>
-        {`Booked period is at ${format(values.selectedTime.start, "h:mm a")} - ${format(
-          values.selectedTime.end,
-          "h:mm a"
-        )} on ${format(new Date(), "EEE d MMM yyyy")}.`}
-      </>
-    ) : (
-      "Choose the time and date for the appointment"
-    )}
-  </Typography>
-  {touched.selectedTime && errors.selectedTime && (
-    <Typography color="error" variant="body2">
-      {errors.selectedTime}
-    </Typography>
-  )}
-</Box>
+            <Box
+              variant="outlined"
+              display="flex"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: colors.primary[400],
+                gridColumn: "span 4",
+                margin: "1px 0px 1px",
+                borderRadius: "4px",
+                padding: "13px 5px",
+                cursor: "pointer",
+              }}
+              onClick={() => setShowCalendar(true)}
+            >
+              {startTime && endTime ? (
+                <div>
+                  <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                    Booked period:
+                  </Typography>
+                  <Typography variant="body1">
+                    Start time: {format(startTime, "h:mm a")}
+                  </Typography>
+                  <Typography variant="body1">
+                    End time: {format(endTime, "h:mm a")}
+                  </Typography>
+                  <Typography variant="body1">
+                    Date: {format(new Date(), "EEE d MMM yyyy")}
+                  </Typography>
+                </div>
+              ) : (
+                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  Choose the time and date for the appointment
+                </Typography>
+              )}
+              {touched.startTime && errors.startTime && (
+                <Typography color="error" variant="body2">
+                  {errors.startTime}
+                </Typography>
+              )}
+              {touched.endTime && errors.endTime && (
+                <Typography color="error" variant="body2">
+                  {errors.endTime}
+                </Typography>
+              )}
+            </Box>
+
 
             {showCalendar && (
-              <TestCalendar
-                onTimeSelect={handleTimeSelect}
-                style={{ maxWidth: "10%" }}
-              />
-            )}
+            <TestCalendar
+              onTimeSelect={(selectInfo) => {
+                handleTimeSelect(selectInfo);
+                setValues((prevValues) => ({
+                  ...prevValues,
+                  startTime: selectInfo.start.toISOString(),
+                  endTime: selectInfo.end.toISOString(),
+                }));
+              }}
+              style={{ maxWidth: "10%" }}
+            />
+          )}
 
           </Box>
 
@@ -293,32 +311,10 @@ const Form = () => {
                 backgroundColor: palette.secondary.main,
                 color: palette.background.alt,
                 "&:hover": { color: palette.primary.main },
-                // marginBottom: "20px",
-                // marginTop: "150px",
               }}
             >
               BOOK APPOINTMENT
             </Button>
-            <Typography
-              color="secondary"
-              fontWeight="500"
-              variant="h5"
-              onClick={() => {
-                // handle switching to login if needed
-                resetForm();
-              }}
-              sx={{
-                mb: "1.5rem",
-                textDecoration: "underline",
-                color: palette.secondary.main,
-                "&:hover": {
-                  cursor: "pointer",
-                  color: palette.primary.light,
-                },
-              }}
-            >
-              {/* Text to navigate to login if needed */}
-            </Typography>
           </Box>
         </form>
       )}
