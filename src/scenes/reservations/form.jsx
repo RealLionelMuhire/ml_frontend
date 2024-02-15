@@ -118,7 +118,7 @@ const Form = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values, startTime, endTime }),
+          body: JSON.stringify({ ...values }),
         }
       );
 
@@ -266,7 +266,7 @@ const Form = () => {
                   </Typography>
                 </div>
               ) : (
-                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                <Typography variant="h5"  fontWeight="500">
                   Choose the time and date for the appointment
                 </Typography>
               )}

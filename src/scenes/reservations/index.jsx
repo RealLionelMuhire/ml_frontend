@@ -44,7 +44,7 @@ const Reservation = () => {
         width="100%"
         textAlign="center"
       >
-        <Typography fontWeight="bold" fontSize="32px" color="secondary" justifyContent="left">
+        <Typography fontWeight="bold" fontSize="32px" justifyContent="left">
           ML Corporates Services
         </Typography>
       </Box>
@@ -56,7 +56,7 @@ const Reservation = () => {
         borderRadius="1.5rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography color="secondary" fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
+        <Typography fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
           Fill the form below to book an appointment or a meeting
         </Typography>
         <Form />
