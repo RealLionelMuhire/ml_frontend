@@ -1,15 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import { Box, Typography } from "@mui/material";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
 import Header from "../../components/Header";
+import { useGetReservationsQuery } from "../../state/external_api";
+
 
 const TestCalendar = ({ onTimeSelect }) => {
-  const [currentEvents, setCurrentEvents] = useState([]);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [currentEvents, setCurrentEvents] = useState([]);;
+  const [reservationsData, setReservationsData] = useState([]);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/list-reserved-periods/");
+        const { reserved_periods: data } = await response.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setReservationsData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching reservations:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const isSlotReserved = (selectInfo) => {
+    const start = selectInfo.start;
+    const end = selectInfo.end;
+
+    // Check if the selected slot overlaps with any reserved period
+    return reservationsData.some((reservedSlot) => {
+      const reservedStart = new Date(reservedSlot.startTime);
+      const reservedEnd = new Date(reservedSlot.endTime);
+
+      return (
+        (start >= reservedStart && start < reservedEnd) ||
+        (end > reservedStart && end <= reservedEnd) ||
+        (start <= reservedStart && end >= reservedEnd)
+      );
+    });
+  };
 
   const workingHours = {
     monday: ["9:00", "10:00", "11:00", "14:00", "15:00", "16:00"],
@@ -18,11 +58,12 @@ const TestCalendar = ({ onTimeSelect }) => {
     thursday: ["9:00", "10:00", "11:00", "14:00", "15:00", "16:00"],
     friday: ["9:00", "10:00", "11:00"],
   };
-
+  
   const getDayName = (dayIndex) => {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     return days[dayIndex];
   };
+  
 
   const generateWorkingSlots = () => {
     const workingSlots = [];
@@ -42,6 +83,8 @@ const TestCalendar = ({ onTimeSelect }) => {
     return workingSlots;
   };
 
+
+
   const addHour = (time) => {
     const [hour, minute] = time.split(":");
     const newHour = parseInt(hour) + 1;
@@ -57,6 +100,53 @@ const TestCalendar = ({ onTimeSelect }) => {
     return days.indexOf(day);
   };
 
+  const isWorkingHourAllowed = (selectInfo) => {
+    const startHour = selectInfo.start.getHours();
+    const endHour = selectInfo.end.getHours();
+    const day = selectInfo.start.getDay();
+    const workingHoursForDay = workingHours[getDayName(day)];
+  
+    return (
+      workingHoursForDay &&
+      workingHoursForDay.some(
+        (hour) => startHour <= parseInt(hour) && endHour > parseInt(hour)
+      )
+    );
+  };
+
+  const reservedEvents = useMemo(() => {
+    return reservationsData.map((reservedSlot) => ({
+      start: reservedSlot.startTime,
+      end: reservedSlot.endTime,
+      color: colors.grey[800],
+      id: reservedSlot.id,
+      title: "Booked",
+      // display: "background",
+    }));
+  }, [reservationsData]);
+
+  const allEvents = useMemo(() => {
+    return [...currentEvents, ...reservedEvents];
+  }, [currentEvents, reservedEvents]);
+
+  useEffect(() => {
+    // Separate handling of current and reserved events
+    const filteredCurrentEvents = allEvents.filter(
+      (event) => !reservedEvents.some((reservedEvent) => event.id === reservedEvent.id)
+    );
+
+    // Avoid triggering infinite loop by checking if state needs to be updated
+    if (filteredCurrentEvents.length !== currentEvents.length || !filteredCurrentEvents.every((event, index) => event.id === currentEvents[index].id)) {
+      setCurrentEvents(filteredCurrentEvents);
+    }
+  }, [allEvents, reservedEvents, currentEvents]);
+
+  const eventContent = ({ event }) => (
+    <Typography variant="body1" style={{ color: "white" }}>
+      {event.title}
+    </Typography>
+  );
+
   return (
     <div style={{ width: "500%" }}>
       <Box m="20px" alignItems="center">
@@ -69,7 +159,7 @@ const TestCalendar = ({ onTimeSelect }) => {
             ml="15px"
             maxWidth="600px"
             width="600%"
-            height="340px"
+            height="342px"
           >
             <FullCalendar
               // height="51.vh"
@@ -95,9 +185,15 @@ const TestCalendar = ({ onTimeSelect }) => {
               selectable={true}
               selectMirror={true}
               dayMaxEvents={true}
-              // Inside TestCalendar component
+              selectAllow={(selectInfo) => {
+                console.log("selectInfo", selectInfo);
+                console.log("isSlotReserved(selectInfo)", isSlotReserved(selectInfo));
+                console.log("isWorkingHourAllowed(selectInfo)", isWorkingHourAllowed(selectInfo));
+                return !isSlotReserved(selectInfo) && isWorkingHourAllowed(selectInfo);
+              }}
               select={(selectInfo) => {
-                const isSingleSlot = selectInfo.start.getTime() === selectInfo.end.getTime() - 3600000;
+                const isSingleSlot =
+                  selectInfo.start.getTime() === selectInfo.end.getTime() - 3600000;
 
                 if (isSingleSlot) {
                   const selectedSlot = {
@@ -105,32 +201,17 @@ const TestCalendar = ({ onTimeSelect }) => {
                     end: selectInfo.end,
                   };
 
-                  // console.log('Selected a single slot:', selectedSlot);
-
-                  // Invoke the callback to pass the selected time to the parent component
                   onTimeSelect(selectedSlot);
                 } else {
-                  alert('Please select only a single slot.');
+                  alert("Please select only a single slot.");
                   selectInfo.jsEvent.preventDefault();
                 }
               }}
-
-              eventsSet={(events) => setCurrentEvents(events)}
+              events={allEvents}
+              eventContent={eventContent}
               slotDuration="01:00:00"
+              eventBackgroundColor="#378006"
               slotLabelInterval={{ hours: 1 }}
-              selectAllow={(selectInfo) => {
-                const startHour = selectInfo.start.getHours();
-                const endHour = selectInfo.end.getHours();
-                const day = selectInfo.start.getDay();
-                const workingHoursForDay = workingHours[getDayName(day)];
-
-                return (
-                  workingHoursForDay &&
-                  workingHoursForDay.some(
-                    (hour) => startHour <= parseInt(hour) && endHour > parseInt(hour)
-                  )
-                );
-              }}
               slotLabelFormat={{
                 hour: "numeric",
                 minute: "2-digit",

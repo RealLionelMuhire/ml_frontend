@@ -7,6 +7,7 @@ import {
   useMediaQuery,
   useTheme,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { Formik, useFormik } from "formik";
 import * as yup from "yup";
@@ -14,6 +15,7 @@ import { toast } from "react-toastify";
 import { tokens } from "../../theme";
 import TestCalendar from "./TestCalendar";
 import { format } from "date-fns";
+import { useCreateReservationMutation } from "../../state/external_api";
 
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -69,10 +71,11 @@ const Form = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [createReservation, { isLoading }] = useCreateReservationMutation();
+  
   const [showCalendar, setShowCalendar] = useState(false);
 
   const handleTimeSelect = (selectInfo) => {
-    console.log("Selected Time Info:", selectInfo);
   
     if (!selectInfo.start || !selectInfo.end) {
       console.error("Invalid time selection. Please try again.");
@@ -81,9 +84,7 @@ const Form = () => {
   
     const startTime = selectInfo.start.toISOString();
     const endTime = selectInfo.end.toISOString();
-  
-    console.log("Start Time (before setting values):", startTime);
-    console.log("End Time (before setting values):", endTime);
+
   
     formik.setValues((prevValues) => ({
       ...prevValues,
@@ -97,10 +98,6 @@ const Form = () => {
 
   const { startTime, endTime } = formik.values || {};
 
-  console.log("Formik Values:", formik.values);
-  console.log("Start Time (after setting values):", startTime, typeof startTime);
-  console.log("End Time (after setting values):", endTime, typeof endTime);
-  
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
@@ -109,32 +106,45 @@ const Form = () => {
         toast.error("Please choose a time for the appointment.");
         return;
       }
+  
+      // Build the newReservation object based on the API structure
+      const newReservation = {
+        email: values.email,
+        fullName: values.fullName,
+        clientContact: values.clientContact,
+        servicesToDiscuss: values.servicesToDiscuss,
+        otherServices: values.otherServices,
+        startTime: values.startTime,
+        endTime: values.endTime,
+      };
+  
+      // Call the createReservation mutation with the newReservation object
+      const response = await fetch("http://localhost:8000/api/register-reservation/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReservation),
+      });
 
-      // Rest of the code (unchanged)
-      console.log({ ...values });
-
-      const bookingResponse = await fetch(
-        "http://localhost:8000/api/book-appointment/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...values }),
-        }
-      );
-
-      if (!bookingResponse.ok) {
-        const errorData = await bookingResponse.json();
-        toast.error(errorData.message);
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        toast.error(`Failed to register reservation: ${errorMessage}`);
         return;
       }
 
+      // Successful response
       toast.success("Appointment booked successfully.");
+
+      // Reload the tab after a successful submission
+      window.location.reload();
+
       onSubmitProps.resetForm();
     } catch (error) {
+      console.error("Error booking appointment:", error);
       toast.error("Error booking appointment. Please try again.");
     }
   };
-  
 
   return (
     <Formik
@@ -305,6 +315,7 @@ const Form = () => {
               type="submit"
               color="secondary"
               variant="contained"
+              disabled={isLoading}
               sx={{
                 m: "2rem 0",
                 p: "1rem",
@@ -313,7 +324,11 @@ const Form = () => {
                 "&:hover": { color: palette.primary.main },
               }}
             >
-              BOOK APPOINTMENT
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "BOOK APPOINTMENT"
+              )}
             </Button>
           </Box>
         </form>

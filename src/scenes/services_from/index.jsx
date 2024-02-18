@@ -22,7 +22,7 @@ const ServicesForm = () => {
   const navigate = useNavigate();
 
   const { data: clientData } = useGetClientsQuery();
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, onSubmitProps) => {
     try {
       const selectedClient = clientData.find(
         (client) => client.firstName === values.clientName
@@ -39,11 +39,12 @@ const ServicesForm = () => {
       });
       if (result?.error) {
         toast.error(result.error?.data?.message);
+        onSubmitProps.resetForm();
       }
       if (result?.data) {
         toast.success(result.data?.message);
+        navigate("/services");
       }
-      navigate("/services");
     } catch (error) {
       toast.error(error);
     }
