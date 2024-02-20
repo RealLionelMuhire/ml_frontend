@@ -7,8 +7,6 @@ import listPlugin from "@fullcalendar/list";
 import { Box, Typography } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import Header from "../../components/Header";
-import { useGetReservationsQuery } from "../../state/external_api";
 
 
 const TestCalendar = ({ onTimeSelect }) => {
@@ -162,7 +160,9 @@ const TestCalendar = ({ onTimeSelect }) => {
             height="342px"
           >
             <FullCalendar
-              // height="51.vh"
+              validRange={{
+                start: new Date().toISOString().split("T")[0],
+              }}
               height="100%"
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
               headerToolbar={{

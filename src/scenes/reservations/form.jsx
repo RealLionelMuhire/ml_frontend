@@ -137,9 +137,12 @@ const Form = () => {
       toast.success("Appointment booked successfully.");
 
       // Reload the tab after a successful submission
-      window.location.reload();
-
       onSubmitProps.resetForm();
+      setTimeout(() => {
+        window.location.href = "http://mlcorporateservices.com/";
+      }, 6000);
+  
+
     } catch (error) {
       console.error("Error booking appointment:", error);
       toast.error("Error booking appointment. Please try again.");
