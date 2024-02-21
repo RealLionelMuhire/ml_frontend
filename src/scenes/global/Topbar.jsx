@@ -1,5 +1,5 @@
 import React from "react";
-import { Fragment } from "react";
+import { Fragment, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   IconButton,
@@ -11,11 +11,12 @@ import {
   DialogTitle,
   DialogContent,
   Button,
+  Autocomplete,
   Grid,
+  TextField,
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -25,7 +26,7 @@ import MessageIcon from "@mui/icons-material/EmailOutlined";
 import { useState } from "react";
 import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
-import { useGetUserProfileQuery } from "../../state/api";
+import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -33,14 +34,44 @@ import { useNavigate } from "react-router-dom";
 const Topbar = () => {
   const theme = useTheme();
   const { data: userProfile, isLoading } = useGetUserProfileQuery();
+  const { data: clients, isLoading: clientsLoading } = useGetClientsQuery();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [isProfileDialogOpen, setProfileDialogOpen] = useState(false);
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [clickedClientId, setClickedClientId] = useState(null);
+  const searchBoxRef = useRef(null);
+  
+  // const [selectedClient, setSelectedClient] = useState(null);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+
+  const filteredClients = clients?.filter((client) => {
+    const searchTerm = typeof searchQuery === 'string' ? searchQuery.trim().toLowerCase() : null;
+  
+    // If there's no search query, include all clients
+    if (!searchTerm || searchTerm === "") {
+      return true;
+    }
+  
+    // Check if any property contains the search term
+    return Object.values(client).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchTerm)
+    );
+  });
+
 
   const choices = ["Profile", "Logout", "Change Password"];
   const navigate = useNavigate();
+
+
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -72,7 +103,8 @@ const Topbar = () => {
               token: "null",
             })
           );
-          window.location.href = "/";
+          // window.location.href = "/";
+          navigate("/login");
         }
       } catch (error) {}
     } else if (choice === "Profile") {
@@ -105,22 +137,106 @@ const Topbar = () => {
     setProfileDialogOpen(false);
   };
 
+  const handleClientClick = (selectedClient) => {
+    console.log('Clicked on user:', selectedClient);
+    if (selectedClient) {
+      setClickedClientId(selectedClient.id);
+      setSearchQuery("");
+      console.log('Updated clickedClientId:', selectedClient.id);
+    }
+  };
+
+  const debouncedNavigate = useCallback(
+    (clientId) => {
+      navigate("/clients-id/", { state: { selectedClientIds: [clientId] } });
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    if (clickedClientId !== null) {
+      const timeoutId = setTimeout(() => {
+        debouncedNavigate(clickedClientId);
+        setClickedClientId(null); // Reset clickedClientId after navigation
+        searchBoxRef.current?.focus(); // Set focus on the search box
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [clickedClientId, debouncedNavigate]);
+
+
+
+  const selectedClient = filteredClients
+    ? filteredClients.find((client) => client.id === clickedClientId)
+    : null;
+
+
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
+    <Box display="flex" justifyContent="space-between" p={2} ml="-12px" mt="-22px">
       {/* SEARCH BAR */}
       <Box
-        display="flex"
-        backgroundColor={colors.primary[400]}
-        borderRadius="3px"
+        mt="-5px"
+        p={2}
+        width={300}
+        maxHeight={100}
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
+        <Autocomplete
+          options={filteredClients || []}
+          getOptionLabel={(client) => `${client.id}. ${client.firstName} ${client.lastName}`}
+          style={{ width: 250, height: 10}}
+          value={selectedClient || null}
+          onChange={(event, newValue) => handleClientClick(newValue)}
+          disablePortal
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Search Client"
+              sx={{
+                backgroundColor: colors.primary[400],
+                borderRadius: "5px",
+                width: "100%"
+              }}
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <>
+                    <IconButton type="button">
+                      <SearchIcon />
+                    </IconButton>
+                    {params.InputProps.startAdornment}
+                  </>
+                ),
+              }}
+              inputRef={searchBoxRef}
+            />
+          )}
+        />
       </Box>
 
+      {/* Display dropdown with search results */}
+      {searchQuery && (
+        <Box mt={2} p={2} position="absolute" zIndex={1000}>
+          {filteredClients && filteredClients.length ? (
+            // Render the filtered clients if there are results
+            filteredClients.map((client) => (
+              <div
+                key={client.id}
+                onClick={() => handleClientClick(client)}
+                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+              >
+                {client.firstName} {client.lastName}
+              </div>
+            ))
+          ) : (
+            // Display a message if no results are found
+            <Typography>No clients found.</Typography>
+          )}
+        </Box>
+      )}
+
       {/* ICONS */}
-      <Box display="flex">
+      <Box display="flex" mt="15px">
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <LightModeOutlinedIcon />

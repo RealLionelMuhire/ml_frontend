@@ -146,7 +146,7 @@ const Calendar = () => {
             <Box
               key={event.id}
               sx={{
-                backgroundColor: colors.primary[500],
+                // backgroundColor: colors.primary[500],
                 margin: "10px 0",
                 borderRadius: "2px",
               }}
@@ -154,9 +154,8 @@ const Calendar = () => {
               <ListItemText
                 primary={
                   <Typography
-                    color={colors.greenAccent[500]}
                     variant="h5"
-                    fontWeight="600"
+                    fontWeight="700"
                   >
                     {event.title}
                   </Typography>
@@ -164,8 +163,8 @@ const Calendar = () => {
                 secondary={
                   <Typography
                     color={colors.grey[100]}
-                    variant="h5"
-                    fontWeight="600"
+                    variant="h6"
+                    fontWeight="400"
                   >
                     {areDatesEqual(event.start, event.end)
                       ? `${formatDate(event.start, {

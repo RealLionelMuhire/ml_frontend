@@ -89,15 +89,6 @@ const ClientForm = () => {
     }
   };
 
-  // const handleFormSubmit = async (values) => {
-  //   try {
-  //     const response = await createUser(values);
-  //     navigate("/clients");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">

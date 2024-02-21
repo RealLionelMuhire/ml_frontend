@@ -8,6 +8,7 @@ import MessageIcon from "@mui/icons-material/Traffic"
 import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
 import { useGetDashboardQuery } from "../../state/api";
+import { fontGrid } from "@mui/material/styles/cssUtils";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -62,12 +63,12 @@ const Dashboard = () => {
         >
           <StatBox
             title={userDashboard.total_services}
-            subtitle="Services provided"
+            subtitle={<Typography variant="h4" color={colors.grey[100]} fontWeight="600"> Services provided</Typography>}
             progress={userDashboard.increase_rate_services}
-            increase={`${userDashboard.increase_rate_services_percentage}%`}
+            increase={<Typography variant="h4" color={colors.grey[100]}>{userDashboard.increase_rate_services_percentage}%</Typography>}
             icon={
               <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                sx={{ fontSize: "26px" }}
               />
             }
           />
@@ -81,12 +82,12 @@ const Dashboard = () => {
         >
           <StatBox
             title={userDashboard.total_clients}
-            subtitle="New Clients"
+            subtitle={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}> New Clients</Typography>}
             progress={userDashboard.increase_rate_clients}
-            increase={`${userDashboard.increase_rate_clients_percentage}%`}
+            increase={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}>{userDashboard.increase_rate_clients_percentage}%</Typography>}
             icon={
               <PersonAddIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                sx={{ fontSize: "26px" }}
               />
             }
           />
@@ -100,12 +101,12 @@ const Dashboard = () => {
         >
           <StatBox
             title="0"
-            subtitle="Website Traffic"
-            progress="#"
-            increase="#"
+            subtitle={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}> Website Traffic</Typography>}
+            progress="0"
+            increase={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}>#</Typography>}
             icon={
               <MessageIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                sx={{ fontSize: "26px" }}
               />
             }
           />
@@ -120,9 +121,9 @@ const Dashboard = () => {
         >
           <StatBox
             title={userDashboard.total_reservations}
-            subtitle="Reservations"
+            subtitle={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}> Reservations</Typography>}
             progress={userDashboard.increase_rate_reservations}
-            increase={`${userDashboard.increase_rate_reservations_percentage}%`}
+            increase={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}>{userDashboard.increase_rate_reservations_percentage}%</Typography>}
             icon={
               <TrafficIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -153,9 +154,10 @@ const Dashboard = () => {
           </Box>
           {userDashboard.recent_services.map((transaction, i) => (
           <Box
+            key={`recent-service-${i}`}
             flex="1"
-            paddingRight="15px"
             borderRight={`4px solid ${colors.primary[500]}`}
+            borderLeft={`4px solid ${colors.primary[500]}`}
           >
             <Box
               key={`${transaction.txId}-${i}`}
@@ -171,13 +173,12 @@ const Dashboard = () => {
                 borderRight={`4px solid ${colors.primary[500]}`}
               >
                 <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
+                  variant="h6"
                   fontWeight="600"
                 >
                   {transaction.client_name}
                 </Typography>
-                <Typography color={colors.grey[100]} variant="h5">
+                <Typography color={colors.grey[100]} variant="body1">
                   {transaction.user}
                 </Typography>
               </Box>
@@ -187,7 +188,7 @@ const Dashboard = () => {
                 paddingLeft="15px"
                 borderRight={`4px solid ${colors.primary[500]}`}
               >
-                <Typography color={colors.grey[100]} variant="h5">
+                <Typography color={colors.grey[100]} variant="body1">
                   {transaction.date}
                 </Typography>
               </Box>
@@ -195,7 +196,7 @@ const Dashboard = () => {
                 flex="1"
                 paddingLeft="15px"
               >
-                <Typography variant="h5">
+                <Typography variant="h6">
                   {transaction.currency}
                   {" "}{transaction.total_cost}
                 </Typography>
@@ -232,6 +233,8 @@ const Dashboard = () => {
               alignItems="center"
               borderBottom={`4px solid ${colors.primary[500]}`}
               p="15px"
+              borderRight={`4px solid ${colors.primary[500]}`}
+              borderLeft={`4px solid ${colors.primary[500]}`}
             >
               <Box
                 flex="2.3"
@@ -239,8 +242,7 @@ const Dashboard = () => {
                 borderRight={`4px solid ${colors.primary[500]}`} // Add this line
               >
                 <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
+                  variant="h6"
                   fontWeight="600"
                 >
                   {booking.name}
@@ -262,7 +264,7 @@ const Dashboard = () => {
                 flex="3"
                 paddingLeft="15px"
               >
-                <Typography variant="h5">
+                <Typography variant="h6">
                   {booking.service_to_discuss}
                   {" "}{booking.other_services}
                 </Typography>
