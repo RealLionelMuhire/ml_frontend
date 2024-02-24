@@ -15,37 +15,46 @@ const ClientWithID = () => {
     [location.state?.selectedClientIds]
   );
   const { data, isLoading } = useGetClientsByIdsQuery(selectedClientIds);
+  console.log("data", data);
   const theme = useTheme();
 
   const colors = tokens(theme.palette.mode);
 
-  const commonColumns = [{ field: "id", headerName: "ID", flex: 1 }];
+  const commonColumns = [{ field: "id", headerName: "Data", flex: 1 }];
 
   // Create dynamic client columns based on the selected clients
-  const clientColumns = selectedClientIds.map((clientId, index) => ({
-    field: `client${index + 1}`,
-    headerName: `Client ${index + 1}`,
-    flex: 2,
-    renderCell: (params) => {
-      // Check if the cell data is a link to a PDF file
-      const isPdfLink = typeof params.value === 'string' && params.value.endsWith(".pdf");
+  const clientColumns = selectedClientIds.map((clientId, index) => {
+    const clientData = data && data[index];
+    const firstName = clientData ? clientData["First Name"] : '';
+    const lastName = clientData ? clientData["Last Name"] : '';
+    const headerName = clientData ? `${index + 1} - ${firstName} ${lastName}` : `Client ${index + 1}`;
   
-      if (isPdfLink) {
-        return (
-          <a
-            href={params.value}
-            target="_blank"
-            rel="noopener noreferrer"
-            download
-          >
-            Download PDF
-          </a>
-        );
-      }
+    return {
+      field: `client${index + 1}`,
+      headerName,
+      flex: 2,
+      renderCell: (params) => {
+        // Check if the cell data is a link to a PDF file
+        const isPdfLink = typeof params.value === 'string' && params.value.endsWith(".pdf");
   
-      return params.value;
-    },
-  }));
+        if (isPdfLink) {
+          return (
+            <a
+              href={params.value}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+            >
+              Download PDF
+            </a>
+          );
+        }
+  
+        return params.value;
+      },
+    };
+  });
+
   
 
   const columns = [...commonColumns, ...clientColumns];
@@ -124,4 +133,3 @@ const ClientWithID = () => {
 };
 
 export default ClientWithID;
-

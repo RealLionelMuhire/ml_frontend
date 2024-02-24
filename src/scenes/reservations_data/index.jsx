@@ -7,16 +7,11 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
-import { useCloseAlertMutation } from "../../state/api";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useGetFutureReservationsQuery } from "../../state/api";
 
 const ClientReservations = () => {
   const { data, isLoading, refetch } = useGetFutureReservationsQuery();
-  const [closeAlert, { isLoading: isClosing }] = useCloseAlertMutation();
-  const [selectedAlertIds, setSelectedAlertIds] = useState([]);
   const navigate = useNavigate();
 
   if (data) {
@@ -24,39 +19,6 @@ const ClientReservations = () => {
   } else {
     console.log("no data available")
   }
-  
-  const handleConfirmClose = async () => {
-    try {
-      const promises = selectedAlertIds.map(async (alertId) => {
-        try {
-          const response = await closeAlert({ alertId });
-          if (response?.error) {
-            toast.error(response.error?.data?.message);
-          }
-          if (response?.data) {
-            toast.success(response.data?.message);
-          }
-        } catch (error) {
-          toast.error(error);
-        }
-      });
-
-      await Promise.all(promises);
-      await refetch();
-    } catch (error) {
-      toast.error("Error closing alert:");
-    }
-  };
-
-  const handleSelectionModelChange = (selectionModel) => {
-    setSelectedAlertIds(selectionModel);
-  };
-
-  const handleViewMoreClick = () => {
-    navigate("/alert-id", {
-      state: { selectedAlertIds },
-    });
-  };
   
 
   const theme = useTheme();
@@ -105,21 +67,8 @@ const ClientReservations = () => {
             type="button"
             color="secondary"
             variant="contained"
-            onClick={handleViewMoreClick}
-            disabled={selectedAlertIds.length === 0}
           >
-            Select Alert to view More
-          </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={handleConfirmClose}
-            disabled={selectedAlertIds.length !== 1 || isClosing}
-          >
-            Take Action On selected Alert
+            Go To Past Rereservations
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
@@ -167,7 +116,6 @@ const ClientReservations = () => {
           rows={data || []}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
-          onSelectionModelChange={handleSelectionModelChange}
         />
       </Box>
     </Box>
