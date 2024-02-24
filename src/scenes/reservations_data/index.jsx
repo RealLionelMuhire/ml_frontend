@@ -9,7 +9,7 @@ import ClientPastReservations from "./ClientPastReservations";
 import ClientFutureReservations from "./ClientFutureReservations";
 
 const ClientReservationsIndex = () => {
-  const [isPastReservations, setIsPastReservations] = useState(true);
+  const [isPastReservations, setIsPastReservations] = useState(false);
 
   const toggleReservationsType = () => {
     setIsPastReservations(!isPastReservations);
