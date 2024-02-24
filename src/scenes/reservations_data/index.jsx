@@ -34,7 +34,7 @@ const ClientReservationsIndex = () => {
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/alerts-form">Generate an Alert</Link>
+            <Link to="/reservations-display">Display in Calendar</Link>
           </Button>
         </Box>
       </Box>

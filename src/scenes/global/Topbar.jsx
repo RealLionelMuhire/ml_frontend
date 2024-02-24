@@ -244,8 +244,8 @@ const Topbar = () => {
             <DarkModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
-          <MessageIcon />
+        <IconButton  onClick={() => navigate("/reservations-display")}>
+          <MessageIcon/>
         </IconButton>
         <IconButton onClick={() => navigate("/alerts-page")}>
           <NotificationsOutlinedIcon />
