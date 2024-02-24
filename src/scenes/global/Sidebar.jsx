@@ -13,6 +13,7 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { NotificationsRounded, } from "@mui/icons-material";
 import { DescriptionOutlined } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
+import { EmailRounded } from "@mui/icons-material";
 import { useGetUserProfileQuery } from "../../state/api";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -86,7 +87,7 @@ const Sidebar = () => {
                 mb="25px"
                 display="flex"
                 ml="15px"
-                justifyContent="left"
+                justifyContent="normal"
                 alignItems="center"
               >
                 <Box
@@ -102,15 +103,15 @@ const Sidebar = () => {
                         : `../../assets/dark_theme_logo.png`
                     }
                     style={{
-                      width: "50px",
-                      height: "50px",
+                      width: "70px",
+                      height: "70px",
                       borderRadius: "50%",
                     }}
                   />
                 </Box>
 
-                <Typography variant="h5" color={colors.grey[100]}>
-                  mlcorporateservices
+                <Typography variant="h4" color={colors.grey[100]} ml="20px" mr="10px">
+                  MLCS
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -121,15 +122,14 @@ const Sidebar = () => {
 
           {!isCollapsed && (
             <Box
-              mb="10px"
+              mb="25px"
               display="flex"
-              ml="15px"
-              justifyContent="left"
+              ml="30px"
+              justifyContent="normal"
               alignItems="center"
             >
               <Box
                 display="flex"
-                justifyContent="inherit"
                 alignItems="center"
                 width="100%"
                 padding="10px"
@@ -144,7 +144,7 @@ const Sidebar = () => {
                   style={{ width: "50px", height: "50px", borderRadius: "50%" }}
                 />
               </Box>
-              <Box padding="10px" justifyContent="center">
+              <Box mr="30px">
                 <Typography
                   variant="h5"
                   color={colors.grey[100]}
@@ -153,7 +153,7 @@ const Sidebar = () => {
                 >
                   {userProfile.FirstName}
                 </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
+                <Typography variant="h5" color={colors.grey[300]}>
                   {userProfile.accessLevel}
                 </Typography>
               </Box>
@@ -211,13 +211,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title="Roles & Permissions"
-              to="/roles"
-              icon={<GroupWorkOutlined />}
+            <Item
+              title="Reservations"
+              to="/client-reservations"
+              icon={<EmailRounded />}
               selected={selected}
               setSelected={setSelected}
-            /> */}
+            />
 
             <Typography
               variant="h6"
@@ -234,7 +234,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="FAQ"
+              title="Reports"
               to="/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}

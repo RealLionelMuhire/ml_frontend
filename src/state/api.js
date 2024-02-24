@@ -184,6 +184,16 @@ export const api = createApi({
       providesTags: (result, error, alertId) =>
         alertId ? [{ type: "Alerts", id: alertId }] : [],
     }),
+    // Reservations
+    getFutureReservations: build.query({
+      query: () => "/reservations-future/",
+      providesTags: ["Reservations"],
+    }),
+
+    getPastReservations: build.query({
+      query: () => "/reservations-past/",
+      providesTags: ["Reservations"],
+    }),
 
   }),
 });
@@ -228,6 +238,10 @@ export const {
   useCreateAlertMutation,
   useCloseAlertMutation,
   useGetAlertByIdQuery,
+
+  // Reservations
+  useGetFutureReservationsQuery,
+  useGetPastReservationsQuery,
 } = api;
 
 export default api;

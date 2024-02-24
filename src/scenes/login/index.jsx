@@ -44,7 +44,7 @@ const Login = () => {
         width="100%"
         textAlign="center"
       >
-        <Typography fontWeight="bold" fontSize="32px" color="secondary" justifyContent="left">
+        <Typography fontWeight="bold" fontSize="32px" justifyContent="left">
           ML Corporates Services
         </Typography>
       </Box>
@@ -56,7 +56,7 @@ const Login = () => {
         borderRadius="1.5rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography color="secondary" fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
+        <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
           Welcome to MLCS Client & Admin Management Platform (For Staff only)!
         </Typography>
         <Form />

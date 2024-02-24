@@ -186,10 +186,12 @@ const Form = () => {
                 "&:hover": { color: palette.primary.main },
               }}
             >
-              {isLogin ? "LOGIN" : "RESET PASSWORD"}
+              <>
+              <Typography variant="h5" fontWeight="100">{isLogin ? "LOGIN" : "RESET PASSWORD"}</Typography>
+              </>
             </Button>
             <Typography
-              color="secondary"
+              // color="secondary"
               fontWeight="500"
               variant="h5"
               onClick={() => {
@@ -199,10 +201,10 @@ const Form = () => {
               sx={{
                 mb: "1.5rem",
                 textDecoration: "underline",
-                color: palette.secondary.main,
+                // color: palette.secondary.main,
                 "&:hover": {
                   cursor: "pointer",
-                  color: palette.primary.light,
+                  color: palette.secondary.light,
                 },
               }}
             >

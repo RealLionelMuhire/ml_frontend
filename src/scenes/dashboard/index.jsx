@@ -3,12 +3,11 @@ import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
 import MessageIcon from "@mui/icons-material/Traffic"
 import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
 import { useGetDashboardQuery } from "../../state/api";
-import { fontGrid } from "@mui/material/styles/cssUtils";
+import EmailIcon from "@mui/icons-material/Email";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -125,8 +124,8 @@ const Dashboard = () => {
             progress={userDashboard.increase_rate_reservations}
             increase={<Typography variant="h4" fontWeight="600" color={colors.grey[100]}>{userDashboard.increase_rate_reservations_percentage}%</Typography>}
             icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+              <EmailIcon
+                sx={{ fontSize: "26px" }}
               />
             }
           />
@@ -136,7 +135,7 @@ const Dashboard = () => {
 {/* recent services */}
         <Box
           gridColumn="span 6"
-          gridRow="span 2"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
           overflow="auto"
         >
@@ -210,7 +209,7 @@ const Dashboard = () => {
 
         <Box
           gridColumn="span 6"
-          gridRow="span 2"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
           overflow="auto"
         >

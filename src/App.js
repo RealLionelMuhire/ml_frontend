@@ -30,6 +30,7 @@ import AlertsForm from "./scenes/alerts_form";
 import AlertPage from "./scenes/alerts/alert_plane_text";
 import Reservation from "./scenes/reservations";
 import TestCalendar from "./scenes/reservations/TestCalendar";
+import ClientReservations from "./scenes/reservations_data";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -241,6 +242,15 @@ function App() {
                     </AdminLayout>
                   }
                 />
+                <Route
+                  path="/client-reservations"
+                  element={
+                    <AdminLayout>
+                      <ClientReservations />
+                    </AdminLayout>
+                  }
+                />
+
               </Route>
 
               <Route path="/login" element={<Login />} />
