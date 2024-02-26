@@ -31,7 +31,7 @@ import AlertPage from "./scenes/alerts/alert_plane_text";
 import Reservation from "./scenes/reservations";
 import TestCalendar from "./scenes/reservations/TestCalendar";
 import ClientReservations from "./scenes/reservations_data";
-import ReservationDisplay from "./scenes/reservation_display/calendar";
+import ReservationDisplay from "./scenes/reservation_display";
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;

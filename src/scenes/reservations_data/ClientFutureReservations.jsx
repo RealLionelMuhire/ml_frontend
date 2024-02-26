@@ -5,21 +5,10 @@ import {
   } from "@mui/material";
   import { DataGrid, GridToolbar } from "@mui/x-data-grid";
   import { tokens } from "../../theme";
-  import Header from "../../components/Header";
-  import { Link } from "react-router-dom";
-  import { useNavigate } from "react-router-dom";
   import { useGetFutureReservationsQuery } from "../../state/api";
   
   const ClientFutureReservations = () => {
     const { data, isLoading, refetch } = useGetFutureReservationsQuery();
-    const navigate = useNavigate();
-  
-    if (data) {
-      console.log(data);
-    } else {
-      console.log("no data available")
-    }
-    
   
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);

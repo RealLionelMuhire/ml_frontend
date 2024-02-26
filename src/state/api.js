@@ -194,6 +194,39 @@ export const api = createApi({
       query: () => "/reservations-past/",
       providesTags: ["Reservations"],
     }),
+    
+    getReservations: build.query({
+      query: () => "/list-reservations/",
+      providesTags: ["Reservations"],
+    }),
+    createReservation: build.mutation({
+      query: (newReservation) => ({
+        url: "/user-register-reservation/",
+        method: "POST",
+        body: newReservation,
+      }),
+      invalidatesTags: ["Reservations"],
+    }),
+    getReservationById: build.query({
+      query: (reservationId) => `/reservations/${reservationId}/`,
+      providesTags: (result, error, reservationId) =>
+        reservationId ? [{ type: "Reservations", id: reservationId }] : [],
+    }),
+    updateReservation: build.mutation({
+      query: ({ reservationId, updatedReservation }) => ({
+        url: `/reservations/${reservationId}/`,
+        method: "PUT",
+        body: updatedReservation,
+      }),
+      invalidatesTags: ["Reservations"],
+    }),
+    deleteReservation: build.mutation({
+      query: (reservationId) => ({
+        url: `/reservations/${reservationId}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Reservations"],
+    }),
 
   }),
 });
@@ -242,6 +275,11 @@ export const {
   // Reservations
   useGetFutureReservationsQuery,
   useGetPastReservationsQuery,
+  useGetReservationsQuery,
+  useCreateReservationMutation,
+  useGetReservationByIdQuery,
+  useUpdateReservationMutation,
+  useDeleteReservationMutation,
 } = api;
 
 export default api;

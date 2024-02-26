@@ -124,7 +124,7 @@ const Calendar = () => {
           height="75vh"
           gridColumn="span 1"
           gridRow="span 4"
-          flex="1 1 20%"
+          flex="1 1 25%"
           backgroundColor={colors.primary[400]}
           p="15px"
           borderRadius="4px"
@@ -146,9 +146,9 @@ const Calendar = () => {
             <Box
               key={event.id}
               sx={{
-                // backgroundColor: colors.primary[500],
+                backgroundColor: colors.grey[700],
                 margin: "10px 0",
-                borderRadius: "2px",
+                borderRadius: "5px",
               }}
             >
               <ListItemText

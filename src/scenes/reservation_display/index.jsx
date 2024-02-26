@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
-import FullCalendar, { formatDate } from "@fullcalendar/react";
+import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import { Box, ListItemText, Typography, useTheme } from "@mui/material";
+import { Box, ListItemText, Typography, useTheme, Button } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import {
-  useGetEventsQuery,
-  useCreateEventMutation,
-  useUpdateEventMutation,
-  useDeleteEventMutation,
-  useGetAllEventsQuery,
+  useUpdateReservationMutation,
+  useDeleteReservationMutation,
+  useGetFutureReservationsQuery,
+  useGetReservationsQuery,
+  useCreateReservationMutation,
 } from "../../state/api";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const ReservationDisplay = () => {
   const theme = useTheme();
@@ -22,46 +23,43 @@ const ReservationDisplay = () => {
   const [currentEvents, setCurrentEvents] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
 
-  const { data: allEventsData } = useGetAllEventsQuery();
-  const { data: eventsData } = useGetEventsQuery();
-  const [createEvent] = useCreateEventMutation();
-  const [updateEvent] = useUpdateEventMutation();
-  const [deleteEvent] = useDeleteEventMutation();
+  const { data: allEventsData } = useGetFutureReservationsQuery();
+  const { data: eventsData } = useGetReservationsQuery();
+  const [createEvent] = useCreateReservationMutation();
+  const [updateEvent] = useUpdateReservationMutation();
+  const [deleteEvent] = useDeleteReservationMutation();
 
-  const areDatesEqual = (date1, date2) => {
-    const formattedDate1 = formatDate(date1, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-
-    const formattedDate2 = formatDate(date2, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-
-    return formattedDate1 === formattedDate2;
+  const mapEventsForCalendar = (events) => {
+    return events.map((event) => ({
+      id: event.id,
+      title: event.fullName,
+      start: new Date(event.startTime).toISOString(),
+      end: new Date(event.endTime).toISOString(),
+    }));
   };
-
+  
   useEffect(() => {
     if (allEventsData) {
       setCurrentEvents(allEventsData);
-      setCalendarEvents(eventsData);
+
+      // Check if eventsData is an array before mapping
+      if (Array.isArray(eventsData)) {
+        setCalendarEvents(mapEventsForCalendar(eventsData));
+      }
     }
   }, [allEventsData, eventsData]);
 
   const handleDateClick = async (selected) => {
-    const title = prompt("Please enter a new title for the event");
+    const servicesToDiscuss = prompt("Please enter a new Title for the event");
 
     const endMinusOneSecond = new Date(selected.endStr);
     endMinusOneSecond.setSeconds(endMinusOneSecond.getSeconds() - 1);
 
-    if (title) {
+    if (servicesToDiscuss) {
       const newEvent = {
-        title,
-        start: selected.startStr,
-        end: endMinusOneSecond.toISOString(),
+        servicesToDiscuss,
+        startTime: selected.startStr,
+        endTime: endMinusOneSecond.toISOString(),
         allDay: selected.allDay,
       };
 
@@ -77,7 +75,7 @@ const ReservationDisplay = () => {
   const handleEventClick = async (selected) => {
     if (
       window.confirm(
-        `Are you sure you want to delete the event '${selected.event.title}'`
+        `Are you sure you want to delete the event '${selected.event.servicesToDiscuss}'`
       )
     ) {
       try {
@@ -103,9 +101,9 @@ const ReservationDisplay = () => {
         await updateEvent({
           eventId: eventId,
           updatedEvent: {
-            title: event.title,
-            start: event.start,
-            end: event.end,
+            servicesToDiscuss: event.servicesToDiscuss,
+            startTime: event.startTime,
+            endTime: event.endTime,
           },
         });
       } catch (error) {
@@ -116,7 +114,14 @@ const ReservationDisplay = () => {
 
   return (
     <Box m="20px">
-      <Header title="Schedule" subtitle="Setting and Interactive Plans" />
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="Reservations" subtitle="Setting and Interactive Reservation" />
+        <Box display="flex" justifyContent="end">
+            <Button type="submit" color="secondary" variant="contained">
+              <Link to="/client-reservations">Back to Reservation List</Link>
+            </Button>
+          </Box>
+      </Box>
 
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
@@ -124,7 +129,7 @@ const ReservationDisplay = () => {
           height="75vh"
           gridColumn="span 1"
           gridRow="span 4"
-          flex="1 1 20%"
+          flex="1 1 30%"
           backgroundColor={colors.primary[400]}
           p="15px"
           borderRadius="4px"
@@ -139,16 +144,16 @@ const ReservationDisplay = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Upcoming Events
+              Upcoming Bookings
             </Typography>
           </Box>
           {currentEvents.map((event) => (
             <Box
               key={event.id}
               sx={{
-                // backgroundColor: colors.primary[500],
+                backgroundColor: colors.grey[700],
                 margin: "10px 0",
-                borderRadius: "2px",
+                borderRadius: "5px",
               }}
             >
               <ListItemText
@@ -157,7 +162,7 @@ const ReservationDisplay = () => {
                     variant="h5"
                     fontWeight="700"
                   >
-                    {event.title}
+                    {event.fullName}
                   </Typography>
                 }
                 secondary={
@@ -166,28 +171,10 @@ const ReservationDisplay = () => {
                     variant="h6"
                     fontWeight="400"
                   >
-                    {areDatesEqual(event.start, event.end)
-                      ? `${formatDate(event.start, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "numeric",
-                        })} - ${formatDate(event.end, {
-                          hour: "numeric",
-                          minute: "numeric",
-                        })}`
-                      : `${formatDate(event.start, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })} - ${formatDate(event.end, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}`}
+                    {event.reserved_period}
                   </Typography>
                 }
+                
               />
             </Box>
           ))}
@@ -218,6 +205,31 @@ const ReservationDisplay = () => {
             events={calendarEvents}
             eventDrop={handleEventDrop}
             initialDate={moment().toISOString()}
+            views={{
+              dayGridMonth: {
+                hiddenDays: [0, 6],
+              },
+              timeGridWeek: {
+                duration: { days: 7 },
+                slotLabelInterval: { hours: 1 },
+                hiddenDays: [0, 6],
+              },
+            }}
+            slotMinTime="08:00:00"
+            slotMaxTime="18:00:00"
+            eventDisplay={{
+              popover: function (arg) {
+                return {
+                  backgroundColor: 'your_custom_background_color',
+                  color: 'your_custom_font_color',
+                  content: function () {
+                    const div = document.createElement('div');
+                    div.innerHTML = arg.event.servicesToDiscuss;
+                    return div;
+                  },
+                };
+              },
+            }}
           />
         </Box>
       </Box>

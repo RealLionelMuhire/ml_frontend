@@ -5,18 +5,10 @@ import {
   } from "@mui/material";
   import { DataGrid, GridToolbar } from "@mui/x-data-grid";
   import { tokens } from "../../theme";
-  import { useNavigate } from "react-router-dom";
   import { useGetPastReservationsQuery } from "../../state/api";
   
   const ClientPastReservations = () => {
     const { data, isLoading, refetch } = useGetPastReservationsQuery();
-    const navigate = useNavigate();
-  
-    if (data) {
-      console.log(data);
-    } else {
-      console.log("no data available")
-    }
     
   
     const theme = useTheme();
