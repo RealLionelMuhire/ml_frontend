@@ -9,6 +9,7 @@ import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import { SHA256 } from 'crypto-js';
 import CryptoJS from 'crypto-js';
+import { toast } from "react-toastify";
 
 const UserForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -41,7 +42,7 @@ const UserForm = () => {
   };
   
 
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, onSubmitProps) => {
     try {
       // Calculate checksum for cv_file
       const cvFileChecksum = values.cv_file
@@ -67,8 +68,15 @@ const UserForm = () => {
       
       console.log("Form submission initiated. Values:", values);
       const response = await createUser(formData);
-      console.log("After mutation call. response from backend:", response);
-      navigate("/team");
+
+      if (response.error) {
+        toast.error(response.error?.data?.message);
+        return;
+      }
+      if (response.data) {
+        toast.success(response.data?.message);
+        navigate("/team");
+      }
     } catch (error) {
       console.error("Error creating user:", error);
     }
