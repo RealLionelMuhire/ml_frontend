@@ -132,7 +132,7 @@ const Team = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="TEAM" subtitle="Managing the Team Members" />
-        <Box display="flex" justifyContent="end" mt="20px">
+        {/* <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
             color="secondary"
@@ -153,7 +153,7 @@ const Team = () => {
           >
             Deactivate Selected
           </Button>
-        </Box>
+        </Box> */}
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
             <Link to="/user-form">Create New User</Link>
