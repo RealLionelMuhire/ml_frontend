@@ -168,16 +168,34 @@ const ReservationDisplay = () => {
                   </Typography>
                 }
                 secondary={
-                  <Typography
+                  <>
+                    <Typography
+                      color={colors.grey[100]}
+                      variant="h6"
+                      fontWeight="700"
+                    >
+                      {event.reserved_period}
+                    </Typography>
+                    <Typography
                     color={colors.grey[100]}
                     variant="h6"
                     fontWeight="400"
-                  >
-                    {event.reserved_period}
-                  </Typography>
+                    >
+                      {event.servicesToDiscuss}
+                    </Typography>
+                </>
                 }
-                
               />
+              
+              {event.servicesToDiscuss === "Others" && (
+                <Typography
+                  color={colors.grey[100]}
+                  variant="body1"
+                  fontWeight="400"
+                >
+                  TEST{event.othersServices}
+                </Typography>
+              )}
             </Box>
           ))}
         </Box>
