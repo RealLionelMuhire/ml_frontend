@@ -83,7 +83,5 @@
   "repository": "git@github.com:RealLionelMuhire/ml_frontend.git",
   "author": "RealLionelMuhire <muhirelionel@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "react-app-rewired": "^2.2.1"
-  }
+  "devDependencies": {}
 }
