@@ -83,5 +83,7 @@
   "repository": "git@github.com:RealLionelMuhire/ml_frontend.git",
   "author": "RealLionelMuhire <muhirelionel@gmail.com>",
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
 }
