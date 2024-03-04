@@ -41,7 +41,7 @@ const Form = () => {
 
   const login = async (values, onSubmitProps) => {
     try {
-      const loggedInResponse = await fetch("http://localhost:8000/api/login/", {
+      const loggedInResponse = await fetch("https://ml-cs-pro-backend.onrender.com/api/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),

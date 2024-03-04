@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api",
+    baseUrl: "https://ml-cs-pro-backend.onrender.com/api",
     headers: { Authorization: `token ${localStorage.getItem("token")}` },
   }),
   reducerPath: "authApi",
