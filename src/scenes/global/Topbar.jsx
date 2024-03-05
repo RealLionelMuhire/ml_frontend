@@ -43,6 +43,7 @@ const Topbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [clickedClientId, setClickedClientId] = useState(null);
   const searchBoxRef = useRef(null);
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
   
   // const [selectedClient, setSelectedClient] = useState(null);
 
@@ -85,7 +86,7 @@ const Topbar = () => {
     if (choice === "Logout") {
       try {
         const loggedOutResponse = await fetch(
-          "http://localhost:8000/api/logout/",
+          `${baseUrl}logout/`,
           {
             method: "POST",
             headers: {
@@ -112,7 +113,7 @@ const Topbar = () => {
     } else if (choice === "Change src/scenes/faq/index.jsxPassword") {
       try {
         const changePassordResponse = await fetch(
-          "http://localhost:8000/api/forgot-password/",
+          `${baseUrl}forgot-password/`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

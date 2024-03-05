@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 import { tokens } from "../../theme";
 import TestCalendar from "./TestCalendar";
 import { format } from "date-fns";
-import { useCreateReservationMutation } from "../../state/external_api";
 
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -71,9 +70,9 @@ const Form = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [createReservation, { isLoading }] = useCreateReservationMutation();
   
   const [showCalendar, setShowCalendar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTimeSelect = (selectInfo) => {
   
@@ -101,6 +100,7 @@ const Form = () => {
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
+      setIsLoading(true);
       // Check if startTime and endTime are empty
       if (!values.startTime || !values.endTime) {
         toast.error("Please choose a time for the appointment.");
@@ -117,9 +117,10 @@ const Form = () => {
         startTime: values.startTime,
         endTime: values.endTime,
       };
+      const baseUrl = process.env.REACT_APP_API_BASE_URL;
   
       // Call the createReservation mutation with the newReservation object
-      const response = await fetch("http://localhost:8000/api/register-reservation/", {
+      const response = await fetch(`${baseUrl}register-reservation/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -318,7 +319,6 @@ const Form = () => {
               type="submit"
               color="secondary"
               variant="contained"
-              disabled={isLoading}
               sx={{
                 m: "2rem 0",
                 p: "1rem",

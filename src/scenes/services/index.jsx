@@ -123,13 +123,23 @@ const Services = () => {
       headerName: "Cost",
       flex: 1,
       renderCell: (params) => (
-        <Typography
-          color={params.row.is_active ? colors.greenAccent[500] : undefined}
+        <Box
+          p="5px"
+          width="80%"
+          borderRadius="5px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          backgroundColor={params.row.is_active ? colors.greenAccent[700] : undefined}
         >
-          {params.row.is_active
-            ? "Still active"
-            : `${params.row.currency} ${params.row.total_cost}`}
-        </Typography>
+          <Typography
+            color={params.row.is_active ? colors.grey[100] : undefined}
+          >
+            {params.row.is_active
+              ? "Still active"
+              : `${params.row.currency} ${params.row.total_cost}`}
+          </Typography>
+        </Box>
       ),
     },
     {
@@ -137,13 +147,23 @@ const Services = () => {
       headerName: "Time spent",
       flex: 1,
       renderCell: (params) => (
-        <Typography
-          color={params.row.is_active ? colors.greenAccent[500] : undefined}
+        <Box
+        p="5px"
+        width="80%"
+        borderRadius="5px"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor={params.row.is_active ? colors.greenAccent[700] : undefined}
         >
-          {params.row.is_active
-            ? "Still active"
-            : formatTime(params.row.total_elapsed_time)}
-        </Typography>
+          <Typography
+            color={params.row.is_active ? colors.grey[100] : undefined}
+          >
+            {params.row.is_active
+              ? "Still active"
+              : formatTime(params.row.total_elapsed_time)}
+          </Typography>
+        </Box>
       ),
     },
   ];

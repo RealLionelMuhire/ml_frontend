@@ -15,10 +15,12 @@ const TestCalendar = ({ onTimeSelect }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/list-reserved-periods/");
+        const response = await fetch(`${baseUrl}list-reserved-periods/`);
         const { reserved_periods: data } = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {

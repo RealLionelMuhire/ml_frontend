@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -72,7 +72,23 @@ const Clients = () => {
     { field: "clientContact", headerName: "Client Contact Phone", flex: 1 },
     { field: "clientEmail", headerName: "Client Email", flex: 1 },
     { field: "preferredLanguage", headerName: "Language", flex: 1 },
-    { field: "isActive", headerName: "Is Active", flex: 1 },
+    { field: "isActive", headerName: "Is Active", flex: 1, renderCell: ({ row: { isActive } }) => {
+      return (
+        <Box
+          width="60%"
+          m="0 auto"
+          p="5px"
+          display="flex"
+          justifyContent="center"
+          backgroundColor={
+            isActive ? colors.greenAccent[600] : colors.redAccent[600]
+          }
+          borderRadius="4px"
+        >
+          <Typography color={colors.grey[100]}>{isActive ? "Yes" : "No"}</Typography>
+        </Box>
+      );
+    },  },
   ];
 
   return (

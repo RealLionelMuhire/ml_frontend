@@ -81,9 +81,26 @@ const Team = () => {
     },
 
     {
-      field: "isActive ",
+      field: "isActive",
       headerName: "Is Active",
       flex: 1,
+      renderCell: ({ row: { isActive } }) => {
+        return (
+          <Box
+            width="60%"
+            m="0 auto"
+            p="5px"
+            display="flex"
+            justifyContent="center"
+            backgroundColor={
+              isActive ? colors.greenAccent[600] : colors.redAccent[600]
+            }
+            borderRadius="4px"
+          >
+            <Typography color={colors.grey[100]}>{isActive ? "Yes" : "No"}</Typography>
+          </Box>
+        );
+      },
     },
     {
       field: "registrarID",
@@ -91,7 +108,7 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: "registrarFirstName",
+      field: "registrarName",
       headerName: "Registrar Name",
       flex: 1,
     },
@@ -102,16 +119,16 @@ const Team = () => {
       renderCell: ({ row: { accessLevel } }) => {
         return (
           <Box
-            width="60%"
+            width="90%"
             m="0 auto"
             p="5px"
             display="flex"
             justifyContent="center"
             backgroundColor={
               accessLevel === "admin"
-                ? colors.greenAccent[600]
+                ? colors.greenAccent[900]
                 : accessLevel === "manager"
-                ? colors.greenAccent[700]
+                ? colors.greenAccent[800]
                 : colors.greenAccent[700]
             }
             borderRadius="4px"

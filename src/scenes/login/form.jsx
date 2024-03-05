@@ -42,7 +42,7 @@ const Form = () => {
 
   const login = async (values, onSubmitProps) => {
     try {
-      const loggedInResponse = await fetch(`${baseUrl}/api/login/`, {
+      const loggedInResponse = await fetch(`${baseUrl}login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -79,7 +79,7 @@ const Form = () => {
   const forgotPassword = async (values, onSubmitProps) => {
     try {
       const forgotPasswordResponse = await fetch(
-        `${baseUrl}/api/forgot-password/`,
+        `${baseUrl}forgot-password/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

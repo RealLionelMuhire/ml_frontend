@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography, MenuItem } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -223,6 +223,26 @@ const UserForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
+                select
+                label="Access Level"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.accessLevel}
+                name="accessLevel"
+                error={
+                  !!touched.accessLevel && !!errors.accessLevel
+                }
+                helperText={
+                  touched.accessLevel && errors.accessLevel
+                }
+                sx={{ gridColumn: "span 2" }}
+              >
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="user">User</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                variant="filled"
                 type="text"
                 label="Address"
                 onBlur={handleBlur}
@@ -338,6 +358,7 @@ const checkoutSchema = yup.object().shape({
     }
     return true; // Validation passes
   }),
+  accessLevel: yup.string().required("required"),
   
 });
 const initialValues = {
@@ -350,6 +371,7 @@ const initialValues = {
   BirthDate: "",
   UserRoles: "",
   Address: "",
+  accessLevel: "",
   cv_file: null,
   contract_file: null,
 };
