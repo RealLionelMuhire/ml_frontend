@@ -38,10 +38,11 @@ const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isForgotPassword = pageType === "forgotPassword";
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const login = async (values, onSubmitProps) => {
     try {
-      const loggedInResponse = await fetch("https://ml-cs-pro-backend.onrender.com/api/login/", {
+      const loggedInResponse = await fetch(`${baseUrl}/api/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -78,7 +79,7 @@ const Form = () => {
   const forgotPassword = async (values, onSubmitProps) => {
     try {
       const forgotPasswordResponse = await fetch(
-        "http://localhost:8000/api/forgot-password/",
+        `${baseUrl}/api/forgot-password/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
