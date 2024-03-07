@@ -4,11 +4,15 @@ import { useContext } from "react";
 import { ColorModeContext} from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import { useNavigate } from "react-router-dom";
 
 const Reservation = () => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const colorMode = useContext(ColorModeContext);
+  const navigate = useNavigate();
+  const { palette } = useTheme();
+
   return (
     <Box m="20px">
       <Box
@@ -60,6 +64,26 @@ const Reservation = () => {
           Fill the form below to book an appointment or a meeting
         </Typography>
         <Form />
+        <Typography
+          // color="secondary"
+          mr="5px"
+          fontWeight="500"
+          variant="h5"
+          onClick={() => {
+            navigate("/");
+          }}
+          sx={{
+            mb: "1.5rem",
+            textDecoration: "underline",
+            // color: palette.secondary.main,
+            "&:hover": {
+              cursor: "pointer",
+              color: palette.secondary.light,
+            },
+          }}
+        >
+          Back to Home
+      </Typography>
       </Box>
     </Box>
   );

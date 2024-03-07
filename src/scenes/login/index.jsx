@@ -59,7 +59,7 @@ const Login = () => {
         <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
           Welcome to MLCS Client & Admin Management Platform (For Staff only)!
         </Typography>
-        <Form />
+        <Form/>
       </Box>
     </Box>
   );

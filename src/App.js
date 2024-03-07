@@ -32,6 +32,8 @@ import Reservation from "./scenes/reservations";
 import TestCalendar from "./scenes/reservations/TestCalendar";
 import ClientReservations from "./scenes/reservations_data";
 import ReservationDisplay from "./scenes/reservation_display";
+import WelcomePage from "./scenes/welcome_page";
+
 
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
@@ -57,6 +59,7 @@ function App() {
           <CssBaseline />
           {!isLoading ? (
             <Routes>
+              <Route path="/" element={<WelcomePage />} />
               {/* Routes accessible to non-authenticated users */}
               <Route path="/login" element={<Login />} />
               <Route path="/reservation" element={<Reservation />} />
