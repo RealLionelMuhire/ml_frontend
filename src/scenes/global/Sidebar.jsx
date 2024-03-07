@@ -174,15 +174,9 @@ const Sidebar = () => {
             >
               Data
             </Typography>
+            
             <Item
-              title="Team & Users"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Manage Clients"
+              title="Clients"
               to="/clients"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
@@ -213,6 +207,20 @@ const Sidebar = () => {
               title="Reservations"
               to="/client-reservations"
               icon={<EmailRounded />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Users
+            </Typography>
+            <Item
+              title="Team & Users"
+              to="/team"
+              icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

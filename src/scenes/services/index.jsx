@@ -253,24 +253,25 @@ const Services = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <input type="file" onChange={handleFileChange} />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleCloseDialog}
-            color="secondary"
-            variant="outlined"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmClose}
-            color="secondary"
-            variant="outlined"
-            disabled={!description.trim()}
-          >
-            Confirm Close
-          </Button>
+          <Box display="flex" justifyContent="center" p={2} gap="20px">
+            <Button
+              onClick={handleCloseDialog}
+              color="secondary"
+              variant="contained"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmClose}
+              color="secondary"
+              variant="contained"
+              disabled={!description.trim()}
+            >
+              Confirm Close
+            </Button>
+          </Box>
         </DialogActions>
       </Dialog>
     </Box>

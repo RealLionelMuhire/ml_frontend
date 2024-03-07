@@ -43,13 +43,10 @@ const Topbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [clickedClientId, setClickedClientId] = useState(null);
   const searchBoxRef = useRef(null);
+  const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] = useState(false);
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   
-  // const [selectedClient, setSelectedClient] = useState(null);
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
 
 
   const filteredClients = clients?.filter((client) => {
@@ -84,17 +81,26 @@ const Topbar = () => {
     handleCloseUserMenu();
 
     if (choice === "Logout") {
+      // Open the confirmation dialog
+      setLogoutDialogOpen(true);
+    } else if (choice === "Profile") {
+      setProfileDialogOpen(true);
+    } else if (choice === "Change Password") {
+      seChangePasswordDialogOpen(true);
+    }
+  };
+  const handleLogoutConfirm = async (confirmed) => {
+    setLogoutDialogOpen(false);
+
+    if (confirmed) {
       try {
-        const loggedOutResponse = await fetch(
-          `${baseUrl}logout/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json,",
-              Authorization: `token ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const loggedOutResponse = await fetch(`${baseUrl}logout/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json,",
+            Authorization: `token ${localStorage.getItem("token")}`,
+          },
+        });
         const loggedOut = await loggedOutResponse.json();
         if (loggedOut) {
           localStorage.clear("token");
@@ -107,10 +113,16 @@ const Topbar = () => {
           // window.location.href = "/";
           navigate("/login");
         }
-      } catch (error) {}
-    } else if (choice === "Profile") {
-      setProfileDialogOpen(true);
-    } else if (choice === "Change src/scenes/faq/index.jsxPassword") {
+      } catch (error) {
+        toast.error("Error in logging out. Please try again.");
+      }
+    }
+  };
+
+  const handleChangePasswordConfirm = async (confirmed) => {
+    seChangePasswordDialogOpen(false);
+
+    if (confirmed) {
       try {
         const changePassordResponse = await fetch(
           `${baseUrl}forgot-password/`,
@@ -133,6 +145,7 @@ const Topbar = () => {
       }
     }
   };
+
 
   const handleProfileDialogClose = () => {
     setProfileDialogOpen(false);
@@ -165,6 +178,13 @@ const Topbar = () => {
       return () => clearTimeout(timeoutId);
     }
   }, [clickedClientId, debouncedNavigate]);
+
+  const handleUpdateProfile = () => {
+
+    navigate("/update-user");
+
+    setProfileDialogOpen(false);
+  };
 
 
 
@@ -214,6 +234,35 @@ const Topbar = () => {
           )}
         />
       </Box>
+      <Dialog open={isLogoutDialogOpen} onClose={() => handleLogoutConfirm(false)}>
+        {/* <DialogTitle>LConfirmation</DialogTitle> */}
+        <DialogContent>
+          <Typography>Are you sure you want to logout?</Typography>
+        </DialogContent>
+        <Box display="flex" justifyContent="center" p={2} gap="20px">
+          <Button onClick={() => handleLogoutConfirm(false)} color="secondary"  variant="contained">
+            No
+          </Button>
+          <Button onClick={() => handleLogoutConfirm(true)} color="secondary" variant="contained">
+            Yes
+          </Button>
+        </Box>
+      </Dialog>
+
+      <Dialog open={isChangePasswordDialogOpen} onClose={() => handleChangePasswordConfirm(false)}>
+        <DialogContent>
+          <Typography>Are you sure you want to change your password?</Typography>
+        </DialogContent>
+        <Box display="flex" justifyContent="center" p={2} gap="20px">
+          <Button onClick={() => handleChangePasswordConfirm(false)} color="secondary"  variant="contained">
+            No
+          </Button>
+          <Button onClick={() => handleChangePasswordConfirm(true)} color="secondary" variant="contained">
+            Yes
+          </Button>
+        </Box>
+      </Dialog>
+      
 
       {/* Display dropdown with search results */}
       {searchQuery && (
@@ -307,11 +356,12 @@ const Topbar = () => {
               </Grid>
 
               <Button
-                variant="outlined"
+                variant="contained"
                 color="secondary"
                 style={{ marginTop: "16px" }}
+                onClick={handleUpdateProfile}
               >
-                <Link to="/update-user">Update Profile</Link>
+                Update Profile
               </Button>
             </Box>
           )}

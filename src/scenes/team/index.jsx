@@ -137,9 +137,9 @@ const Team = () => {
             justifyContent="center"
             backgroundColor={
               accessLevel === "admin"
-                ? colors.greenAccent[900]
-                : accessLevel === "manager"
                 ? colors.greenAccent[800]
+                : accessLevel === "manager"
+                ? colors.greenAccent[900]
                 : colors.greenAccent[700]
             }
             borderRadius="4px"
@@ -160,7 +160,7 @@ const Team = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="TEAM" subtitle="Managing the Team Members" />
-        <Box display="flex" justifyContent="end" mt="20px">
+        {/* <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
             color="secondary"
@@ -170,7 +170,7 @@ const Team = () => {
           >
             Activate Selected
           </Button>
-        </Box>
+        </Box> */}
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
