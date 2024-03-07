@@ -63,16 +63,20 @@ const UserForm = () => {
       formData.append('cv_file_checksum', cvFileChecksum);
       formData.append('contract_file_checksum', contractFileChecksum);
 
-      console.log("The cv file checksum is:", cvFileChecksum);
-      console.log("The contract file checksum is:", contractFileChecksum);
+      // console.log("The cv file checksum is:", cvFileChecksum);
+      // console.log("The contract file checksum is:", contractFileChecksum);
       
-      console.log("Form submission initiated. Values:", values);
+      // console.log("Form submission initiated. Values:", values);
       const response = await createUser(formData);
-
-      if (response.error) {
-        toast.error(response.error?.data?.message);
-        return;
+      if (response.error.data.detail) {
+        toast.error(response.error?.data?.detail);
+        navigate("/dashboard");
       }
+      
+      if (response.error) {
+        toast.error(response.error?.data?.message || "An error occurred");
+        return;
+      }      
       if (response.data) {
         toast.success(response.data?.message);
         navigate("/team");
@@ -237,6 +241,7 @@ const UserForm = () => {
                 }
                 sx={{ gridColumn: "span 2" }}
               >
+                <MenuItem value="manager">Manager</MenuItem>
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="user">User</MenuItem>
               </TextField>

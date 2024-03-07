@@ -10,6 +10,7 @@ import { useGetUsersQuery } from "../../state/api";
 import { useActivateUserMutation } from "../../state/api";
 import { useDeactivateUserMutation } from "../../state/api";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Team = () => {
   const { data, isLoading, refetch } = useGetUsersQuery();
@@ -21,29 +22,39 @@ const Team = () => {
   const colors = tokens(theme.palette.mode);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
 
-  const handleActivateClick = async (activate) => {
+  const handleActivateClick = async () => {
     try {
       const promises = selectedUserIds.map(async (userId) => {
-        await activateUser(userId);
+        const response = await activateUser(userId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
       });
-      await Promise.all(promises);
 
-      await refetch();
+      await Promise.all(promises);
+      refetch();
     } catch (error) {
-      console.error("Error activating/deactivating user:", error);
+      console.error("Error activating user:", error);
     }
   };
 
   const handleDeactivateClick = async () => {
     try {
       const promises = selectedUserIds.map(async (userId) => {
-        await deactivateUser(userId);
+        const response = await deactivateUser(userId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
       });
-      await Promise.all(promises);
 
+      await Promise.all(promises);
       refetch();
     } catch (error) {
-      console.error("Error deactivating clients:", error);
+      console.error("Error deactivating user:", error);
     }
   };
 
@@ -79,6 +90,11 @@ const Team = () => {
       headerName: "Email",
       flex: 1,
     },
+    {
+      field: "contact",
+      headerName: "Contact Phone",
+      flex: 1,
+    },
 
     {
       field: "isActive",
@@ -101,11 +117,6 @@ const Team = () => {
           </Box>
         );
       },
-    },
-    {
-      field: "registrarID",
-      headerName: "Registrar ID",
-      flex: 1,
     },
     {
       field: "registrarName",

@@ -36,7 +36,7 @@ export const api = createApi({
     }),
     deactivateUser: build.mutation({
       query: (userId) => ({
-        url: `/deactivate-user/${userId}/`,
+        url: `/update_user/${userId}/`,
         method: "PUT",
       }),
       invalidatesTags: ["Users"],

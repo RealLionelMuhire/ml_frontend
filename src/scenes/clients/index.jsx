@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useActivateClientMutation } from "../../state/api";
 import { useDeactivateClientMutation } from "../../state/api";
+import { toast } from "react-toastify";
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();
@@ -25,7 +26,12 @@ const Clients = () => {
   const handleActivateClick = async (activate) => {
     try {
       const promises = selectedClientIds.map(async (clientId) => {
-        await activateClient(clientId);
+        const response = await activateClient(clientId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
       });
       await Promise.all(promises);
 
@@ -38,7 +44,12 @@ const Clients = () => {
   const handleDeactivateClick = async () => {
     try {
       const promises = selectedClientIds.map(async (clientId) => {
-        await deactivateClient(clientId);
+        const response = await deactivateClient(clientId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
       });
       await Promise.all(promises);
 
@@ -95,7 +106,7 @@ const Clients = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CLIENTS" subtitle="Managing All Clinets" />
-        <Box display="flex" justifyContent="left" mt="20px" ml="10px">
+        <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
             color="secondary"
