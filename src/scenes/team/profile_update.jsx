@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-import { useUpdateUserProfileMutation } from "../../state/api";
+import { useUpdateUserProfileMutation, useGetUserProfileQuery } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -11,6 +11,7 @@ const ProfileUpdateForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [updatedProfile, { isError, data }] = useUpdateUserProfileMutation();
   const navigate = useNavigate();
+  const { data: userProfile, isLoading } = useGetUserProfileQuery();
 
   const handleFormSubmit = async (values, { setSubmitting }) => {
     try {

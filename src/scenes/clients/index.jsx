@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useActivateClientMutation } from "../../state/api";
 import { useDeactivateClientMutation } from "../../state/api";
 import { toast } from "react-toastify";
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();
@@ -22,6 +23,28 @@ const Clients = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedClientIds, setSelectedClientIds] = useState([]);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [confirmationAction, setConfirmationAction] = useState(null);
+
+  const handleConfirmationOpen = (action) => {
+    setConfirmationAction(action);
+    setConfirmationDialogOpen(true);
+  };
+
+  const handleConfirmationClose = () => {
+    setConfirmationAction(null);
+    setConfirmationDialogOpen(false);
+  };
+
+  const handleActivateConfirmation = () => {
+    handleConfirmationClose();
+    handleActivateClick(true);
+  };
+
+  const handleDeactivateConfirmation = () => {
+    handleConfirmationClose();
+    handleDeactivateClick();
+  };
 
   const handleActivateClick = async (activate) => {
     try {
@@ -37,7 +60,7 @@ const Clients = () => {
 
       await refetch();
     } catch (error) {
-      console.error("Error activating/deactivating clients:", error);
+      // console.error("Error activating/deactivating clients:", error);
     }
   };
 
@@ -55,7 +78,7 @@ const Clients = () => {
 
       refetch();
     } catch (error) {
-      console.error("Error deactivating clients:", error);
+      // console.error("Error deactivating clients:", error);
     }
   };
 
@@ -118,26 +141,26 @@ const Clients = () => {
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={handleActivateClick}
-            disabled={selectedClientIds.length !== 1 || isActivating}
-          >
-            Activate Selected
-          </Button>
+        <Button
+          type="button"
+          color="secondary"
+          variant="contained"
+          onClick={() => handleConfirmationOpen("activate")}
+          disabled={selectedClientIds.length !== 1 || isActivating}
+        >
+          Activate Selected
+        </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={handleDeactivateClick}
-            disabled={selectedClientIds.length !== 1 || isDeactivating}
-          >
-            Deactivate Selected
-          </Button>
+        <Button
+          type="button"
+          color="secondary"
+          variant="contained"
+          onClick={() => handleConfirmationOpen("deactivate")}
+          disabled={selectedClientIds.length !== 1 || isDeactivating}
+        >
+          Deactivate Selected
+        </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
@@ -187,6 +210,44 @@ const Clients = () => {
           onSelectionModelChange={handleSelectionModelChange}
         />
       </Box>
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmationDialogOpen}
+        onClose={handleConfirmationClose}
+        maxWidth="xs"
+        fullWidth
+      >
+        {/* <DialogTitle>Confirmation</DialogTitle> */}
+        <DialogContent>
+          <Typography>
+            {confirmationAction === "activate"
+              ? "Are you sure you want to activate the selected client?"
+              : "Are you sure you want to deactivate the selected client?"}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+        <Box display="flex" justifyContent="center" p={2} gap="20px">
+          <Button
+            onClick={handleConfirmationClose}
+            color="secondary"
+            variant="contained"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={
+              confirmationAction === "activate"
+                ? handleActivateConfirmation
+                : handleDeactivateConfirmation
+            }
+            color="secondary"
+            variant="contained"
+          >
+            Confirm
+          </Button>
+        </Box>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

@@ -140,6 +140,7 @@ const Topbar = () => {
         toast.success(
           "Check your email, Password reset instructions sent successfully."
         );
+        navigate("/login");
       } catch (error) {
         toast.error("Error resetting password. Please try again.");
       }

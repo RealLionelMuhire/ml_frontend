@@ -56,12 +56,14 @@ const Form = () => {
       if (!loggedInResponse.ok) {
         const errorData = await loggedInResponse.json();
         toast.error(errorData.message);
-        return;
+        onSubmitProps.resetForm();
+        setLoading(false);
       }
 
       const loggedIn = await loggedInResponse.json();
       if (loggedInResponse.ok) {
         toast.success(loggedIn.message);
+        setLoading(false);
       }
 
       onSubmitProps.resetForm();
