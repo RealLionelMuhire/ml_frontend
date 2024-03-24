@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
 import { useGetDashboardQuery } from "../../state/api";
 import EmailIcon from "@mui/icons-material/Email";
+// import CodyLauncher from "../global/Chatbox";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -26,6 +27,7 @@ const Dashboard = () => {
 
   return (
     <Box m="20px">
+      {/* <CodyLauncher /> */}
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="HOME" subtitle="Welcome to ML Corporate Services" />

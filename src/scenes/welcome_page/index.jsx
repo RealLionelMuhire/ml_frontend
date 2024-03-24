@@ -50,7 +50,7 @@ const WelcomePage = () => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" justifyContent="left">
-          ML Corporates Services
+          ML Corporate Services
         </Typography>
       </Box>
 
