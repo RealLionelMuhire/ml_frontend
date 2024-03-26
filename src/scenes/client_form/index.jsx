@@ -5,7 +5,6 @@ import {
   MenuItem,
   CircularProgress,
   Typography,
-  Select,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -15,9 +14,7 @@ import { CountryDropdown } from "react-country-region-selector";
 import { useCreateClientMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
-import { useTheme } from "@mui/material/styles";
-import { SHA256 } from 'crypto-js';
-import CryptoJS from 'crypto-js';
+import { useTheme } from "@mui/material/styles"
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -26,59 +23,14 @@ const ClientForm = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const calculateChecksum = async (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-  
-      reader.onload = (e) => {
-        try {
-          const arrayBuffer = e.target.result;
-          const data = new Uint8Array(arrayBuffer);
-          const calculatedChecksum = SHA256(CryptoJS.lib.WordArray.create(data)).toString(CryptoJS.enc.Hex);
-          resolve(calculatedChecksum);
-        } catch (error) {
-          reject(error);
-        }
-      };
-  
-      reader.onerror = (error) => {
-        reject(error);
-      };
-  
-      reader.readAsArrayBuffer(file);
-    });
-  };
+
 
   const handleFormSubmit = async (values) => {
     try {
-      // Calculate checksum for bankStatement_file
-      const signature_fileChecksum = values.signature_file
-      ? await calculateChecksum(values.signature_file)
-      : null;
-
-      // Calculate checksum for bankStatement_file
-      const bankStatementfileChecksum = values.bankStatement_file
-      ? await calculateChecksum(values.bankStatement_file)
-      : null;
-      
-      // Calculate checksum for contract_file
-      const professionalReference_fileChecksum = values.professionalReference_file
-      ? await calculateChecksum(values.professionalReference_file)
-      : null;
-      
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      
-      // Append checksums to FormData
-      formData.append('signature_file_checksum', signature_fileChecksum);
-      formData.append('bankStatement_file_checksum', bankStatementfileChecksum);
-      formData.append('professionalReference_file_checksum', professionalReference_fileChecksum);
-
-      console.log("The signature file checksum is:", signature_fileChecksum);
-      console.log("The bank statement file checksum is:", bankStatementfileChecksum);
-      console.log("The professional reference file checksum is:", professionalReference_fileChecksum);
       
       console.log("Form submission initiated. Values:", values);
       const response = await createClient(formData);

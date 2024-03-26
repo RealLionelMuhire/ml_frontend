@@ -78,8 +78,10 @@ const Form = () => {
         // navigate("/dashboard");
         window.location.href = "/dashboard";
       }
+      setLoading(false);
     } catch (error) {
       toast.error("Error logging in. Please try again.");
+      setLoading(false);
     }
   };
 

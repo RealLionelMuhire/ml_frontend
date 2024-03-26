@@ -15,7 +15,7 @@ import Calendar from "./scenes/calendar/calendar";
 import Login from "./scenes/login";
 import ServicesForm from "./scenes/services_from";
 import Roles from "./scenes/roles";
-import UserForm from "./scenes/user_form";
+import UserForm from "./scenes/user_form/index2";
 import ClientsForm from "./scenes/client_form";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Outlet } from "react-router-dom";
@@ -35,6 +35,7 @@ import ReservationDisplay from "./scenes/reservation_display";
 import WelcomePage from "./scenes/welcome_page";
 
 
+
 const ProtectedRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
@@ -44,13 +45,20 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoading(false);
     if (token && token !== "undefined") {
       setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
     }
   }, []);
+
+  if (!isAuthenticated && !isLoading) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <Router>
