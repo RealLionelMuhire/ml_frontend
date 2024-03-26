@@ -7,8 +7,9 @@ import Header from "../../components/Header";
 import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import FormFields from "./FormFields";
-import FileUpload from "./FileUpload";
+import FormFields1 from "./FormField1";
+import FormFields2 from "./FormField2";
+import FormFields3 from "./FormField3";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -38,7 +39,7 @@ const ClientForm = () => {
         toast.error(response.error?.data?.message || "An error occurred");
       } else if (response.data) {
         toast.success(response.data?.message);
-        navigate("/team");
+        navigate("/clients");
       }
     } catch (error) {
       console.error("Error creating user:", error);
@@ -209,7 +210,7 @@ const initialValues = {
               }}
             >
               {step === 1 && (
-                <FormFields
+                <FormFields1
                   values={values}
                   errors={errors}
                   touched={touched}
@@ -219,13 +220,24 @@ const initialValues = {
                 />
               )}
               {step === 2 && (
-                <FileUpload
+                <FormFields2
                   values={values}
-                  touched={touched}
                   errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
                   handleChange={handleChange}
-                  setFieldValue={setFieldValue}
+                  isNonMobile={isNonMobile}
                 />
+              )}
+              {step === 3 && (
+                <FormFields3
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                isNonMobile={isNonMobile}
+              />
               )}
             </Box>
 
@@ -246,6 +258,13 @@ const initialValues = {
                 </Box>
               )}
               {step === 2 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button variant="contained" onClick={nextStep} color="secondary">
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 3 && (
                 <React.Fragment>
                   <Box display="flex" justifyContent="space-between" mt="20px">
                     <Button
