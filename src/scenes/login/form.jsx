@@ -68,16 +68,19 @@ const Form = () => {
 
       onSubmitProps.resetForm();
       if (loggedIn?.token) {
+        localStorage.setItem("user_id", loggedIn.user.id);
+        localStorage.setItem("userType", loggedIn.user.userType);
         localStorage.setItem("token", loggedIn.token);
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
-        );
-        // navigate("/dashboard");
-        window.location.href = "/dashboard";
-      }
+          );
+          
+          // navigate("/dashboard");
+          window.location.href = "/dashboard";
+        }
       setLoading(false);
     } catch (error) {
       toast.error("Error logging in. Please try again.");

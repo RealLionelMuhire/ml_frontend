@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useActivateClientMutation } from "../../state/api";
 import { useDeactivateClientMutation } from "../../state/api";
 import { toast } from "react-toastify";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Dialog, DialogContent, DialogActions } from "@mui/material";
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();

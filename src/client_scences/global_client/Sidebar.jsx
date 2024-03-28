@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme, CircularProgress } from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -41,7 +41,7 @@ const Sidebar = () => {
 
   // Check if userProfile is still loading
   if (isLoading) {
-    return <div><CircularProgress size={24} color="inherit" /></div>;
+    return <div>Loading...</div>;
   }
 
   // Check if userProfile is undefined
@@ -210,7 +210,7 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {userProfile.accessLevel === "user" ? null : (
+            {userProfile.accessLevel === "client" ? null : (
               <>
                 <Typography
                   variant="h6"
@@ -228,6 +228,28 @@ const Sidebar = () => {
                 />
               </>
             )}
+
+            {/* <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Reports
+            </Typography>
+            <Item
+              title="Clients Data"
+              to="/clients-data"
+              icon={<DescriptionOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Reports"
+              to="/faq"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>

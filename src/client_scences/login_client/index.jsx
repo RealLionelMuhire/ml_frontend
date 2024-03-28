@@ -57,7 +57,7 @@ const Login = () => {
         backgroundColor={theme.palette.background.alt}
       >
         <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
-          Welcome to MLCS Client & Admin Management Platform (For Staff only)!
+          Welcome to ML Corporate Services
         </Typography>
         <Form/>
       </Box>
