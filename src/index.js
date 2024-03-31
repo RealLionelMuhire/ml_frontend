@@ -36,7 +36,7 @@ root.render(
         toastStyle={{
           height: "100px",
         }}
-        autoClose={10000}
+        autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

@@ -28,7 +28,7 @@ import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import TokenRetrieval from "../../utils/TokenRetrieval";
 import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
@@ -98,7 +98,7 @@ const Topbar = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json,",
-            Authorization: `token ${localStorage.getItem("token")}`,
+            Authorization: `token ${TokenRetrieval.getToken()}`,
           },
         });
         const loggedOut = await loggedOutResponse.json();
@@ -110,8 +110,13 @@ const Topbar = () => {
               token: "null",
             })
           );
-          // window.location.href = "/";
+        }
+        if (loggedOutResponse.ok) {
+          toast.success(loggedOut.message);
           navigate("/login");
+        } else {
+          toast.error(loggedOut.message)
+          navigate("/")
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");

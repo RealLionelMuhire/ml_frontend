@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate} from "react-router-dom";
+import TokenRetrieval from "./utils/TokenRetrieval";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Clients from "./scenes/clients";
@@ -46,23 +47,16 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = TokenRetrieval.getToken();
+    const user_id = localStorage.getItem("user_id");
+    const userType = localStorage.getItem("userType")
     setIsLoading(false);
     if (token && token !== "undefined") {
-      console.log("token: ", token);
-      console.log("user id: ", localStorage.getItem("user_id"));
-      console.log("user Type: ", localStorage.getItem("userType"));
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
     }
   }, []);
-
-
-  // if (!isAuthenticated && !isLoading) {
-  //     return (<Navigate to="/login" />)
-  //   }
-  
 
   return (
     <Router>
@@ -108,8 +102,8 @@ function App() {
                 <Route path="/reservations-display" element={<AdminLayout><ReservationDisplay /></AdminLayout>} />
               </Route>
 
-              <Route path="/login" element={<Login />} />
-              <Route path="*" element={<Navigate to="/login" />} />
+              <Route path="/" element={<WelcomePage />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           ) : (
             <h1>loading ... </h1>

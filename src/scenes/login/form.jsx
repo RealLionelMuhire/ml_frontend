@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "../../state";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import TokenStorage from "../../utils/TokenStorage";
+
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
@@ -68,20 +70,21 @@ const Form = () => {
 
       onSubmitProps.resetForm();
       if (loggedIn?.token) {
-        localStorage.setItem("user_id", loggedIn.user.id);
-        localStorage.setItem("userType", loggedIn.user.userType);
-        localStorage.setItem("token", loggedIn.token);
+        localStorage.setItem("user_id", loggedIn.user_id)
+        localStorage.setItem("userType", loggedIn.userType)
+        TokenStorage.saveToken(loggedIn.token);
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
           );
-          
-          // navigate("/dashboard");
-          window.location.href = "/dashboard";
+          setLoading(true);
+          setTimeout(() => {
+            navigate("/dashboard");
+            setLoading(false);
+          }, 2000);
         }
-      setLoading(false);
     } catch (error) {
       toast.error("Error logging in. Please try again.");
       setLoading(false);

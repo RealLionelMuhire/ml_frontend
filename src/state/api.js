@@ -1,4 +1,5 @@
 // state/api.js
+import TokenRetrieval from "../utils/TokenRetrieval";
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -6,7 +7,7 @@ const baseUrl = process.env.REACT_APP_API_BASE_URL;
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl,
-    headers: { Authorization: `token ${localStorage.getItem("token")}` },
+    headers: { Authorization: `token ${TokenRetrieval.getToken()}` },
   }),
   reducerPath: "authApi",
   endpoints: (build) => ({

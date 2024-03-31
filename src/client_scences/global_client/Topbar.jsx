@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import TokenRetrieval from "../../utils/TokenRetrieval";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -97,7 +98,7 @@ const Topbar = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json,",
-            Authorization: `token ${localStorage.getItem("token")}`,
+            Authorization: `token ${TokenRetrieval.getToken()}`,
           },
         });
         const loggedOut = await loggedOutResponse.json();
@@ -109,8 +110,9 @@ const Topbar = () => {
               token: "null",
             })
           );
+          console.log("Decrypted log out token", TokenRetrieval.getToken())
           // window.location.href = "/";
-          navigate("/login");
+          // navigate("/login");
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
