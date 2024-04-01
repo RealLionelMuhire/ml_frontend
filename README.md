@@ -14,6 +14,7 @@ Or download and run [`setup_project.sh`](./setup_project.sh)
 
 - Node.js
 - npm (Node Package Manager)
+- Set up environmental variables
 
 ### Installing
 
