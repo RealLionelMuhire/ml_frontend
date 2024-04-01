@@ -110,9 +110,9 @@ const Topbar = () => {
               token: "null",
             })
           );
-          console.log("Decrypted log out token", TokenRetrieval.getToken())
+          // console.log("Decrypted log out token", TokenRetrieval.getToken())
           // window.location.href = "/";
-          // navigate("/login");
+          navigate("/login");
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
