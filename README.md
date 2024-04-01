@@ -49,24 +49,21 @@ Or download and run [`setup_project.sh`](./setup_project.sh)
 ### Features
 
 - User Interface Components using Material-UI
-- Data Visualization using Chart.js, Nivo, and FullCalendar
+- Data Visualization using MUI Datagrid and FullCalendar
 - Form handling with Formik and Yup
 - State management using Redux and React-Redux
 - Routing with React Router
-- Firebase integration for authentication and other services (including user creation and authentication)
+- User, Services, Alerts, Booking, and authentintication and other services (including user creation and authentication)
 - Toast notifications with react-toastify
 - Internationalization with react-country-region-selector and moment-timezone
 
 ### Third-Party Apps Used
 
 - Material-UI for UI components
-- Chart.js for chart visualization
-- Nivo for data visualization
 - FullCalendar for displaying calendars
 - Formik and Yup for form handling and validation
 - Redux and React-Redux for state management
 - React Router for routing
-- Firebase for authentication, user creation, and other services
 - react-toastify for toast notifications
 - react-country-region-selector for country and region selection
 - moment-timezone for handling time zones
