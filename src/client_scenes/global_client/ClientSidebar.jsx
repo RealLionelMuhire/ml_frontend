@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -32,7 +32,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = () => {
+const ClientSidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -41,12 +41,12 @@ const Sidebar = () => {
 
   // Check if userProfile is still loading
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div><CircularProgress size={40} color="inherit" /></div>;
   }
 
   // Check if userProfile is undefined
   if (!userProfile) {
-    return <div>User profile not available</div>;
+    return <div>profile not available</div>;
   }
 
   return (
@@ -151,9 +151,6 @@ const Sidebar = () => {
                 >
                   {userProfile.FirstName}
                 </Typography>
-                <Typography variant="h5" color={colors.grey[300]}>
-                  {userProfile.accessLevel}
-                </Typography>
               </Box>
             </Box>
           )}
@@ -228,28 +225,6 @@ const Sidebar = () => {
                 />
               </>
             )}
-
-            {/* <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Reports
-            </Typography>
-            <Item
-              title="Clients Data"
-              to="/clients-data"
-              icon={<DescriptionOutlined />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Reports"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
           </Box>
         </Menu>
       </ProSidebar>
@@ -257,4 +232,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default ClientSidebar;

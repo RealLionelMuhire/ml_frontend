@@ -1,11 +1,11 @@
 import { Box, Typography, useTheme, useMediaQuery, IconButton } from "@mui/material";
-import Form from "./form";
+import ClientLandingForm from "./form";
 import { useContext } from "react";
 import { ColorModeContext} from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
-const Login = () => {
+const ClientLogin = () => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const colorMode = useContext(ColorModeContext);
@@ -59,10 +59,10 @@ const Login = () => {
         <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }}>
           Welcome to ML Corporate Services
         </Typography>
-        <Form/>
+        <ClientLandingForm/>
       </Box>
     </Box>
   );
 };
 
-export default Login;
+export default ClientLogin;

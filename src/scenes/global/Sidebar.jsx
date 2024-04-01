@@ -41,7 +41,7 @@ const Sidebar = () => {
 
   // Check if userProfile is still loading
   if (isLoading) {
-    return <div><CircularProgress size={24} color="inherit" /></div>;
+    return <div><CircularProgress size={40} color="inherit" /></div>;
   }
 
   // Check if userProfile is undefined

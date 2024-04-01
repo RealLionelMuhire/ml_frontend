@@ -31,7 +31,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import TokenRetrieval from "../../utils/TokenRetrieval";
 
-const Topbar = () => {
+const ClientTopbar = () => {
   const theme = useTheme();
   const { data: userProfile, isLoading } = useGetUserProfileQuery();
   const { data: clients } = useGetClientsQuery();
@@ -112,7 +112,7 @@ const Topbar = () => {
           );
           console.log("Decrypted log out token", TokenRetrieval.getToken())
           // window.location.href = "/";
-          // navigate("/login");
+          navigate("/login");
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
@@ -373,4 +373,4 @@ const Topbar = () => {
   );
 };
 
-export default Topbar;
+export default ClientTopbar;

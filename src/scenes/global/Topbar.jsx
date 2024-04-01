@@ -34,7 +34,7 @@ import { useNavigate } from "react-router-dom";
 const Topbar = () => {
   const theme = useTheme();
   const { data: userProfile, isLoading } = useGetUserProfileQuery();
-  const { data: clients, isLoading: clientsLoading } = useGetClientsQuery();
+  const { data: clients} = useGetClientsQuery();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -177,8 +177,8 @@ const Topbar = () => {
     if (clickedClientId !== null) {
       const timeoutId = setTimeout(() => {
         debouncedNavigate(clickedClientId);
-        setClickedClientId(null); // Reset clickedClientId after navigation
-        searchBoxRef.current?.focus(); // Set focus on the search box
+        setClickedClientId(null);
+        searchBoxRef.current?.focus();
       }, 500);
 
       return () => clearTimeout(timeoutId);
@@ -374,6 +374,7 @@ const Topbar = () => {
         </DialogContent>
       </Dialog>
     </Box>
+    
   );
 };
 

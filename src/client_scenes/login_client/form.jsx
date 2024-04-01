@@ -15,6 +15,7 @@ import { setLogin } from "../../state";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
+import TokenStorage from "../../utils/TokenStorage";
 
 
 const loginSchema = yup.object().shape({
@@ -124,17 +125,21 @@ const ClientLandingForm = () => {
 
       onSubmitProps.resetForm();
       if (loggedIn?.token) {
-        localStorage.setItem("token", loggedIn.token);
+        localStorage.setItem("user_id", loggedIn.user_id)
+        localStorage.setItem("userType", loggedIn.userType)
+        TokenStorage.saveToken(loggedIn.token);
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
-        );
-        // navigate("/dashboard");
-        window.location.href = "/client/home";
-      }
-      setLoading(false);
+          );
+          setLoading(true);
+          setTimeout(() => {
+            navigate("/dashboard");
+            setLoading(false);
+          }, 2000);
+        }
     } catch (error) {
       toast.error("Error logging in. Please try again.");
       setLoading(false);

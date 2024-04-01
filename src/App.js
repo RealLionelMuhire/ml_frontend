@@ -35,28 +35,54 @@ import ClientReservations from "./scenes/reservations_data";
 import ReservationDisplay from "./scenes/reservation_display";
 import WelcomePage from "./scenes/welcome_page";
 
+import ClientLayout from "./layouts/client";
+import ClientDashboard from "./client_scenes/client_dashboard";
+import ClientLogin from "./client_scenes/login_client";
 
 
-const ProtectedRoute = ({ isAuthenticated }) => {
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+const ProtectedRoute = ({ isAuthenticated, isClientAuthenticated, isUserAuthenticated }) => {
+  const userType = localStorage.getItem("userType");
+
+  if (isAuthenticated || isClientAuthenticated || isUserAuthenticated) {
+    return <Outlet />;
+  } else {
+    if (userType === "client") {
+      return <Navigate to="/client-login" />;
+    } else {
+      return <Navigate to="/login" />;
+    }
+  }
 };
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isClientAuthenticated, setIsClientAuthenticated] = useState(false);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = TokenRetrieval.getToken();
-    const user_id = localStorage.getItem("user_id");
-    const userType = localStorage.getItem("userType")
+    const userType = localStorage.getItem("userType");
     setIsLoading(false);
     if (token && token !== "undefined") {
       setIsAuthenticated(true);
+      if (userType === "client") {
+        setIsClientAuthenticated(true);
+      } else if (userType === "user" || userType === "admin" || userType === "manager") {
+        setIsUserAuthenticated(true);
+      }
+      else {
+        setIsClientAuthenticated(false);
+        setIsUserAuthenticated(false);
+      }
     } else {
       setIsAuthenticated(false);
+      setIsClientAuthenticated(false);
+      setIsUserAuthenticated(false);
     }
   }, []);
+
 
   return (
     <Router>
@@ -70,11 +96,16 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/reservation" element={<Reservation />} />
               <Route path="/testCal" element={<TestCalendar />} />
+              <Route path="/client-login" element={<ClientLogin />} />
               
 
               {/* Routes accessible only to authenticated users */}
               <Route
-                element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
+                element={<ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  isUserAuthenticated={isUserAuthenticated}
+                  // isClientAuthenticated={isClientAuthenticated}
+                  />}
               >
                 <Route path="/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>}/>
                 <Route path="/team" element={<AdminLayout><Team /></AdminLayout>}/>
@@ -100,6 +131,16 @@ function App() {
                 <Route path="/geography" element={<AdminLayout><Geography /></AdminLayout>} />
                 <Route path="/client-reservations" element={<AdminLayout><ClientReservations /></AdminLayout>} />
                 <Route path="/reservations-display" element={<AdminLayout><ReservationDisplay /></AdminLayout>} />
+              </Route>
+
+              <Route
+                element={<ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  // isUserAuthenticated={isUserAuthenticated}
+                  isClientAuthenticated={isClientAuthenticated}
+                  />}
+              >
+                <Route path="/client/dashboard" element={<ClientLayout><ClientDashboard /></ClientLayout>} />
               </Route>
 
               <Route path="/" element={<WelcomePage />} />
