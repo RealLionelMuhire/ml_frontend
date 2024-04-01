@@ -114,6 +114,7 @@ const Topbar = () => {
         if (loggedOutResponse.ok) {
           toast.success(loggedOut.message);
           navigate("/login");
+          window.location.href ="/login"
         } else {
           toast.error(loggedOut.message)
           navigate("/")
