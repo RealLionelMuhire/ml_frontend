@@ -104,7 +104,6 @@ function App() {
                 element={<ProtectedRoute
                   isAuthenticated={isAuthenticated}
                   isUserAuthenticated={isUserAuthenticated}
-                  // isClientAuthenticated={isClientAuthenticated}
                   />}
               >
                 <Route path="/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>}/>
@@ -136,7 +135,6 @@ function App() {
               <Route
                 element={<ProtectedRoute
                   isAuthenticated={isAuthenticated}
-                  // isUserAuthenticated={isUserAuthenticated}
                   isClientAuthenticated={isClientAuthenticated}
                   />}
               >

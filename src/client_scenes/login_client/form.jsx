@@ -137,6 +137,7 @@ const ClientLandingForm = () => {
           setLoading(true);
           setTimeout(() => {
             navigate("/dashboard");
+            window.location.href = "/dashboard"
             setLoading(false);
           }, 2000);
         }

@@ -113,11 +113,22 @@ const Topbar = () => {
         }
         if (loggedOutResponse.ok) {
           toast.success(loggedOut.message);
-          navigate("/login");
-          window.location.href ="/login"
+          
+          
+          setTimeout(() => {
+            navigate("/login");
+            window.location.href ="/login"
+          }, 2000);
         } else {
+          localStorage.clear("token");
+          dispatch(
+            setLogout({
+              user: "null",
+              token: "null",
+            })
+          );
           toast.error(loggedOut.message)
-          navigate("/")
+          navigate("/login")
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");

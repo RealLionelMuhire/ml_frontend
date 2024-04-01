@@ -110,9 +110,26 @@ const ClientTopbar = () => {
               token: "null",
             })
           );
-          // console.log("Decrypted log out token", TokenRetrieval.getToken())
-          // window.location.href = "/";
-          navigate("/login");
+        }
+        if (loggedOutResponse.ok) {
+          toast.success(loggedOut.message);
+          
+          
+          setTimeout(() => {
+            navigate("/client-login");
+            window.location.href ="/client-login"
+          }, 2000);
+        } else {
+          localStorage.clear("token");
+          dispatch(
+            setLogout({
+              user: "null",
+              token: "null",
+            })
+          );
+          toast.error(loggedOut.message)
+          navigate("/client-login")
+          window.location.href ="/client-login"
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
