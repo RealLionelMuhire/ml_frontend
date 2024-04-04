@@ -6,7 +6,9 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
-  CircularProgress
+  CircularProgress,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -16,6 +18,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import TokenStorage from "../../utils/TokenStorage";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
 const loginSchema = yup.object().shape({
@@ -35,6 +39,7 @@ const forgotPasswordSchema = yup.object().shape({
 const initialValuesForgotPassword = {
   email: "",
 };
+
 const phoneRegExp = /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const registerSchema = yup.object().shape({
@@ -45,7 +50,15 @@ const registerSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
-  password: yup.string().required("required"),
+  password: yup.string()
+    .required("required")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, and one number"
+    ),
+  confirmPassword: yup.string()
+    .required('required')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
   NationalID: yup.string().required("required"),
   BirthDate: yup.date().required("required"),
   UserRoles: yup.string().required("required"),
@@ -77,6 +90,7 @@ const registerValues = {
   email: "",
   contact: "",
   password: "",
+  confirmPassword: "",
   NationalID: "",
   BirthDate: "",
   UserRoles: "",
@@ -100,6 +114,9 @@ const ClientLandingForm = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRepeatRegisterPassword, setShowRepeatRegisterPassword] = useState(false);
 
   const login = async (values, onSubmitProps) => {
     try {
@@ -136,8 +153,8 @@ const ClientLandingForm = () => {
           );
           setLoading(true);
           setTimeout(() => {
-            navigate("/dashboard");
-            window.location.href = "/dashboard"
+            navigate("/landing");
+            window.location.href = "/landing"
             setLoading(false);
           }, 2000);
         }
@@ -269,13 +286,25 @@ const ClientLandingForm = () => {
                 />
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showLoginPassword ? 'text' : 'password'}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
                   name="password"
                   error={Boolean(touched.password) && Boolean(errors.password)}
                   helperText={touched.password && errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowLoginPassword(prev => !prev)}
+                          size="small"
+                        >
+                          {showLoginPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
                   sx={{ gridColumn: "span 4" }}
                 />
               </>
@@ -291,6 +320,7 @@ const ClientLandingForm = () => {
                   name="FirstName"
                   error={Boolean(touched.FirstName) && Boolean(errors.FirstName)}
                   helperText={touched.FirstName && errors.FirstName}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="Last Name"
@@ -300,6 +330,7 @@ const ClientLandingForm = () => {
                   name="LastName"
                   error={Boolean(touched.LastName) && Boolean(errors.LastName)}
                   helperText={touched.LastName && errors.LastName}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="Email"
@@ -309,6 +340,7 @@ const ClientLandingForm = () => {
                   name="email"
                   error={Boolean(touched.email) && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="Contact"
@@ -318,16 +350,54 @@ const ClientLandingForm = () => {
                   name="contact"
                   error={Boolean(touched.contact) && Boolean(errors.contact)}
                   helperText={touched.contact && errors.contact}
+                  sx={{ gridColumn: "span 4" }}
+                  
                 />
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showRegisterPassword ? 'text' : 'password'}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
                   name="password"
                   error={Boolean(touched.password) && Boolean(errors.password)}
                   helperText={touched.password && errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowRegisterPassword(prev => !prev)}
+                          size="small"
+                        >
+                          {showRegisterPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  sx={{ gridColumn: "span 4" }}
+                />
+                <TextField
+                  label="Retype Password"
+                  type={showRepeatRegisterPassword ? 'text' : 'password'}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.confirmPassword}
+                  name="confirmPassword"
+                  error={Boolean(touched.confirmPassword) && Boolean(errors.confirmPassword)}
+                  helperText={touched.confirmPassword && errors.confirmPassword}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowRepeatRegisterPassword(prev => !prev)}
+                          size="small"
+                        >
+                          {showRepeatRegisterPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="National ID"
@@ -337,6 +407,7 @@ const ClientLandingForm = () => {
                   name="NationalID"
                   error={Boolean(touched.NationalID) && Boolean(errors.NationalID)}
                   helperText={touched.NationalID && errors.NationalID}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="Birth Date"
@@ -347,6 +418,7 @@ const ClientLandingForm = () => {
                   name="BirthDate"
                   error={Boolean(touched.BirthDate) && Boolean(errors.BirthDate)}
                   helperText={touched.BirthDate && errors.BirthDate}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="User Roles"
@@ -356,6 +428,7 @@ const ClientLandingForm = () => {
                   name="UserRoles"
                   error={Boolean(touched.UserRoles) && Boolean(errors.UserRoles)}
                   helperText={touched.UserRoles && errors.UserRoles}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="Address"
@@ -365,6 +438,7 @@ const ClientLandingForm = () => {
                   name="Address"
                   error={Boolean(touched.Address) && Boolean(errors.Address)}
                   helperText={touched.Address && errors.Address}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
                   label="Access Level"
@@ -374,8 +448,9 @@ const ClientLandingForm = () => {
                   name="accessLevel"
                   error={Boolean(touched.accessLevel) && Boolean(errors.accessLevel)}
                   helperText={touched.accessLevel && errors.accessLevel}
+                  sx={{ gridColumn: "span 4" }}
                 />
-                <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+                <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
                 <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
                   {values.cv_file ? values.cv_file.name : <label htmlFor="cv_file">Upload CV</label>}
                 </Typography>
@@ -387,13 +462,13 @@ const ClientLandingForm = () => {
                     handleChange(e);
                     setFieldValue("cv_file", e.currentTarget.files[0]);
                   }}
-                  sx={{ gridColumn: "span 2" }}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 {touched.cv_file && errors.cv_file && (
                   <div>{errors.cv_file}</div>
                 )}
               </Box>
-              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
                 <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
                   {values.contract_file ? values.contract_file.name : <label htmlFor="contract_file">Upload Contract</label>}
                 </Typography>
@@ -405,13 +480,13 @@ const ClientLandingForm = () => {
                     handleChange(e);
                     setFieldValue("contract_file", e.currentTarget.files[0]);
                   }}
-                  sx={{ gridColumn: "span 2" }}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 {touched.contract_file && errors.contract_file && (
                   <div>{errors.contract_file}</div>
                 )}
                 </Box>
-                <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}> 
+                <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}> 
                 <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
                   {values.national_id_file ? values.national_id_file.name : <label htmlFor="national_id_file">Upload National ID</label>}
                 </Typography>
@@ -423,7 +498,7 @@ const ClientLandingForm = () => {
                     handleChange(e);
                     setFieldValue("national_id_file", e.currentTarget.files[0]);
                   }}
-                  sx={{ gridColumn: "span 2" }}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 {touched.national_id_file && errors.national_id_file && (
                   <div>{errors.national_id_file}</div>
@@ -453,7 +528,7 @@ const ClientLandingForm = () => {
               ) : (
                 <>
                   <Typography variant="h5" fontWeight="100">
-                    {isLogin ? "LOGIN" : "RESET PASSWORD"}
+                  {isLogin ? "LOGIN" : isRegister ? "REGISTER" : "RESET PASSWORD"}
                   </Typography>
                 </>
               )}
@@ -467,50 +542,70 @@ const ClientLandingForm = () => {
               borderRadius="1.5rem"
               alignItems="flex-end"
             >
-              <Typography
-                // color="secondary"
-                ml="5px"
-                fontWeight="500"
-                variant="h5"
-                onClick={() => {
-                  setPageType(isLogin ? "forgotPassword" : "login");
-                  resetForm();
-                }}
-                sx={{
-                  mb: "1.5rem",
-                  textDecoration: "underline",
-                  // color: palette.secondary.main,
-                  "&:hover": {
-                    cursor: "pointer",
-                    color: palette.secondary.light,
-                  },
-                }}
-              >
-                {isLogin
-                  ? "Forgot your password? Reset it here."
-                  : "Remember your password? Login here."}
-              </Typography>
-              <Typography
-                // color="secondary"
-                mr="5px"
-                fontWeight="500"
-                variant="h5"
-                onClick={() => {
-                  navigate("/");
-                }}
-                sx={{
-                  mb: "1.5rem",
-                  textDecoration: "underline",
-                  // color: palette.secondary.main,
-                  "&:hover": {
-                    cursor: "pointer",
-                    color: palette.secondary.light,
-                  },
-                }}
-              >
-                Back to Home
-              </Typography>
+              {isLogin && (
+                <Typography
+                  ml="5px"
+                  fontWeight="500"
+                  variant="h5"
+                  onClick={() => {
+                    setPageType(isLogin ? "forgotPassword" : "login");
+                    resetForm();
+                  }}
+                  sx={{
+                    mb: "1.5rem",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: palette.secondary.light,
+                    },
+                  }}
+                >
+                  Forgot your password? Reset it here.
+                </Typography>
+              )}
+              {isLogin && (
+                <Typography
+                  mr="5px"
+                  fontWeight="500"
+                  variant="h5"
+                  onClick={() => {
+                    setPageType("register"); // Switch to register mode
+                    resetForm(); // Reset the form
+                  }}
+                  sx={{
+                    mb: "1.5rem",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: palette.secondary.light,
+                    },
+                  }}
+                >
+                  New user? Register here.
+                </Typography>
+              )}
+              {!isLogin && (
+                <Typography
+                  mr="5px"
+                  fontWeight="500"
+                  variant="h5"
+                  onClick={() => {
+                    navigate("/client-welcome");
+                  }}
+                  sx={{
+                    mb: "1.5rem",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: palette.secondary.light,
+                    },
+                  }}
+                >
+                  Back to Home
+                </Typography>
+              )}
             </Box>
+
           </Box>
         </form>
       )}

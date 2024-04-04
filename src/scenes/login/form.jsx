@@ -6,7 +6,9 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
-  CircularProgress
+  CircularProgress,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -15,6 +17,8 @@ import { setLogin } from "../../state";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import TokenStorage from "../../utils/TokenStorage";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
 const loginSchema = yup.object().shape({
@@ -45,6 +49,7 @@ const Form = () => {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const login = async (values, onSubmitProps) => {
     try {
@@ -81,10 +86,10 @@ const Form = () => {
           );
           setLoading(true);
           setTimeout(() => {
-            navigate("/dashboard");
-            window.location.href = "/dashboard"
+            navigate("/landing-user");
+            window.location.href = "/landing-user"
             setLoading(false);
-          }, 2000);
+          }, 100);
         }
     } catch (error) {
       toast.error("Error logging in. Please try again.");
@@ -182,13 +187,25 @@ const Form = () => {
                 />
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
                   name="password"
                   error={Boolean(touched.password) && Boolean(errors.password)}
                   helperText={touched.password && errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(prev => !prev)}
+                          size="small"
+                        >
+                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
                   sx={{ gridColumn: "span 4" }}
                 />
               </>

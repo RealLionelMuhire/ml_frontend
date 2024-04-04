@@ -5,7 +5,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import { useNavigate } from "react-router-dom";
 
-const WelcomePage = () => {
+const ClientWelcomePage = () => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { palette } = useTheme();
@@ -61,8 +61,8 @@ const WelcomePage = () => {
         borderRadius="1.5rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }} ml="80px">
-          Welcome to MLCS Client & Admin Management Platform
+        <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }} ml="70px">
+          Welcome to ML CORPORATE SERVICES Client & Admin Management Platform
         </Typography>
         <Box
           display="flex"
@@ -95,11 +95,11 @@ const WelcomePage = () => {
                 "&:hover": { color: palette.primary.main },
               }}
               onClick={() => {
-                navigate("/client-welcome");
+                navigate("/reservation");
               }}
             >
               <>
-              <Typography variant="h5" fontWeight="100">GO TO CLIENT PORTAL</Typography>
+              <Typography variant="h5" fontWeight="100">BOOK AN  OPPOINTMENT</Typography>
               </>
             </Button>
           </Box>
@@ -124,11 +124,11 @@ const WelcomePage = () => {
                 "&:hover": { color: palette.primary.main },
               }}
               onClick={() => {
-                navigate("/login");
+                navigate("/client-login");
               }}
             >
               <>
-              <Typography variant="h5" fontWeight="100">LOGIN (FOR ADMIN ONLY)</Typography>
+              <Typography variant="h5" fontWeight="100">SIGN IN OR SIGN UP</Typography>
               </>
             </Button>
         </Box>
@@ -138,4 +138,4 @@ const WelcomePage = () => {
   );
 };
 
-export default WelcomePage;
+export default ClientWelcomePage;

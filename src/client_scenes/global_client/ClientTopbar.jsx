@@ -11,9 +11,9 @@ import {
   DialogTitle,
   DialogContent,
   Button,
-  Autocomplete,
+  // Autocomplete,
   Grid,
-  TextField,
+  // TextField,
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
@@ -21,7 +21,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/EmailOutlined";
 import { useState } from "react";
 import { setLogout } from "../../state";
@@ -35,7 +35,7 @@ const ClientTopbar = () => {
   const theme = useTheme();
   const { data: userProfile, isLoading } = useGetUserProfileQuery();
   const { data: clients } = useGetClientsQuery();
-  const colors = tokens(theme.palette.mode);
+  // const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [isProfileDialogOpen, setProfileDialogOpen] = useState(false);
@@ -158,7 +158,7 @@ const ClientTopbar = () => {
         toast.success(
           "Check your email, Password reset instructions sent successfully."
         );
-        navigate("/login");
+        navigate("/client-login");
       } catch (error) {
         toast.error("Error resetting password. Please try again.");
       }
@@ -207,15 +207,15 @@ const ClientTopbar = () => {
 
 
 
-  const selectedClient = filteredClients
-    ? filteredClients.find((client) => client.id === clickedClientId)
-    : null;
+  // const selectedClient = filteredClients
+  //   ? filteredClients.find((client) => client.id === clickedClientId)
+  //   : null;
 
 
   return (
     <Box display="flex" justifyContent="space-between" p={2} ml="-12px" mt="-22px">
       {/* SEARCH BAR */}
-      <Box
+      {/* <Box
         mt="-5px"
         p={2}
         width={300}
@@ -252,7 +252,7 @@ const ClientTopbar = () => {
             />
           )}
         />
-      </Box>
+      </Box> */}
       <Dialog open={isLogoutDialogOpen} onClose={() => handleLogoutConfirm(false)}>
         {/* <DialogTitle>LConfirmation</DialogTitle> */}
         <DialogContent>
