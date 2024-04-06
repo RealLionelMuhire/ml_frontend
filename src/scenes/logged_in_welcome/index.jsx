@@ -1,12 +1,8 @@
 import { CircularProgress } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { tokens } from "../../theme"
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthLandingUser = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
 
     useEffect(() => {

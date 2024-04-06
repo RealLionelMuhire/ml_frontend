@@ -156,7 +156,7 @@ const ClientLandingForm = () => {
             navigate("/landing");
             window.location.href = "/landing"
             setLoading(false);
-          }, 2000);
+          }, 100);
         }
     } catch (error) {
       toast.error("Error logging in. Please try again.");

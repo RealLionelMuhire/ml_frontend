@@ -8,12 +8,10 @@ import {
   MenuItem,
   Typography,
   Dialog,
-  DialogTitle,
   DialogContent,
   Button,
-  Autocomplete,
-  Grid,
-  TextField,
+  // Autocomplete,
+  // TextField,
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
@@ -21,7 +19,6 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/EmailOutlined";
 import { useState } from "react";
 import { setLogout } from "../../state";
@@ -30,15 +27,15 @@ import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
 import { toast } from "react-toastify";
 import TokenRetrieval from "../../utils/TokenRetrieval";
 import { useNavigate } from "react-router-dom";
+import Search from "./Search";
 
 const Topbar = () => {
   const theme = useTheme();
-  const { data: userProfile, isLoading } = useGetUserProfileQuery();
+  const { data: userProfile } = useGetUserProfileQuery();
   const { data: clients} = useGetClientsQuery();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [isProfileDialogOpen, setProfileDialogOpen] = useState(false);
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [clickedClientId, setClickedClientId] = useState(null);
@@ -84,7 +81,8 @@ const Topbar = () => {
       // Open the confirmation dialog
       setLogoutDialogOpen(true);
     } else if (choice === "Profile") {
-      setProfileDialogOpen(true);
+      // Navigate to the "user-profile" page
+      navigate("/user-profile");
     } else if (choice === "Change Password") {
       seChangePasswordDialogOpen(true);
     }
@@ -165,10 +163,6 @@ const Topbar = () => {
   };
 
 
-  const handleProfileDialogClose = () => {
-    setProfileDialogOpen(false);
-  };
-
   const handleClientClick = (selectedClient) => {
     console.log('Clicked on user:', selectedClient);
     if (selectedClient) {
@@ -197,20 +191,6 @@ const Topbar = () => {
     }
   }, [clickedClientId, debouncedNavigate]);
 
-  const handleUpdateProfile = () => {
-
-    navigate("/update-user");
-
-    setProfileDialogOpen(false);
-  };
-
-
-
-  const selectedClient = filteredClients
-    ? filteredClients.find((client) => client.id === clickedClientId)
-    : null;
-
-
   return (
     <Box display="flex" justifyContent="space-between" p={2} ml="-12px" mt="-22px">
       {/* SEARCH BAR */}
@@ -220,40 +200,14 @@ const Topbar = () => {
         width={300}
         maxHeight={100}
       >
-        <Autocomplete
-          options={filteredClients || []}
-          getOptionLabel={(client) => `${client.id}. ${client.firstName} ${client.lastName}`}
-          style={{ width: 250, height: 10}}
-          value={selectedClient || null}
-          onChange={(event, newValue) => handleClientClick(newValue)}
-          disablePortal
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Search Client"
-              sx={{
-                backgroundColor: colors.primary[400],
-                borderRadius: "5px",
-                width: "100%"
-              }}
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <>
-                    <IconButton type="button">
-                      <SearchIcon />
-                    </IconButton>
-                    {params.InputProps.startAdornment}
-                  </>
-                ),
-              }}
-              inputRef={searchBoxRef}
-            />
-          )}
+        <Search
+          filteredClients={filteredClients}
+          handleClientClick={handleClientClick}
+          searchBoxRef={searchBoxRef}
         />
+
       </Box>
       <Dialog open={isLogoutDialogOpen} onClose={() => handleLogoutConfirm(false)}>
-        {/* <DialogTitle>LConfirmation</DialogTitle> */}
         <DialogContent>
           <Typography>Are you sure you want to logout?</Typography>
         </DialogContent>
@@ -344,47 +298,6 @@ const Topbar = () => {
           ))}
         </Menu>
       </Box>
-
-      {/* PROFILE DIALOG */}
-      <Dialog
-        open={isProfileDialogOpen}
-        onClose={handleProfileDialogClose}
-        // maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle variant="h3" style={{ paddingBottom: "15px" }}>
-          My Profile
-        </DialogTitle>
-        <DialogContent>
-          {isLoading ? (
-            <Typography>Loading...</Typography>
-          ) : (
-            <Box>
-              <Grid container spacing={1}>
-                {Object.entries(userProfile).map(([key, value]) => (
-                  <Fragment key={key}>
-                    <Grid item xs={6}>
-                      <Typography variant="h6">{key}:</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="h6">{value}</Typography>
-                    </Grid>
-                  </Fragment>
-                ))}
-              </Grid>
-
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ marginTop: "16px" }}
-                onClick={handleUpdateProfile}
-              >
-                Update Profile
-              </Button>
-            </Box>
-          )}
-        </DialogContent>
-      </Dialog>
     </Box>
     
   );

@@ -35,6 +35,7 @@ import ClientReservations from "./scenes/reservations_data";
 import ReservationDisplay from "./scenes/reservation_display";
 import WelcomePage from "./scenes/welcome_page";
 import AuthLandingUser from "./scenes/logged_in_welcome";
+import UserProfileDisplay from "./scenes/team/profile_data";
 
 import ClientLayout from "./layouts/client";
 import ClientDashboard from "./client_scenes/client_dashboard";
@@ -135,6 +136,7 @@ function App() {
                 <Route path="/geography" element={<AdminLayout><Geography /></AdminLayout>} />
                 <Route path="/client-reservations" element={<AdminLayout><ClientReservations /></AdminLayout>} />
                 <Route path="/reservations-display" element={<AdminLayout><ReservationDisplay /></AdminLayout>} />
+                <Route path="/user-profile" element={<AdminLayout><UserProfileDisplay /></AdminLayout>} />
               </Route>
 
               <Route
