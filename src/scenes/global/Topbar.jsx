@@ -1,5 +1,5 @@
 import React from "react";
-import { Fragment, useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   Box,
   IconButton,
@@ -10,11 +10,9 @@ import {
   Dialog,
   DialogContent,
   Button,
-  // Autocomplete,
-  // TextField,
 } from "@mui/material";
 import { useContext } from "react";
-import { ColorModeContext, tokens } from "../../theme";
+import { ColorModeContext } from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -33,7 +31,6 @@ const Topbar = () => {
   const theme = useTheme();
   const { data: userProfile } = useGetUserProfileQuery();
   const { data: clients} = useGetClientsQuery();
-  const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch();

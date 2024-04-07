@@ -92,6 +92,7 @@ const Form = () => {
           }, 100);
         }
     } catch (error) {
+      onSubmitProps.resetForm();
       toast.error("Error logging in. Please try again.");
       setLoading(false);
     }
