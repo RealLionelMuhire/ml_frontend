@@ -1,5 +1,5 @@
 import React from "react";
-import { Fragment, useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   Box,
   IconButton,
@@ -8,62 +8,37 @@ import {
   MenuItem,
   Typography,
   Dialog,
-  DialogTitle,
   DialogContent,
   Button,
-  // Autocomplete,
-  Grid,
-  // TextField,
 } from "@mui/material";
 import { useContext } from "react";
-import { ColorModeContext} from "../../theme";
+import { ColorModeContext } from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-// import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/EmailOutlined";
 import { useState } from "react";
 import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
-import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
+import { useGetUserProfileQuery } from "../../state/api";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import TokenRetrieval from "../../utils/TokenRetrieval";
+import { useNavigate } from "react-router-dom";
+// import Search from "./Search";
 
 const ClientTopbar = () => {
   const theme = useTheme();
-  const { data: userProfile, isLoading } = useGetUserProfileQuery();
-  const { data: clients } = useGetClientsQuery();
-  // const colors = tokens(theme.palette.mode);
+  const { data: userProfile } = useGetUserProfileQuery();
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [isProfileDialogOpen, setProfileDialogOpen] = useState(false);
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
   const [clickedClientId, setClickedClientId] = useState(null);
   const searchBoxRef = useRef(null);
   const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] = useState(false);
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
-  
 
-
-  const filteredClients = clients?.filter((client) => {
-    const searchTerm = typeof searchQuery === 'string' ? searchQuery.trim().toLowerCase() : null;
-  
-    // If there's no search query, include all clients
-    if (!searchTerm || searchTerm === "") {
-      return true;
-    }
-  
-    // Check if any property contains the search term
-    return Object.values(client).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchTerm)
-    );
-  });
 
 
   const choices = ["Profile", "Logout", "Change Password"];
@@ -84,7 +59,8 @@ const ClientTopbar = () => {
       // Open the confirmation dialog
       setLogoutDialogOpen(true);
     } else if (choice === "Profile") {
-      setProfileDialogOpen(true);
+      // Navigate to the "user-profile" page
+      navigate("/user-profile");
     } else if (choice === "Change Password") {
       seChangePasswordDialogOpen(true);
     }
@@ -116,8 +92,8 @@ const ClientTopbar = () => {
           
           
           setTimeout(() => {
-            navigate("/client-login");
-            window.location.href ="/client-login"
+            navigate("/login");
+            window.location.href ="/login"
           }, 2000);
         } else {
           localStorage.clear("token");
@@ -128,8 +104,7 @@ const ClientTopbar = () => {
             })
           );
           toast.error(loggedOut.message)
-          navigate("/client-login")
-          window.location.href ="/client-login"
+          navigate("/login")
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
@@ -158,26 +133,13 @@ const ClientTopbar = () => {
         toast.success(
           "Check your email, Password reset instructions sent successfully."
         );
-        navigate("/client-login");
+        navigate("/login");
       } catch (error) {
         toast.error("Error resetting password. Please try again.");
       }
     }
   };
 
-
-  const handleProfileDialogClose = () => {
-    setProfileDialogOpen(false);
-  };
-
-  const handleClientClick = (selectedClient) => {
-    console.log('Clicked on user:', selectedClient);
-    if (selectedClient) {
-      setClickedClientId(selectedClient.id);
-      setSearchQuery("");
-      console.log('Updated clickedClientId:', selectedClient.id);
-    }
-  };
 
   const debouncedNavigate = useCallback(
     (clientId) => {
@@ -190,71 +152,18 @@ const ClientTopbar = () => {
     if (clickedClientId !== null) {
       const timeoutId = setTimeout(() => {
         debouncedNavigate(clickedClientId);
-        setClickedClientId(null); // Reset clickedClientId after navigation
-        searchBoxRef.current?.focus(); // Set focus on the search box
+        setClickedClientId(null);
+        searchBoxRef.current?.focus();
       }, 500);
 
       return () => clearTimeout(timeoutId);
     }
   }, [clickedClientId, debouncedNavigate]);
 
-  const handleUpdateProfile = () => {
-
-    navigate("/update-user");
-
-    setProfileDialogOpen(false);
-  };
-
-
-
-  // const selectedClient = filteredClients
-  //   ? filteredClients.find((client) => client.id === clickedClientId)
-  //   : null;
-
-
   return (
     <Box display="flex" justifyContent="space-between" p={2} ml="-12px" mt="-22px">
-      {/* SEARCH BAR */}
-      {/* <Box
-        mt="-5px"
-        p={2}
-        width={300}
-        maxHeight={100}
-      >
-        <Autocomplete
-          options={filteredClients || []}
-          getOptionLabel={(client) => `${client.id}. ${client.firstName} ${client.lastName}`}
-          style={{ width: 250, height: 10}}
-          value={selectedClient || null}
-          onChange={(event, newValue) => handleClientClick(newValue)}
-          disablePortal
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Search Client"
-              sx={{
-                backgroundColor: colors.primary[400],
-                borderRadius: "5px",
-                width: "100%"
-              }}
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <>
-                    <IconButton type="button">
-                      <SearchIcon />
-                    </IconButton>
-                    {params.InputProps.startAdornment}
-                  </>
-                ),
-              }}
-              inputRef={searchBoxRef}
-            />
-          )}
-        />
-      </Box> */}
+
       <Dialog open={isLogoutDialogOpen} onClose={() => handleLogoutConfirm(false)}>
-        {/* <DialogTitle>LConfirmation</DialogTitle> */}
         <DialogContent>
           <Typography>Are you sure you want to logout?</Typography>
         </DialogContent>
@@ -282,27 +191,6 @@ const ClientTopbar = () => {
         </Box>
       </Dialog>
       
-
-      {/* Display dropdown with search results */}
-      {searchQuery && (
-        <Box mt={2} p={2} position="absolute" zIndex={1000}>
-          {filteredClients && filteredClients.length ? (
-            // Render the filtered clients if there are results
-            filteredClients.map((client) => (
-              <div
-                key={client.id}
-                onClick={() => handleClientClick(client)}
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
-              >
-                {client.firstName} {client.lastName}
-              </div>
-            ))
-          ) : (
-            // Display a message if no results are found
-            <Typography>No clients found.</Typography>
-          )}
-        </Box>
-      )}
 
       {/* ICONS */}
       <Box display="flex" mt="15px">
@@ -345,48 +233,8 @@ const ClientTopbar = () => {
           ))}
         </Menu>
       </Box>
-
-      {/* PROFILE DIALOG */}
-      <Dialog
-        open={isProfileDialogOpen}
-        onClose={handleProfileDialogClose}
-        // maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle variant="h3" style={{ paddingBottom: "15px" }}>
-          My Profile
-        </DialogTitle>
-        <DialogContent>
-          {isLoading ? (
-            <Typography>Loading...</Typography>
-          ) : (
-            <Box>
-              <Grid container spacing={1}>
-                {Object.entries(userProfile).map(([key, value]) => (
-                  <Fragment key={key}>
-                    <Grid item xs={6}>
-                      <Typography variant="h6">{key}:</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="h6">{value}</Typography>
-                    </Grid>
-                  </Fragment>
-                ))}
-              </Grid>
-
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ marginTop: "16px" }}
-                onClick={handleUpdateProfile}
-              >
-                Update Profile
-              </Button>
-            </Box>
-          )}
-        </DialogContent>
-      </Dialog>
     </Box>
+    
   );
 };
 
