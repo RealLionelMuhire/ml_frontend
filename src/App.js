@@ -34,10 +34,14 @@ import TestCalendar from "./scenes/reservations/TestCalendar";
 import ClientReservations from "./scenes/reservations_data";
 import ReservationDisplay from "./scenes/reservation_display";
 import WelcomePage from "./scenes/welcome_page";
+import AuthLandingUser from "./scenes/logged_in_welcome";
+import UserProfileDisplay from "./scenes/team/profile_data";
 
 import ClientLayout from "./layouts/client";
 import ClientDashboard from "./client_scenes/client_dashboard";
 import ClientLogin from "./client_scenes/login_client";
+import AuthLandingClient from "./client_scenes/logged_in_welcome";
+import ClientWelcomePage from "./client_scenes/welcome_page";
 
 
 const ProtectedRoute = ({ isAuthenticated, isClientAuthenticated, isUserAuthenticated }) => {
@@ -97,6 +101,7 @@ function App() {
               <Route path="/reservation" element={<Reservation />} />
               <Route path="/testCal" element={<TestCalendar />} />
               <Route path="/client-login" element={<ClientLogin />} />
+              <Route path="/client-welcome" element={<ClientWelcomePage />} />
               
 
               {/* Routes accessible only to authenticated users */}
@@ -106,6 +111,7 @@ function App() {
                   isUserAuthenticated={isUserAuthenticated}
                   />}
               >
+                <Route path="/landing-user" element={<AuthLandingUser />} />
                 <Route path="/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>}/>
                 <Route path="/team" element={<AdminLayout><Team /></AdminLayout>}/>
                 <Route path="/clients" element={<AdminLayout><Clients /></AdminLayout>}/>
@@ -130,6 +136,7 @@ function App() {
                 <Route path="/geography" element={<AdminLayout><Geography /></AdminLayout>} />
                 <Route path="/client-reservations" element={<AdminLayout><ClientReservations /></AdminLayout>} />
                 <Route path="/reservations-display" element={<AdminLayout><ReservationDisplay /></AdminLayout>} />
+                <Route path="/user-profile" element={<AdminLayout><UserProfileDisplay /></AdminLayout>} />
               </Route>
 
               <Route
@@ -139,6 +146,7 @@ function App() {
                   />}
               >
                 <Route path="/client/dashboard" element={<ClientLayout><ClientDashboard /></ClientLayout>} />
+                <Route path="/landing" element={<AuthLandingClient />} />
               </Route>
 
               <Route path="/" element={<WelcomePage />} />
