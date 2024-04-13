@@ -1,6 +1,9 @@
 import React from "react";
-import { TextField, MenuItem } from "@mui/material";
+import { TextField, MenuItem , Box, Typography} from "@mui/material";
 import { CountryDropdown } from "react-country-region-selector";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles"
+
 
 const FormFields1 = ({
   values,
@@ -11,8 +14,16 @@ const FormFields1 = ({
   isNonMobile,
   setFieldValue
 }) => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+
   return (
     <React.Fragment>
+        <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
+        <Typography variant="h5" fontWeight="800">
+        Ultimate Beneficiary Owner / Shareholder (Client)
+        </Typography>
+        </Box>
       <TextField
         fullWidth
         variant="filled"

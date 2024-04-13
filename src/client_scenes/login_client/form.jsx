@@ -9,6 +9,7 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
+  MenuItem,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -18,9 +19,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import TokenStorage from "../../utils/TokenStorage";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import TermsAndConditions from "./TermsAndConditions";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
@@ -40,65 +41,128 @@ const initialValuesForgotPassword = {
   email: "",
 };
 
-const phoneRegExp = /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+const phoneRegExp =
+  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const registerSchema = yup.object().shape({
-  FirstName: yup.string().required("required"),
-  LastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
+  firstName: yup.string().required("required"),
+  lastName: yup.string().required("required"),
+  clientEmail: yup.string().email("invalid email").required("required"),
+  clientContact: yup
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
-  password: yup.string()
+  password: yup
+    .string()
     .required("required")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, and one number"
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/,
+      "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one special char and one number"
     ),
-  confirmPassword: yup.string()
-    .required('required')
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
-  NationalID: yup.string().required("required"),
-  BirthDate: yup.date().required("required"),
-  UserRoles: yup.string().required("required"),
-  Address: yup.string().required("required"),
-  cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
+  confirmPassword: yup
+    .string()
+    .required("required")
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
+  birthDate: yup.date().required("required"),
+  countryOfResidence: yup.string().required("required"),
+  preferredLanguage: yup.string().required("required"),
+  NameOfEntity: yup.string().required("required"),
+  TIN: yup.string().required("required"),
+  citizenship: yup.string().required("required"),
+  NationalID: yup.string().when("citizenship", {
+    is: "Rwandan",
+    then: yup.string().required("required"),
   }),
-  contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
+  national_id_file: yup.mixed().when("citizenship", {
+    is: "Rwandan",
+    then: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true;
+          }
+          if (value[0].type !== "application/pdf") {
+            return false;
+          }
+          return true;
+        }
+      ),
   }),
-  accessLevel: yup.string().required("required"),
+  specifiedCitizenship: yup.string().when("citizenship", {
+    is: "Other",
+    then: yup.string().required("required"),
+  }),
+  passportIdNumber: yup.string().when("citizenship", {
+    is: "Other",
+    then: yup.string().required("required"),
+  }),
+  countryOfIssue: yup.string().when("citizenship", {
+    is: "Other",
+    then: yup.string().required("required"),
+  }),
+  passportExpiryDate: yup.date().when("citizenship", {
+    is: "Other",
+    then: yup.date().required("required"),
+  }),
+  passportIdNumber_file: yup.mixed().when("citizenship", {
+    is: "Other",
+    then: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true;
+          }
+          if (value[0].type !== "application/pdf") {
+            return false;
+          }
+          return true;
+        }
+      ),
+  }),
+  registration_certificate: yup
+    .mixed()
+    .test(
+      "fileType",
+      "Invalid file format. Please upload a PDF file.",
+      (value) => {
+        if (!value || value.length === 0 || !value[0]) {
+          return true; // No file provided or empty array, validation passes
+        }
+        if (value[0].type !== "application/pdf") {
+          return false; // File type is not PDF, validation fails
+        }
+        return true; // Validation passes
+      }
+    ),
 });
 
 const registerValues = {
-  FirstName: "",
-  LastName: "",
-  email: "",
-  contact: "",
+  firstName: "",
+  lastName: "",
+  clientEmail: "",
+  clientContact: "",
   password: "",
   confirmPassword: "",
+  birthDate: "",
   NationalID: "",
-  BirthDate: "",
-  UserRoles: "",
-  Address: "",
-  accessLevel: "",
-  cv_file: null,
-  contract_file: null,
+  passportIdNumber: "",
+  countryOfIssue: "",
+  passportExpiryDate: "",
+  citizenship: "",
+  specifiedCitizenship: "",
+  countryOfResidence: "",
+  preferredLanguage: "",
+  NameOfEntity: "",
+  TIN: "",
   national_id_file: null,
+  registration_certificate: null,
+  passportIdNumber_file: null,
 };
 
 const ClientLandingForm = () => {
@@ -109,6 +173,7 @@ const ClientLandingForm = () => {
   const isLogin = pageType === "login";
   const isForgotPassword = pageType === "forgotPassword";
   const isRegister = pageType === "register";
+  const isTermsConditions = pageType === "termsConditions";
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -116,7 +181,8 @@ const ClientLandingForm = () => {
   const colors = tokens(theme.palette.mode);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-  const [showRepeatRegisterPassword, setShowRepeatRegisterPassword] = useState(false);
+  const [showRepeatRegisterPassword, setShowRepeatRegisterPassword] =
+    useState(false);
 
   const login = async (values, onSubmitProps) => {
     try {
@@ -142,22 +208,22 @@ const ClientLandingForm = () => {
 
       onSubmitProps.resetForm();
       if (loggedIn?.token) {
-        localStorage.setItem("user_id", loggedIn.user_id)
-        localStorage.setItem("userType", loggedIn.userType)
+        localStorage.setItem("user_id", loggedIn.user_id);
+        localStorage.setItem("userType", loggedIn.userType);
         TokenStorage.saveToken(loggedIn.token);
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
-          );
-          setLoading(true);
-          setTimeout(() => {
-            navigate("/landing");
-            window.location.href = "/landing"
-            setLoading(false);
-          }, 100);
-        }
+        );
+        setLoading(true);
+        setTimeout(() => {
+          navigate("/landing");
+          window.location.href = "/landing";
+          setLoading(false);
+        }, 100);
+      }
     } catch (error) {
       toast.error("Error logging in. Please try again.");
       setLoading(false);
@@ -235,8 +301,20 @@ const ClientLandingForm = () => {
   return (
     <Formik
       onSubmit={handleFormSubmit}
-      initialValues={isRegister ? registerValues : isLogin ? initialValuesLogin : initialValuesForgotPassword}
-      validationSchema={isRegister ? registerSchema : isLogin ? loginSchema : forgotPasswordSchema}
+      initialValues={
+        isRegister
+          ? registerValues
+          : isLogin
+          ? initialValuesLogin
+          : initialValuesForgotPassword
+      }
+      validationSchema={
+        isRegister
+          ? registerSchema
+          : isLogin
+          ? loginSchema
+          : forgotPasswordSchema
+      }
     >
       {({
         values,
@@ -254,7 +332,7 @@ const ClientLandingForm = () => {
             gap="30px"
             gridTemplateColumns="repeat(4, minmax(0, 1fr))"
             sx={{
-              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+              "& > div": { gridColumn: isNonMobile ? undefined : "span 2" },
             }}
           >
             {isForgotPassword && (
@@ -267,7 +345,7 @@ const ClientLandingForm = () => {
                   name="email"
                   error={Boolean(touched.email) && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
                 />
               </>
             )}
@@ -282,11 +360,11 @@ const ClientLandingForm = () => {
                   name="email"
                   error={Boolean(touched.email) && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
                   label="Password"
-                  type={showLoginPassword ? 'text' : 'password'}
+                  type={showLoginPassword ? "text" : "password"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
@@ -297,65 +375,91 @@ const ClientLandingForm = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowLoginPassword(prev => !prev)}
+                          onClick={() => setShowLoginPassword((prev) => !prev)}
                           size="small"
                         >
-                          {showLoginPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showLoginPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
-                    )
+                    ),
                   }}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
                 />
               </>
             )}
 
+            {isTermsConditions && <TermsAndConditions />}
+
             {isRegister && (
               <>
                 <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
                   label="First Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.FirstName}
-                  name="FirstName"
-                  error={Boolean(touched.FirstName) && Boolean(errors.FirstName)}
-                  helperText={touched.FirstName && errors.FirstName}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.firstName}
+                  name="firstName"
+                  error={
+                    Boolean(touched.firstName) && Boolean(errors.firstName)
+                  }
+                  helperText={touched.firstName && errors.firstName}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
                   label="Last Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.LastName}
-                  name="LastName"
-                  error={Boolean(touched.LastName) && Boolean(errors.LastName)}
-                  helperText={touched.LastName && errors.LastName}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.lastName}
+                  name="lastName"
+                  error={Boolean(touched.lastName) && Boolean(errors.lastName)}
+                  helperText={touched.lastName && errors.lastName}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
                   label="Email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.email}
-                  name="email"
-                  error={Boolean(touched.email) && Boolean(errors.email)}
-                  helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.clientEmail}
+                  name="clientEmail"
+                  error={
+                    Boolean(touched.clientEmail) && Boolean(errors.clientEmail)
+                  }
+                  helperText={touched.clientEmail && errors.clientEmail}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
                   label="Contact"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.contact}
-                  name="contact"
-                  error={Boolean(touched.contact) && Boolean(errors.contact)}
-                  helperText={touched.contact && errors.contact}
-                  sx={{ gridColumn: "span 4" }}
-                  
+                  value={values.clientContact}
+                  name="clientContact"
+                  error={
+                    Boolean(touched.clientContact) &&
+                    Boolean(errors.clientContact)
+                  }
+                  helperText={touched.clientContact && errors.clientContact}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
+                  fullWidth
+                  variant="filled"
                   label="Password"
-                  type={showRegisterPassword ? 'text' : 'password'}
+                  type={showRegisterPassword ? "text" : "password"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.password}
@@ -366,143 +470,385 @@ const ClientLandingForm = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowRegisterPassword(prev => !prev)}
+                          onClick={() =>
+                            setShowRegisterPassword((prev) => !prev)
+                          }
                           size="small"
                         >
-                          {showRegisterPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showRegisterPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
-                    )
+                    ),
                   }}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
+                  fullWidth
+                  variant="filled"
                   label="Retype Password"
-                  type={showRepeatRegisterPassword ? 'text' : 'password'}
+                  type={showRepeatRegisterPassword ? "text" : "password"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.confirmPassword}
                   name="confirmPassword"
-                  error={Boolean(touched.confirmPassword) && Boolean(errors.confirmPassword)}
+                  error={
+                    Boolean(touched.confirmPassword) &&
+                    Boolean(errors.confirmPassword)
+                  }
                   helperText={touched.confirmPassword && errors.confirmPassword}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowRepeatRegisterPassword(prev => !prev)}
+                          onClick={() =>
+                            setShowRepeatRegisterPassword((prev) => !prev)
+                          }
                           size="small"
                         >
-                          {showRepeatRegisterPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showRepeatRegisterPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
-                    )
+                    ),
                   }}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="National ID"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.NationalID}
-                  name="NationalID"
-                  error={Boolean(touched.NationalID) && Boolean(errors.NationalID)}
-                  helperText={touched.NationalID && errors.NationalID}
-                  sx={{ gridColumn: "span 4" }}
-                />
-                <TextField
-                  label="Birth Date"
+                  fullWidth
+                  variant="filled"
+                  label="Date of Birth"
                   type="date"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.BirthDate}
-                  name="BirthDate"
-                  error={Boolean(touched.BirthDate) && Boolean(errors.BirthDate)}
-                  helperText={touched.BirthDate && errors.BirthDate}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.birthDate}
+                  name="birthDate"
+                  error={
+                    Boolean(touched.birthDate) && Boolean(errors.birthDate)
+                  }
+                  helperText={touched.birthDate && errors.birthDate}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="User Roles"
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Country of Residence"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.UserRoles}
-                  name="UserRoles"
-                  error={Boolean(touched.UserRoles) && Boolean(errors.UserRoles)}
-                  helperText={touched.UserRoles && errors.UserRoles}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.countryOfResidence}
+                  name="countryOfResidence"
+                  error={
+                    Boolean(touched.countryOfResidence) &&
+                    Boolean(errors.countryOfResidence)
+                  }
+                  helperText={
+                    touched.countryOfResidence && errors.countryOfResidence
+                  }
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="Address"
+                  fullWidth
+                  variant="filled"
+                  select
+                  label="Preferred Language"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.Address}
-                  name="Address"
-                  error={Boolean(touched.Address) && Boolean(errors.Address)}
-                  helperText={touched.Address && errors.Address}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.preferredLanguage}
+                  name="preferredLanguage"
+                  error={
+                    !!touched.preferredLanguage && !!errors.preferredLanguage
+                  }
+                  helperText={
+                    touched.preferredLanguage && errors.preferredLanguage
+                  }
+                  sx={{ gridColumn: "span 2" }}
+                >
+                  <MenuItem value="english">English</MenuItem>
+                  <MenuItem value="french">French</MenuItem>
+                  <MenuItem value="kinyarwanda">Kinyarwanda</MenuItem>
+                </TextField>
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Name of Entity"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.NameOfEntity}
+                  name="NameOfEntity"
+                  error={
+                    Boolean(touched.NameOfEntity) &&
+                    Boolean(errors.NameOfEntity)
+                  }
+                  helperText={touched.NameOfEntity && errors.NameOfEntity}
+                  sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="Access Level"
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="TIN Number"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.accessLevel}
-                  name="accessLevel"
-                  error={Boolean(touched.accessLevel) && Boolean(errors.accessLevel)}
-                  helperText={touched.accessLevel && errors.accessLevel}
-                  sx={{ gridColumn: "span 4" }}
+                  value={values.TIN}
+                  name="TIN"
+                  error={Boolean(touched.TIN) && Boolean(errors.TIN)}
+                  helperText={touched.TIN && errors.TIN}
+                  sx={{ gridColumn: "span 2" }}
                 />
-                <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
-                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-                  {values.cv_file ? values.cv_file.name : <label htmlFor="cv_file">Upload CV</label>}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="cv_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue("cv_file", e.currentTarget.files[0]);
-                  }}
-                  sx={{ gridColumn: "span 4" }}
-                />
-                {touched.cv_file && errors.cv_file && (
-                  <div>{errors.cv_file}</div>
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  select
+                  label="Citizenship"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.citizenship}
+                  name="citizenship"
+                  error={
+                    Boolean(touched.citizenship) && Boolean(errors.citizenship)
+                  }
+                  helperText={touched.citizenship && errors.citizenship}
+                  sx={{ gridColumn: "span 2" }}
+                >
+                  <MenuItem value="Rwandan">Rwandan</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
+                </TextField>
+
+                {/* Conditional rendering based on citizenship selection */}
+                {values.citizenship === "Rwandan" && (
+                  <>
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      type="text"
+                      label="National ID"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.NationalID}
+                      name="NationalID"
+                      error={
+                        Boolean(touched.NationalID) &&
+                        Boolean(errors.NationalID)
+                      }
+                      helperText={touched.NationalID && errors.NationalID}
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    <Box
+                      variant="outlined"
+                      display="flex"
+                      justifyContent="space-between"
+                      sx={{
+                        backgroundColor: colors.primary[400],
+                        gridColumn: "span 2",
+                        margin: "1px 0px 1px",
+                        borderRadius: "4px",
+                        padding: "13px 5px",
+                      }}
+                    >
+                      <Typography
+                        variant="h5"
+                        color={colors.greenAccent[500]}
+                        fontWeight="500"
+                      >
+                        {values.national_id_file ? (
+                          values.national_id_file.name
+                        ) : (
+                          <label htmlFor="national_id_file">
+                            Upload National ID
+                          </label>
+                        )}
+                      </Typography>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        name="national_id_file"
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldValue(
+                            "national_id_file",
+                            e.currentTarget.files[0]
+                          );
+                        }}
+                        sx={{ gridColumn: "span 2" }}
+                      />
+                      {touched.national_id_file && errors.national_id_file && (
+                        <div>{errors.national_id_file}</div>
+                      )}
+                    </Box>
+                  </>
                 )}
-              </Box>
-              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
-                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-                  {values.contract_file ? values.contract_file.name : <label htmlFor="contract_file">Upload Contract</label>}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="contract_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue("contract_file", e.currentTarget.files[0]);
-                  }}
-                  sx={{ gridColumn: "span 4" }}
-                />
-                {touched.contract_file && errors.contract_file && (
-                  <div>{errors.contract_file}</div>
+                {values.citizenship === "Other" && (
+                  <>
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      type="text"
+                      label="Specify Citizenship"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.specifiedCitizenship}
+                      name="specifiedCitizenship"
+                      error={
+                        Boolean(touched.specifiedCitizenship) &&
+                        Boolean(errors.specifiedCitizenship)
+                      }
+                      helperText={
+                        touched.specifiedCitizenship &&
+                        errors.specifiedCitizenship
+                      }
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      type="text"
+                      label="Passport ID Number"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.passportIdNumber}
+                      name="passportIdNumber"
+                      error={
+                        Boolean(touched.passportIdNumber) &&
+                        Boolean(errors.passportIdNumber)
+                      }
+                      helperText={
+                        touched.passportIdNumber && errors.passportIdNumber
+                      }
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      type="text"
+                      label="Country of Issue"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.countryOfIssue}
+                      name="countryOfIssue"
+                      error={
+                        Boolean(touched.countryOfIssue) &&
+                        Boolean(errors.countryOfIssue)
+                      }
+                      helperText={
+                        touched.countryOfIssue && errors.countryOfIssue
+                      }
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    <TextField
+                      fullWidth
+                      variant="filled"
+                      label="Passport Expiry Date"
+                      type="date"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.passportExpiryDate}
+                      name="passportExpiryDate"
+                      error={
+                        Boolean(touched.passportExpiryDate) &&
+                        Boolean(errors.passportExpiryDate)
+                      }
+                      helperText={
+                        touched.passportExpiryDate && errors.passportExpiryDate
+                      }
+                      sx={{ gridColumn: "span 2" }}
+                    />
+                    <Box
+                      variant="outlined"
+                      display="flex"
+                      justifyContent="space-between"
+                      sx={{
+                        backgroundColor: colors.primary[400],
+                        gridColumn: "span 2",
+                        margin: "1px 0px 1px",
+                        borderRadius: "4px",
+                        padding: "13px 5px",
+                      }}
+                    >
+                      <Typography
+                        variant="h5"
+                        color={colors.greenAccent[500]}
+                        fontWeight="500"
+                      >
+                        {values.passportIdNumber_file ? (
+                          values.passportIdNumber_file.name
+                        ) : (
+                          <label htmlFor="passportIdNumber_file">
+                            Upload Passport ID
+                          </label>
+                        )}
+                      </Typography>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        name="passportIdNumber_file"
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldValue(
+                            "passportIdNumber_file",
+                            e.currentTarget.files[0]
+                          );
+                        }}
+                        sx={{ gridColumn: "span 2" }}
+                      />
+                      {touched.passportIdNumber_file &&
+                        errors.passportIdNumber_file && (
+                          <div>{errors.passportIdNumber_file}</div>
+                        )}
+                    </Box>
+                  </>
                 )}
-                </Box>
-                <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}> 
-                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-                  {values.national_id_file ? values.national_id_file.name : <label htmlFor="national_id_file">Upload National ID</label>}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="national_id_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue("national_id_file", e.currentTarget.files[0]);
+
+                <Box
+                  variant="outlined"
+                  display="flex"
+                  justifyContent="space-between"
+                  sx={{
+                    backgroundColor: colors.primary[400],
+                    gridColumn: "span 2",
+                    margin: "1px 0px 1px",
+                    borderRadius: "4px",
+                    padding: "13px 5px",
                   }}
-                  sx={{ gridColumn: "span 4" }}
-                />
-                {touched.national_id_file && errors.national_id_file && (
-                  <div>{errors.national_id_file}</div>
-                )}
+                >
+                  <Typography
+                    variant="h5"
+                    color={colors.greenAccent[500]}
+                    fontWeight="500"
+                  >
+                    {values.registration_certificate ? (
+                      values.registration_certificate.name
+                    ) : (
+                      <label htmlFor="registration_certificate">
+                        Upload Registration Certificate
+                      </label>
+                    )}
+                  </Typography>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    name="registration_certificate"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldValue(
+                        "registration_certificate",
+                        e.currentTarget.files[0]
+                      );
+                    }}
+                    sx={{ gridColumn: "span 2" }}
+                  />
+                  {touched.registration_certificate &&
+                    errors.registration_certificate && (
+                      <div>{errors.registration_certificate}</div>
+                    )}
                 </Box>
               </>
             )}
@@ -528,7 +874,11 @@ const ClientLandingForm = () => {
               ) : (
                 <>
                   <Typography variant="h5" fontWeight="100">
-                  {isLogin ? "LOGIN" : isRegister ? "REGISTER" : "RESET PASSWORD"}
+                    {isLogin
+                      ? "LOGIN"
+                      : isRegister
+                      ? "REGISTER"
+                      : "RESET PASSWORD"}
                   </Typography>
                 </>
               )}
@@ -548,7 +898,7 @@ const ClientLandingForm = () => {
                   fontWeight="500"
                   variant="h5"
                   onClick={() => {
-                    setPageType(isLogin ? "forgotPassword" : "login");
+                    setPageType("forgotPassword");
                     resetForm();
                   }}
                   sx={{
@@ -569,8 +919,8 @@ const ClientLandingForm = () => {
                   fontWeight="500"
                   variant="h5"
                   onClick={() => {
-                    setPageType("register"); // Switch to register mode
-                    resetForm(); // Reset the form
+                    setPageType("register");
+                    resetForm();
                   }}
                   sx={{
                     mb: "1.5rem",
@@ -584,13 +934,14 @@ const ClientLandingForm = () => {
                   New user? Register here.
                 </Typography>
               )}
-              {!isLogin && (
+              {isRegister && (
                 <Typography
-                  mr="5px"
+                  ml="5px"
                   fontWeight="500"
                   variant="h5"
                   onClick={() => {
-                    navigate("/client-welcome");
+                    setPageType("login");
+                    resetForm();
                   }}
                   sx={{
                     mb: "1.5rem",
@@ -601,11 +952,73 @@ const ClientLandingForm = () => {
                     },
                   }}
                 >
-                  Back to Home
+                  Already have an account? Login here.
+                </Typography>
+              )}
+              {isRegister && (
+                <Typography
+                  mr="5px"
+                  fontWeight="500"
+                  variant="h5"
+                  onClick={() => {
+                    setPageType("termsConditions");
+                    resetForm();
+                  }}
+                  sx={{
+                    mb: "1.5rem",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: palette.secondary.light,
+                    },
+                  }}
+                >
+                  Terms and Conditions
+                </Typography>
+              )}
+              {isForgotPassword && (
+                <Typography
+                  mr="5px"
+                  fontWeight="500"
+                  variant="h5"
+                  onClick={() => {
+                    setPageType("login");
+                    resetForm();
+                  }}
+                  sx={{
+                    mb: "1.5rem",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: palette.secondary.light,
+                    },
+                  }}
+                >
+                  Back to Login
+                </Typography>
+              )}
+              {isTermsConditions && (
+                <Typography
+                  mr="5px"
+                  fontWeight="500"
+                  variant="h5"
+                  onClick={() => {
+                    setPageType("register");
+                    resetForm();
+                  }}
+                  sx={{
+                    mb: "1.5rem",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: palette.secondary.light,
+                    },
+                  }}
+                >
+                  Back to Register
                 </Typography>
               )}
             </Box>
-
           </Box>
         </form>
       )}

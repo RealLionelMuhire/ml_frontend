@@ -18,7 +18,7 @@ const FormFields2 = ({
   return (
     <React.Fragment>
       <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 4", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
-        <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+        <Typography variant="h5" fontWeight="800">
             Legal Person (Complete this section if the Shareholder is a legal entity)
         </Typography>
         </Box>
