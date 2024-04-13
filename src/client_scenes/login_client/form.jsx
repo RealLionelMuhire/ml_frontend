@@ -392,7 +392,13 @@ const ClientLandingForm = () => {
               </>
             )}
 
-            {isTermsConditions && <TermsAndConditions />}
+            {isTermsConditions && (
+              <>
+                <Box fullWidth sx={{ gridColumn: "span 4" }}>
+                  <TermsAndConditions />
+                </Box>
+              </>
+            )}
 
             {isRegister && (
               <>
