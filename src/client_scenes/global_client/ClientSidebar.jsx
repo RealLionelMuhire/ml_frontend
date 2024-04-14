@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme, CircularProgress } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  useTheme,
+  CircularProgress,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -9,7 +15,7 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { NotificationsRounded, } from "@mui/icons-material";
+import { NotificationsRounded } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
 import { EmailRounded } from "@mui/icons-material";
 import { useGetUserProfileQuery } from "../../state/api";
@@ -41,7 +47,11 @@ const ClientSidebar = () => {
 
   // Check if userProfile is still loading
   if (isLoading) {
-    return <div><CircularProgress size={40} color="inherit" /></div>;
+    return (
+      <div>
+        <CircularProgress size={40} color="inherit" />
+      </div>
+    );
   }
 
   // Check if userProfile is undefined
@@ -108,7 +118,12 @@ const ClientSidebar = () => {
                   />
                 </Box>
 
-                <Typography variant="h4" color={colors.grey[100]} ml="20px" mr="10px">
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  ml="20px"
+                  mr="10px"
+                >
                   MLCS
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -171,7 +186,7 @@ const ClientSidebar = () => {
             >
               Data
             </Typography>
-            
+
             <Item
               title="Clients"
               to="/clients"

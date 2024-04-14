@@ -22,6 +22,7 @@ import TokenStorage from "../../utils/TokenStorage";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import TermsAndConditions from "./TermsAndConditions";
+import { FormControlLabel, Checkbox } from "@mui/material";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
@@ -183,6 +184,11 @@ const ClientLandingForm = () => {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showRepeatRegisterPassword, setShowRepeatRegisterPassword] =
     useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  const handleTermsChange = (event) => {
+    setAcceptedTerms(event.target.checked);
+  };
 
   const login = async (values, onSubmitProps) => {
     try {
@@ -397,6 +403,17 @@ const ClientLandingForm = () => {
                 <Box fullWidth sx={{ gridColumn: "span 4" }}>
                   <TermsAndConditions />
                 </Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="secondary"
+                      checked={acceptedTerms}
+                      onChange={handleTermsChange}
+                    />
+                  }
+                  label="Agree to Terms and Conditions"
+                  sx={{ gridColumn: "span 4" }}
+                />
               </>
             )}
 
@@ -862,33 +879,50 @@ const ClientLandingForm = () => {
 
           {/* BUTTONS */}
           <Box>
-            <Button
-              fullWidth
-              type="submit"
-              color="secondary"
-              variant="contained"
-              sx={{
-                m: "2rem 0",
-                p: "1rem",
-                backgroundColor: palette.secondary.main,
-                color: palette.background.alt,
-                "&:hover": { color: palette.primary.main },
-              }}
-            >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                <>
-                  <Typography variant="h5" fontWeight="100">
-                    {isLogin
-                      ? "LOGIN"
-                      : isRegister
-                      ? "REGISTER"
-                      : "RESET PASSWORD"}
-                  </Typography>
-                </>
-              )}
-            </Button>
+            <Box>
+              <Button
+                fullWidth
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={isRegister && !acceptedTerms}
+                sx={{
+                  m: "2rem 0",
+                  p: "1rem",
+                  backgroundColor:
+                    isRegister && acceptedTerms
+                      ? palette.secondary.main
+                      : palette.secondary.disabled,
+                  color:
+                    isRegister && acceptedTerms
+                      ? palette.background.alt
+                      : "white",
+                  "&:hover": {
+                    backgroundColor:
+                      isRegister && acceptedTerms
+                        ? palette.secondary.main
+                        : palette.secondary.disabled,
+                  },
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  <>
+                    <Typography variant="h5" fontWeight="100">
+                      {isLogin
+                        ? "LOGIN"
+                        : isRegister
+                        ? "REGISTER"
+                        : isForgotPassword
+                        ? "RESET PASSWORD"
+                        : "CONTINUE"}
+                    </Typography>
+                  </>
+                )}
+              </Button>
+            </Box>
+
             <Box
               display="flex"
               gap="50px"
@@ -962,25 +996,42 @@ const ClientLandingForm = () => {
                 </Typography>
               )}
               {isRegister && (
-                <Typography
-                  mr="5px"
-                  fontWeight="500"
-                  variant="h5"
-                  onClick={() => {
-                    setPageType("termsConditions");
-                    resetForm();
-                  }}
-                  sx={{
-                    mb: "1.5rem",
-                    textDecoration: "underline",
-                    "&:hover": {
-                      cursor: "pointer",
-                      color: palette.secondary.light,
-                    },
-                  }}
-                >
-                  Terms and Conditions
-                </Typography>
+                <>
+                  <Box
+                    display="flex"
+                    alignItems="flex-end"
+                    sx={{ gridColumn: "span 4" }} // Adjust grid layout if needed
+                  >
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={acceptedTerms}
+                          onChange={handleTermsChange}
+                          color="secondary"
+                        />
+                      }
+                    />
+                    <Typography
+                      mr="5px"
+                      fontWeight="500"
+                      variant="h5"
+                      onClick={() => {
+                        setPageType("termsConditions");
+                        resetForm();
+                      }}
+                      sx={{
+                        mb: "1.5rem",
+                        textDecoration: "underline",
+                        "&:hover": {
+                          cursor: "pointer",
+                          color: palette.secondary.light,
+                        },
+                      }}
+                    >
+                      Agree to Terms and Conditions
+                    </Typography>
+                  </Box>
+                </>
               )}
               {isForgotPassword && (
                 <Typography

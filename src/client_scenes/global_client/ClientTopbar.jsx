@@ -36,15 +36,12 @@ const ClientTopbar = () => {
   const [clickedClientId, setClickedClientId] = useState(null);
   const searchBoxRef = useRef(null);
   const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] = useState(false);
+  const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] =
+    useState(false);
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
-
-
 
   const choices = ["Profile", "Logout", "Change Password"];
   const navigate = useNavigate();
-
-
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -89,11 +86,10 @@ const ClientTopbar = () => {
         }
         if (loggedOutResponse.ok) {
           toast.success(loggedOut.message);
-          
-          
+
           setTimeout(() => {
             navigate("/login");
-            window.location.href ="/login"
+            window.location.href = "/login";
           }, 2000);
         } else {
           localStorage.clear("token");
@@ -103,8 +99,8 @@ const ClientTopbar = () => {
               token: "null",
             })
           );
-          toast.error(loggedOut.message)
-          navigate("/login")
+          toast.error(loggedOut.message);
+          navigate("/login");
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
@@ -140,7 +136,6 @@ const ClientTopbar = () => {
     }
   };
 
-
   const debouncedNavigate = useCallback(
     (clientId) => {
       navigate("/clients-id/", { state: { selectedClientIds: [clientId] } });
@@ -161,36 +156,64 @@ const ClientTopbar = () => {
   }, [clickedClientId, debouncedNavigate]);
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2} ml="-12px" mt="-22px">
-
-      <Dialog open={isLogoutDialogOpen} onClose={() => handleLogoutConfirm(false)}>
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      p={2}
+      ml="-12px"
+      mt="-22px"
+    >
+      <Dialog
+        open={isLogoutDialogOpen}
+        onClose={() => handleLogoutConfirm(false)}
+      >
         <DialogContent>
           <Typography>Are you sure you want to logout?</Typography>
         </DialogContent>
         <Box display="flex" justifyContent="center" p={2} gap="20px">
-          <Button onClick={() => handleLogoutConfirm(false)} color="secondary"  variant="contained">
+          <Button
+            onClick={() => handleLogoutConfirm(false)}
+            color="secondary"
+            variant="contained"
+          >
             No
           </Button>
-          <Button onClick={() => handleLogoutConfirm(true)} color="secondary" variant="contained">
+          <Button
+            onClick={() => handleLogoutConfirm(true)}
+            color="secondary"
+            variant="contained"
+          >
             Yes
           </Button>
         </Box>
       </Dialog>
 
-      <Dialog open={isChangePasswordDialogOpen} onClose={() => handleChangePasswordConfirm(false)}>
+      <Dialog
+        open={isChangePasswordDialogOpen}
+        onClose={() => handleChangePasswordConfirm(false)}
+      >
         <DialogContent>
-          <Typography>Are you sure you want to change your password?</Typography>
+          <Typography>
+            Are you sure you want to change your password?
+          </Typography>
         </DialogContent>
         <Box display="flex" justifyContent="center" p={2} gap="20px">
-          <Button onClick={() => handleChangePasswordConfirm(false)} color="secondary"  variant="contained">
+          <Button
+            onClick={() => handleChangePasswordConfirm(false)}
+            color="secondary"
+            variant="contained"
+          >
             No
           </Button>
-          <Button onClick={() => handleChangePasswordConfirm(true)} color="secondary" variant="contained">
+          <Button
+            onClick={() => handleChangePasswordConfirm(true)}
+            color="secondary"
+            variant="contained"
+          >
             Yes
           </Button>
         </Box>
       </Dialog>
-      
 
       {/* ICONS */}
       <Box display="flex" mt="15px">
@@ -201,8 +224,8 @@ const ClientTopbar = () => {
             <DarkModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton  onClick={() => navigate("/reservations-display")}>
-          <MessageIcon/>
+        <IconButton onClick={() => navigate("/reservations-display")}>
+          <MessageIcon />
         </IconButton>
         <IconButton onClick={() => navigate("/alerts-page")}>
           <NotificationsOutlinedIcon />
@@ -234,7 +257,6 @@ const ClientTopbar = () => {
         </Menu>
       </Box>
     </Box>
-    
   );
 };
 
