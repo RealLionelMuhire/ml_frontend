@@ -46,10 +46,10 @@ const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const registerSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  clientEmail: yup.string().email("invalid email").required("required"),
-  clientContact: yup
+  FirstName: yup.string().required("required"),
+  LastName: yup.string().required("required"),
+  email: yup.string().email("invalid email").required("required"),
+  contact: yup
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("required"),
@@ -68,7 +68,7 @@ const registerSchema = yup.object().shape({
   countryOfResidence: yup.string().required("required"),
   preferredLanguage: yup.string().required("required"),
   NameOfEntity: yup.string().required("required"),
-  TIN: yup.string().required("required"),
+  tinNumber: yup.string().required("required"),
   citizenship: yup.string().required("required"),
   NationalID: yup.string().when("citizenship", {
     is: "Rwandan",
@@ -144,10 +144,10 @@ const registerSchema = yup.object().shape({
 });
 
 const registerValues = {
-  firstName: "",
-  lastName: "",
-  clientEmail: "",
-  clientContact: "",
+  FirstName: "",
+  LastName: "",
+  email: "",
+  contact: "",
   password: "",
   confirmPassword: "",
   birthDate: "",
@@ -160,7 +160,7 @@ const registerValues = {
   countryOfResidence: "",
   preferredLanguage: "",
   NameOfEntity: "",
-  TIN: "",
+  tinNumber: "",
   national_id_file: null,
   registration_certificate: null,
   passportIdNumber_file: null,
@@ -426,12 +426,12 @@ const ClientLandingForm = () => {
                   label="First Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.firstName}
-                  name="firstName"
+                  value={values.FirstName}
+                  name="FirstName"
                   error={
-                    Boolean(touched.firstName) && Boolean(errors.firstName)
+                    Boolean(touched.FirstName) && Boolean(errors.FirstName)
                   }
-                  helperText={touched.firstName && errors.firstName}
+                  helperText={touched.FirstName && errors.FirstName}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -441,10 +441,10 @@ const ClientLandingForm = () => {
                   label="Last Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.lastName}
-                  name="lastName"
-                  error={Boolean(touched.lastName) && Boolean(errors.lastName)}
-                  helperText={touched.lastName && errors.lastName}
+                  value={values.LastName}
+                  name="LastName"
+                  error={Boolean(touched.LastName) && Boolean(errors.LastName)}
+                  helperText={touched.LastName && errors.LastName}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -454,12 +454,10 @@ const ClientLandingForm = () => {
                   label="Email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.clientEmail}
-                  name="clientEmail"
-                  error={
-                    Boolean(touched.clientEmail) && Boolean(errors.clientEmail)
-                  }
-                  helperText={touched.clientEmail && errors.clientEmail}
+                  value={values.email}
+                  name="email"
+                  error={Boolean(touched.email) && Boolean(errors.email)}
+                  helperText={touched.email && errors.email}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -469,13 +467,10 @@ const ClientLandingForm = () => {
                   label="Contact"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.clientContact}
-                  name="clientContact"
-                  error={
-                    Boolean(touched.clientContact) &&
-                    Boolean(errors.clientContact)
-                  }
-                  helperText={touched.clientContact && errors.clientContact}
+                  value={values.contact}
+                  name="contact"
+                  error={Boolean(touched.contact) && Boolean(errors.contact)}
+                  helperText={touched.contact && errors.contact}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -620,10 +615,12 @@ const ClientLandingForm = () => {
                   label="TIN Number"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.TIN}
-                  name="TIN"
-                  error={Boolean(touched.TIN) && Boolean(errors.TIN)}
-                  helperText={touched.TIN && errors.TIN}
+                  value={values.tinNumber}
+                  name="tinNumber"
+                  error={
+                    Boolean(touched.tinNumber) && Boolean(errors.tinNumber)
+                  }
+                  helperText={touched.tinNumber && errors.tinNumber}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
