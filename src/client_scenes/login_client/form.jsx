@@ -69,6 +69,7 @@ const registerSchema = yup.object().shape({
   preferredLanguage: yup.string().required("required"),
   NameOfEntity: yup.string().required("required"),
   tinNumber: yup.string().required("required"),
+  taxResidency: yup.string().required("required"),
   citizenship: yup.string().required("required"),
   NationalID: yup.string().when("citizenship", {
     is: "Rwandan",
@@ -161,6 +162,7 @@ const registerValues = {
   preferredLanguage: "",
   NameOfEntity: "",
   tinNumber: "",
+  taxResidency: "",
   national_id_file: null,
   registration_certificate: null,
   passportIdNumber_file: null,
@@ -621,6 +623,23 @@ const ClientLandingForm = () => {
                     Boolean(touched.tinNumber) && Boolean(errors.tinNumber)
                   }
                   helperText={touched.tinNumber && errors.tinNumber}
+                  sx={{ gridColumn: "span 2" }}
+                />
+
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Tax Residency"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.taxResidency}
+                  name="taxResidency"
+                  error={
+                    Boolean(touched.taxResidency) &&
+                    Boolean(errors.taxResidency)
+                  }
+                  helperText={touched.taxResidency && errors.taxResidency}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
