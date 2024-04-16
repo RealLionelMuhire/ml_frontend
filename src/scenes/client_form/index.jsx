@@ -236,6 +236,7 @@ const ClientForm = () => {
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
                 />
               )}
               {step === 2 && (
@@ -246,6 +247,7 @@ const ClientForm = () => {
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
                 />
               )}
               {step === 3 && (
@@ -256,6 +258,7 @@ const ClientForm = () => {
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
                 />
               )}
             </Box>
@@ -302,12 +305,12 @@ const ClientForm = () => {
                       type="submit"
                       color="secondary"
                       variant="contained"
-                      disabled={
-                        isLoading ||
-                        !values.cv_file ||
-                        !values.contract_file ||
-                        !values.national_id_file
-                      }
+                      // disabled={
+                      // isLoading ||
+                      // !values.cv_file ||
+                      // !values.contract_file ||
+                      // !values.national_id_file
+                      // }
                     >
                       {isLoading ? (
                         <CircularProgress size={24} color="inherit" />

@@ -35,7 +35,7 @@ const TermsAndConditions = () => {
           of the present document is true and accurate and you will complete and
           sign the annexes if any. Any failure to the above undertaking enables
           ML Corporate Services Ltd to refuse onboarding you as a client. You
-          agree that ML Corporate Services Ltd’s failure to insist upon strict
+          agree that ML Corporate Services Ltd's failure to insist upon strict
           compliance with this Client Acceptance Form or its Terms and
           Conditions will not constitute or be considered a waiver by ML
           Corporate Services Ltd of any of its rights or any of your

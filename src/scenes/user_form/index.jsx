@@ -1,4 +1,11 @@
-import { Box, Button, CircularProgress, TextField, Typography, MenuItem } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+  MenuItem,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -7,8 +14,8 @@ import { useCreateUserMutation } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { SHA256 } from 'crypto-js';
-import CryptoJS from 'crypto-js';
+import { SHA256 } from "crypto-js";
+import CryptoJS from "crypto-js";
 import { toast } from "react-toastify";
 
 const UserForm = () => {
@@ -21,62 +28,63 @@ const UserForm = () => {
   const calculateChecksum = async (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-  
+
       reader.onload = (e) => {
         try {
           const arrayBuffer = e.target.result;
           const data = new Uint8Array(arrayBuffer);
-          const calculatedChecksum = SHA256(CryptoJS.lib.WordArray.create(data)).toString(CryptoJS.enc.Hex);
+          const calculatedChecksum = SHA256(
+            CryptoJS.lib.WordArray.create(data)
+          ).toString(CryptoJS.enc.Hex);
           resolve(calculatedChecksum);
         } catch (error) {
           reject(error);
         }
       };
-  
+
       reader.onerror = (error) => {
         reject(error);
       };
-  
+
       reader.readAsArrayBuffer(file);
     });
   };
-  
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
       // Calculate checksum for cv_file
       const cvFileChecksum = values.cv_file
-      ? await calculateChecksum(values.cv_file)
-      : null;
-      
+        ? await calculateChecksum(values.cv_file)
+        : null;
+
       // Calculate checksum for contract_file
       const contractFileChecksum = values.contract_file
-      ? await calculateChecksum(values.contract_file)
-      : null;
-      
+        ? await calculateChecksum(values.contract_file)
+        : null;
+
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      
+
       // Append checksums to FormData
-      formData.append('cv_file_checksum', cvFileChecksum);
-      formData.append('contract_file_checksum', contractFileChecksum);
+      formData.append("cv_file_checksum", cvFileChecksum);
+      formData.append("contract_file_checksum", contractFileChecksum);
 
       // console.log("The cv file checksum is:", cvFileChecksum);
       // console.log("The contract file checksum is:", contractFileChecksum);
-      
+
       // console.log("Form submission initiated. Values:", values);
       const response = await createUser(formData);
       if (response.error.data.detail) {
         toast.error(response.error?.data?.detail);
         navigate("/dashboard");
       }
-      
+
       if (response.error) {
         toast.error(response.error?.data?.message || "An error occurred");
         return;
-      }      
+      }
       if (response.data) {
         toast.success(response.data?.message);
         navigate("/team");
@@ -233,12 +241,8 @@ const UserForm = () => {
                 onChange={handleChange}
                 value={values.accessLevel}
                 name="accessLevel"
-                error={
-                  !!touched.accessLevel && !!errors.accessLevel
-                }
-                helperText={
-                  touched.accessLevel && errors.accessLevel
-                }
+                error={!!touched.accessLevel && !!errors.accessLevel}
+                helperText={touched.accessLevel && errors.accessLevel}
                 sx={{ gridColumn: "span 2" }}
               >
                 <MenuItem value="manager">Manager</MenuItem>
@@ -258,9 +262,28 @@ const UserForm = () => {
                 helperText={touched.Address && errors.Address}
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
-                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
-                  {values.cv_file ? values.cv_file.name : <label htmlFor="cv_file">Upload CV</label>}
+              <Box
+                variant="outlined"
+                display="flex"
+                justifyContent="space-between"
+                sx={{
+                  backgroundColor: colors.primary[400],
+                  gridColumn: "span 2",
+                  margin: "1px 0px 1px",
+                  borderRadius: "4px",
+                  padding: "13px 5px",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  color={colors.greenAccent[500]}
+                  fontWeight="500"
+                >
+                  {values.cv_file ? (
+                    values.cv_file.name
+                  ) : (
+                    <label htmlFor="cv_file">Upload CV</label>
+                  )}
                 </Typography>
                 <input
                   type="file"
@@ -277,9 +300,29 @@ const UserForm = () => {
                 )}
               </Box>
 
-              <Box variant="outlined" display="flex" justifyContent="space-between" sx={{ backgroundColor: colors.primary[400], gridColumn: "span 2", margin: "1px 0px 1px", borderRadius: "4px", padding: "13px 5px"}}>
-                <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500" sx={{ gridColumn: "span 2" }}>
-                  {values.contract_file ? values.contract_file.name : <label htmlFor="contract_file">Upload Contract</label>}
+              <Box
+                variant="outlined"
+                display="flex"
+                justifyContent="space-between"
+                sx={{
+                  backgroundColor: colors.primary[400],
+                  gridColumn: "span 2",
+                  margin: "1px 0px 1px",
+                  borderRadius: "4px",
+                  padding: "13px 5px",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  color={colors.greenAccent[500]}
+                  fontWeight="500"
+                  sx={{ gridColumn: "span 2" }}
+                >
+                  {values.contract_file ? (
+                    values.contract_file.name
+                  ) : (
+                    <label htmlFor="contract_file">Upload Contract</label>
+                  )}
                 </Typography>
                 <input
                   type="file"
@@ -345,26 +388,37 @@ const checkoutSchema = yup.object().shape({
   BirthDate: yup.date().required("required"),
   UserRoles: yup.string().required("required"),
   Address: yup.string().required("required"),
-  cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
-  }),
-  contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
-  }),
+  cv_file: yup
+    .mixed()
+    .test(
+      "fileType",
+      "Invalid file format. Please upload a PDF file.",
+      (value) => {
+        if (!value || value.length === 0 || !value[0]) {
+          return true; // No file provided or empty array, validation passes
+        }
+        if (value[0].type !== "application/pdf") {
+          return false; // File type is not PDF, validation fails
+        }
+        return true; // Validation passes
+      }
+    ),
+  contract_file: yup
+    .mixed()
+    .test(
+      "fileType",
+      "Invalid file format. Please upload a PDF file.",
+      (value) => {
+        if (!value || value.length === 0 || !value[0]) {
+          return true; // No file provided or empty array, validation passes
+        }
+        if (value[0].type !== "application/pdf") {
+          return false; // File type is not PDF, validation fails
+        }
+        return true; // Validation passes
+      }
+    ),
   accessLevel: yup.string().required("required"),
-  
 });
 const initialValues = {
   FirstName: "",

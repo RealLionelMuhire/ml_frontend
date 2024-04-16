@@ -64,7 +64,7 @@ const registerSchema = yup.object().shape({
     .string()
     .required("required")
     .oneOf([yup.ref("password"), null], "Passwords must match"),
-  birthDate: yup.date().required("required"),
+  BirthDate: yup.date().required("required"),
   countryOfResidence: yup.string().required("required"),
   preferredLanguage: yup.string().required("required"),
   NameOfEntity: yup.string().required("required"),
@@ -151,7 +151,7 @@ const registerValues = {
   contact: "",
   password: "",
   confirmPassword: "",
-  birthDate: "",
+  BirthDate: "",
   NationalID: "",
   passportIdNumber: "",
   countryOfIssue: "",
@@ -547,12 +547,12 @@ const ClientLandingForm = () => {
                   type="date"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.birthDate}
-                  name="birthDate"
+                  value={values.BirthDate}
+                  name="BirthDate"
                   error={
-                    Boolean(touched.birthDate) && Boolean(errors.birthDate)
+                    Boolean(touched.BirthDate) && Boolean(errors.BirthDate)
                   }
-                  helperText={touched.birthDate && errors.birthDate}
+                  helperText={touched.BirthDate && errors.BirthDate}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -681,48 +681,6 @@ const ClientLandingForm = () => {
                       helperText={touched.NationalID && errors.NationalID}
                       sx={{ gridColumn: "span 2" }}
                     />
-                    <Box
-                      variant="outlined"
-                      display="flex"
-                      justifyContent="space-between"
-                      sx={{
-                        backgroundColor: colors.primary[400],
-                        gridColumn: "span 2",
-                        margin: "1px 0px 1px",
-                        borderRadius: "4px",
-                        padding: "13px 5px",
-                      }}
-                    >
-                      <Typography
-                        variant="h5"
-                        color={colors.greenAccent[500]}
-                        fontWeight="500"
-                      >
-                        {values.national_id_file ? (
-                          values.national_id_file.name
-                        ) : (
-                          <label htmlFor="national_id_file">
-                            Upload National ID
-                          </label>
-                        )}
-                      </Typography>
-                      <input
-                        type="file"
-                        accept=".pdf"
-                        name="national_id_file"
-                        onChange={(e) => {
-                          handleChange(e);
-                          setFieldValue(
-                            "national_id_file",
-                            e.currentTarget.files[0]
-                          );
-                        }}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      {touched.national_id_file && errors.national_id_file && (
-                        <div>{errors.national_id_file}</div>
-                      )}
-                    </Box>
                   </>
                 )}
                 {values.citizenship === "Other" && (
@@ -800,95 +758,9 @@ const ClientLandingForm = () => {
                       }
                       sx={{ gridColumn: "span 2" }}
                     />
-                    <Box
-                      variant="outlined"
-                      display="flex"
-                      justifyContent="space-between"
-                      sx={{
-                        backgroundColor: colors.primary[400],
-                        gridColumn: "span 2",
-                        margin: "1px 0px 1px",
-                        borderRadius: "4px",
-                        padding: "13px 5px",
-                      }}
-                    >
-                      <Typography
-                        variant="h5"
-                        color={colors.greenAccent[500]}
-                        fontWeight="500"
-                      >
-                        {values.passportIdNumber_file ? (
-                          values.passportIdNumber_file.name
-                        ) : (
-                          <label htmlFor="passportIdNumber_file">
-                            Upload Passport ID
-                          </label>
-                        )}
-                      </Typography>
-                      <input
-                        type="file"
-                        accept=".pdf"
-                        name="passportIdNumber_file"
-                        onChange={(e) => {
-                          handleChange(e);
-                          setFieldValue(
-                            "passportIdNumber_file",
-                            e.currentTarget.files[0]
-                          );
-                        }}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      {touched.passportIdNumber_file &&
-                        errors.passportIdNumber_file && (
-                          <div>{errors.passportIdNumber_file}</div>
-                        )}
-                    </Box>
+                    {/*  */}
                   </>
                 )}
-
-                <Box
-                  variant="outlined"
-                  display="flex"
-                  justifyContent="space-between"
-                  sx={{
-                    backgroundColor: colors.primary[400],
-                    gridColumn: "span 2",
-                    margin: "1px 0px 1px",
-                    borderRadius: "4px",
-                    padding: "13px 5px",
-                  }}
-                >
-                  <Typography
-                    variant="h5"
-                    color={colors.greenAccent[500]}
-                    fontWeight="500"
-                  >
-                    {values.registration_certificate ? (
-                      values.registration_certificate.name
-                    ) : (
-                      <label htmlFor="registration_certificate">
-                        Upload Registration Certificate
-                      </label>
-                    )}
-                  </Typography>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    name="registration_certificate"
-                    onChange={(e) => {
-                      handleChange(e);
-                      setFieldValue(
-                        "registration_certificate",
-                        e.currentTarget.files[0]
-                      );
-                    }}
-                    sx={{ gridColumn: "span 2" }}
-                  />
-                  {touched.registration_certificate &&
-                    errors.registration_certificate && (
-                      <div>{errors.registration_certificate}</div>
-                    )}
-                </Box>
               </>
             )}
           </Box>

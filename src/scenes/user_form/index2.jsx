@@ -18,19 +18,17 @@ const UserForm = () => {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
-  
 
   const handleFormSubmit = async (values) => {
     try {
-      
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      console.log("form data:",)
-      
+      console.log("form data:");
+
       const response = await createUser(formData);
-      
+
       if (response.error && response.error.data.detail) {
         toast.error(response.error.data.detail);
         navigate("/dashboard");
@@ -61,24 +59,36 @@ const UserForm = () => {
     BirthDate: yup.date().required("required"),
     UserRoles: yup.string().required("required"),
     Address: yup.string().required("required"),
-    cv_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-      if (!value || value.length === 0 || !value[0]) {
-        return true; // No file provided or empty array, validation passes
-      }
-      if (value[0].type !== "application/pdf") {
-        return false; // File type is not PDF, validation fails
-      }
-      return true; // Validation passes
-    }),
-    contract_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-      if (!value || value.length === 0 || !value[0]) {
-        return true; // No file provided or empty array, validation passes
-      }
-      if (value[0].type !== "application/pdf") {
-        return false; // File type is not PDF, validation fails
-      }
-      return true; // Validation passes
-    }),
+    cv_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+    contract_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
     accessLevel: yup.string().required("required"),
   });
 
@@ -110,7 +120,10 @@ const UserForm = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="CREATE USER" subtitle="Create a New User Profile and Data" />
+        <Header
+          title="CREATE USER"
+          subtitle="Create a New User Profile and Data"
+        />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
             <Link to="/team">Back to Team</Link>
@@ -166,14 +179,22 @@ const UserForm = () => {
             <Box display="flex" justifyContent="space-between">
               {step !== 1 && (
                 <Box display="flex" mt="20px">
-                  <Button variant="contained" onClick={prevStep} color="secondary">
+                  <Button
+                    variant="contained"
+                    onClick={prevStep}
+                    color="secondary"
+                  >
                     Previous
                   </Button>
-                </Box> 
+                </Box>
               )}
               {step === 1 && (
                 <Box display="flex" mt="20px" justifyContent="end">
-                  <Button variant="contained" onClick={nextStep} color="secondary">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
                     Next
                   </Button>
                 </Box>
@@ -185,16 +206,21 @@ const UserForm = () => {
                       type="submit"
                       color="secondary"
                       variant="contained"
-                      disabled={isLoading || !values.cv_file || !values.contract_file || !values.national_id_file}
+                      disabled={
+                        isLoading ||
+                        !values.cv_file ||
+                        !values.contract_file ||
+                        !values.national_id_file
+                      }
                     >
                       {isLoading ? (
                         <CircularProgress size={24} color="inherit" />
+                      ) : !values.cv_file ||
+                        !values.contract_file ||
+                        !values.national_id_file ? (
+                        "Upload Files First"
                       ) : (
-                        !values.cv_file || !values.contract_file || !values.national_id_file ? (
-                          "Upload Files First"
-                        ) : (
-                          "Create New User"
-                        )
+                        "Create New User"
                       )}
                     </Button>
                   </Box>
