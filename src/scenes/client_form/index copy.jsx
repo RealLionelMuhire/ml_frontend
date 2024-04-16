@@ -19,19 +19,17 @@ const ClientForm = () => {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
-  
 
   const handleFormSubmit = async (values) => {
     try {
-      
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      console.log("form data:",)
-      
+      console.log("form data:");
+
       const response = await createUser(formData);
-      
+
       if (response.error && response.error.data.detail) {
         toast.error(response.error.data.detail);
         navigate("/dashboard");
@@ -47,121 +45,139 @@ const ClientForm = () => {
   };
 
   const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+    /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  clientEmail: yup.string().email("Invalid email").required("required"),
-  clientContact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  passportIdNumber: yup.string().required("required"),
-  birthDate: yup.date().required("required"),
-  citizenship: yup.string().required("required"),
-  countryOfResidence: yup.string(),
-  passportExpiryDate: yup.date(),
-  countryOfIssue: yup.string(),
-  preferredLanguage: yup.string().required("required"),
-  NameOfEntity: yup.string(),
-  PrevNameOfEntity: yup.string(),
-  TypeOfEntity: yup.string(),
-  TypeOfLicense: yup.string(),
-  sharePercent: yup.string(),
-  currentAddress: yup.string().required("required"),
-  taxResidency: yup.string(),
-  tinNumber: yup.string().required("required"),
-  designation: yup.string(),
-  introducerName: yup.string(),
-  introducerEmail: yup.string().email("Invalid email"),
-  contactPersonName: yup.string(),
-  contactPersonEmail: yup.string().email("Invalid email"),
-  contactPersonPhone: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid"),
-  authorisedName: yup.string(),
-  authorisedEmail: yup.string().email("Invalid email"),
-  authorisedPersonContact: yup
-  .string()
-  .matches(phoneRegExp, "Phone number is not valid"),
-  authorisedCurrentAddress: yup.string(),
-  authorisedRelationship: yup.string(),
-  signature_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
-  }),
-  isPep: yup.string().required("required"),
-  bankStatement_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
-  }),
-  professionalReference_file: yup.mixed().test("fileType", "Invalid file format. Please upload a PDF file.", (value) => {
-    if (!value || value.length === 0 || !value[0]) {
-      return true; // No file provided or empty array, validation passes
-    }
-    if (value[0].type !== "application/pdf") {
-      return false; // File type is not PDF, validation fails
-    }
-    return true; // Validation passes
-  }),
-  countryOfIncorporation: yup.string(),
-  incorporationDate: yup.date(),
-  registeredOfficeAddress: yup.string(),
-  businessActivity: yup.string(),
-  countryOfOperation: yup.string(),
-});
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  clientEmail: "",
-  clientContact: "",
-  passportIdNumber: "",
-  birthDate: "",
-  citizenship: "",
-  countryOfResidence: "",
-  passportExpiryDate: "",
-  countryOfIssue: "",
-  preferredLanguage: "",
-  NameOfEntity: "",
-  PrevNameOfEntity: "",
-  TypeOfEntity: "",
-  TypeOfLicense: "",
-  sharePercent: "",
-  currentAddress: "",
-  taxResidency: "",
-  tinNumber: "",
-  designation: "",
-  introducerName: "",
-  introducerEmail: "",
-  contactPersonName: "",
-  contactPersonEmail: "",
-  contactPersonPhone: "",
-  authorisedName: "",
-  authorisedEmail: "",
-  authorisedPersonContact: "",
-  authorisedCurrentAddress: "",
-  authorisedRelationship: "",
-  signature_file: null,
-  isPep: "",
-  bankStatement_file: null,
-  professionalReference_file: null,
-  countryOfIncorporation: "",
-  incorporationDate: "",
-  registeredOfficeAddress: "",
-  businessActivity: "",
-  countryOfOperation: "",
-};
+  const checkoutSchema = yup.object().shape({
+    firstName: yup.string().required("required"),
+    lastName: yup.string().required("required"),
+    clientEmail: yup.string().email("Invalid email").required("required"),
+    clientContact: yup
+      .string()
+      .matches(phoneRegExp, "Phone number is not valid")
+      .required("required"),
+    passportIdNumber: yup.string().required("required"),
+    birthDate: yup.date().required("required"),
+    citizenship: yup.string().required("required"),
+    countryOfResidence: yup.string(),
+    passportExpiryDate: yup.date(),
+    countryOfIssue: yup.string(),
+    preferredLanguage: yup.string().required("required"),
+    NameOfEntity: yup.string(),
+    PrevNameOfEntity: yup.string(),
+    TypeOfEntity: yup.string(),
+    TypeOfLicense: yup.string(),
+    sharePercent: yup.string(),
+    currentAddress: yup.string().required("required"),
+    taxResidency: yup.string(),
+    tinNumber: yup.string().required("required"),
+    designation: yup.string(),
+    introducerName: yup.string(),
+    introducerEmail: yup.string().email("Invalid email"),
+    contactPersonName: yup.string(),
+    contactPersonEmail: yup.string().email("Invalid email"),
+    contactPersonPhone: yup
+      .string()
+      .matches(phoneRegExp, "Phone number is not valid"),
+    authorisedName: yup.string(),
+    authorisedEmail: yup.string().email("Invalid email"),
+    authorisedPersonContact: yup
+      .string()
+      .matches(phoneRegExp, "Phone number is not valid"),
+    authorisedCurrentAddress: yup.string(),
+    authorisedRelationship: yup.string(),
+    signature_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+    isPep: yup.string().required("required"),
+    bankStatement_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+    professionalReference_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+    countryOfIncorporation: yup.string(),
+    incorporationDate: yup.date(),
+    registeredOfficeAddress: yup.string(),
+    businessActivity: yup.string(),
+    countryOfOperation: yup.string(),
+  });
+  const initialValues = {
+    firstName: "",
+    lastName: "",
+    clientEmail: "",
+    clientContact: "",
+    passportIdNumber: "",
+    birthDate: "",
+    citizenship: "",
+    countryOfResidence: "",
+    passportExpiryDate: "",
+    countryOfIssue: "",
+    preferredLanguage: "",
+    NameOfEntity: "",
+    PrevNameOfEntity: "",
+    TypeOfEntity: "",
+    TypeOfLicense: "",
+    sharePercent: "",
+    currentAddress: "",
+    taxResidency: "",
+    tinNumber: "",
+    designation: "",
+    introducerName: "",
+    introducerEmail: "",
+    contactPersonName: "",
+    contactPersonEmail: "",
+    contactPersonPhone: "",
+    authorisedName: "",
+    authorisedEmail: "",
+    authorisedPersonContact: "",
+    authorisedCurrentAddress: "",
+    authorisedRelationship: "",
+    signature_file: null,
+    isPep: "",
+    bankStatement_file: null,
+    professionalReference_file: null,
+    countryOfIncorporation: "",
+    incorporationDate: "",
+    registeredOfficeAddress: "",
+    businessActivity: "",
+    countryOfOperation: "",
+  };
 
   // Handle next and previous steps
   const nextStep = () => {
@@ -231,13 +247,13 @@ const initialValues = {
               )}
               {step === 3 && (
                 <FormFields3
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-                isNonMobile={isNonMobile}
-              />
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                />
               )}
             </Box>
 
@@ -245,21 +261,33 @@ const initialValues = {
             <Box display="flex" justifyContent="space-between">
               {step !== 1 && (
                 <Box display="flex" mt="20px">
-                  <Button variant="contained" onClick={prevStep} color="secondary">
+                  <Button
+                    variant="contained"
+                    onClick={prevStep}
+                    color="secondary"
+                  >
                     Previous
                   </Button>
-                </Box> 
+                </Box>
               )}
               {step === 1 && (
                 <Box display="flex" mt="20px" justifyContent="end">
-                  <Button variant="contained" onClick={nextStep} color="secondary">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
                     Next
                   </Button>
                 </Box>
               )}
               {step === 2 && (
                 <Box display="flex" mt="20px" justifyContent="end">
-                  <Button variant="contained" onClick={nextStep} color="secondary">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
                     Next
                   </Button>
                 </Box>
@@ -271,16 +299,21 @@ const initialValues = {
                       type="submit"
                       color="secondary"
                       variant="contained"
-                      disabled={isLoading || !values.cv_file || !values.contract_file || !values.national_id_file}
+                      disabled={
+                        isLoading ||
+                        !values.cv_file ||
+                        !values.contract_file ||
+                        !values.national_id_file
+                      }
                     >
                       {isLoading ? (
                         <CircularProgress size={24} color="inherit" />
+                      ) : !values.cv_file ||
+                        !values.contract_file ||
+                        !values.national_id_file ? (
+                        "Upload Files First"
                       ) : (
-                        !values.cv_file || !values.contract_file || !values.national_id_file ? (
-                          "Upload Files First"
-                        ) : (
-                          "Create New User"
-                        )
+                        "Create New User"
                       )}
                     </Button>
                   </Box>
