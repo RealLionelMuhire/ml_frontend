@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import FormFields1 from "./FormField1";
 import FormFields2 from "./FormField2";
 import FormFields3 from "./FormField3";
+import FormFields4 from "./FormField4";
+import FormFields5 from "./FormField5";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -139,6 +141,29 @@ const ClientForm = () => {
     registeredOfficeAddress: yup.string(),
     businessActivity: yup.string(),
     countryOfOperation: yup.string(),
+
+    // Similar Application
+    changedName: yup.string(),
+    similarApplicationDetailsName: yup.string(),
+    financialServicesBusiness: yup.string(),
+    jurisdictionName: yup.string(),
+    jurisdictionAddress: yup.string(),
+    similarApplication: yup.string(),
+    similarApplicationDetailsPartner: yup.string(),
+    criticised: yup.string(),
+    similarApplicationDetailsJurisdictions: yup.string(),
+
+    // Bankruptcy
+    bankruptcyApplication: yup.string(),
+    similarApplicationDetailsForfeit: yup.string(),
+    receiverAppointed: yup.string(),
+    similarApplicationDetailsReceiver: yup.string(),
+    civilProceedings: yup.string(),
+    similarApplicationDetailsFinancial: yup.string(),
+    convicted: yup.string(),
+    imilarApplicationDetailsOffence: yup.string(),
+    directorConvicted: yup.string(),
+    similarApplicationDetailsDirector: yup.string(),
   });
   const initialValues = {
     firstName: "",
@@ -181,6 +206,27 @@ const ClientForm = () => {
     registeredOfficeAddress: "",
     businessActivity: "",
     countryOfOperation: "",
+
+    changedName: "",
+    similarApplicationDetailsName: "",
+    financialServicesBusiness: "",
+    jurisdictionName: "",
+    jurisdictionAddress: "",
+    similarApplication: "",
+    similarApplicationDetailsPartner: "",
+    criticised: "",
+    similarApplicationDetailsJurisdictions: "",
+
+    bankruptcyApplication: "",
+    similarApplicationDetailsForfeit: "",
+    receiverAppointed: "",
+    similarApplicationDetailsReceiver: "",
+    civilProceedings: "",
+    similarApplicationDetailsFinancial: "",
+    convicted: "",
+    imilarApplicationDetailsOffence: "",
+    directorConvicted: "",
+    similarApplicationDetailsDirector: "",
   };
 
   const nextStep = () => {
@@ -261,6 +307,28 @@ const ClientForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              {step === 4 && (
+                <FormFields4
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 5 && (
+                <FormFields5
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -299,27 +367,38 @@ const ClientForm = () => {
                 </Box>
               )}
               {step === 3 && (
-                <React.Fragment>
-                  <Box display="flex" justifyContent="space-between" mt="20px">
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      variant="contained"
-                      // disabled={
-                      // isLoading ||
-                      // !values.cv_file ||
-                      // !values.contract_file ||
-                      // !values.national_id_file
-                      // }
-                    >
-                      {isLoading ? (
-                        <CircularProgress size={24} color="inherit" />
-                      ) : (
-                        "Register an new client"
-                      )}
-                    </Button>
-                  </Box>
-                </React.Fragment>
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 4 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 5 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? <CircularProgress size={24} /> : "Submit"}
+                  </Button>
+                </Box>
               )}
             </Box>
             <ErrorBox isError={isError} />

@@ -3,7 +3,7 @@ import { Box, Typography, MenuItem, TextField } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 
-const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
+const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -23,192 +23,23 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         }}
       >
         <Typography variant="h5">
-          Indicate, whether the Client has changed his name.
+          At any time in the previous 7 years, has an application been made for
+          the bankruptcy or compulsory winding up of the Applicant/Beneficial
+          Owner/Partner or has the Applicant’s property been seized or
+          Applicant’s property been seized or forfeited or relinquished by any
+          other similar means?
         </Typography>
         <TextField
           select
-          value={values.changedName}
+          value={values.bankruptcyApplication}
           onChange={handleChange}
-          name="changedName"
+          name="bankruptcyApplication"
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.changedName === "yes" && (
-        <>
-          <Box
-            variant="outlined"
-            display="inline-flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "3px 3px",
-              height: "auto",
-              flex: "4",
-            }}
-          >
-            <Typography variant="body1">
-              If yes, please provide us with his former names and the dates of
-              the change of names
-            </Typography>
-          </Box>
-
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="Details of Similar Application"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.similarApplicationDetailsName}
-            name="similarApplicationDetailsName"
-            error={
-              !!touched.similarApplicationDetailsName &&
-              !!errors.similarApplicationDetailsName
-            }
-            helperText={
-              touched.similarApplicationDetailsName &&
-              errors.similarApplicationDetailsName
-            }
-            sx={{ gridColumn: "span 2" }}
-          />
-        </>
-      )}
-
-      <Box
-        variant="outlined"
-        display="inline-flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 4",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "3px 3px",
-          height: "auto",
-          flex: "4",
-        }}
-      >
-        <Typography variant="h5">
-          Indicate, whether the Client conducts or carries out financial
-          services business from any jurisdiction other than Rwanda?
-        </Typography>
-        <TextField
-          select
-          value={values.financialServicesBusiness}
-          onChange={handleChange}
-          name="financialServicesBusiness"
-        >
-          <MenuItem value="yes">Yes</MenuItem>
-          <MenuItem value="no">No</MenuItem>
-        </TextField>
-      </Box>
-      {values.financialServicesBusiness === "yes" && (
-        <>
-          <Box
-            variant="outlined"
-            display="inline-flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "3px 3px",
-              height: "auto",
-              flex: "4",
-            }}
-          >
-            <Typography variant="body1">
-              If yes, specify the name of jurisdiction
-            </Typography>
-          </Box>
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="Name of Jurisdiction"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.jurisdictionName}
-            name="jurisdictionName"
-            error={!!touched.jurisdictionName && !!errors.jurisdictionName}
-            helperText={touched.jurisdictionName && errors.jurisdictionName}
-            sx={{ gridColumn: "span 2" }}
-          />
-          {/* Add input field for jurisdiction name */}
-          <Box
-            variant="outlined"
-            display="inline-flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "3px 3px",
-              height: "auto",
-              flex: "4",
-            }}
-          >
-            <Typography variant="body1">
-              If yes, please provide the address from which financial services
-              business is carried out:
-            </Typography>
-          </Box>
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="Address"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.jurisdictionAddress}
-            name="jurisdictionAddress"
-            error={
-              !!touched.jurisdictionAddress && !!errors.jurisdictionAddress
-            }
-            helperText={
-              touched.jurisdictionAddress && errors.jurisdictionAddress
-            }
-            sx={{ gridColumn: "span 2" }}
-          />
-        </>
-      )}
-
-      <Box
-        variant="outlined"
-        display="inline-flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 4",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "3px 3px",
-          height: "auto",
-          flex: "4",
-        }}
-      >
-        <Typography variant="h5">
-          Has the Applicant/Beneficial Owner/Partner made a similar application
-          in another jurisdiction?
-        </Typography>
-        <TextField
-          select
-          value={values.similarApplication}
-          onChange={handleChange}
-          name="similarApplication"
-        >
-          <MenuItem value="yes">Yes</MenuItem>
-          <MenuItem value="no">No</MenuItem>
-        </TextField>
-      </Box>
-      {values.similarApplication === "yes" && (
+      {values.bankruptcyApplication === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -235,15 +66,15 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             label="Details of Similar Application"
             onBlur={handleBlur}
             onChange={handleChange}
-            value={values.similarApplicationDetailsPartner}
-            name="similarApplicationDetailsPartner"
+            value={values.similarApplicationDetailsForfeit}
+            name="similarApplicationDetailsForfeit"
             error={
-              !!touched.similarApplicationDetailsPartner &&
-              !!errors.similarApplicationDetailsPartner
+              !!touched.similarApplicationDetailsForfeit &&
+              !!errors.similarApplicationDetailsForfeit
             }
             helperText={
-              touched.similarApplicationDetailsPartner &&
-              errors.similarApplicationDetailsPartner
+              touched.similarApplicationDetailsForfeit &&
+              errors.similarApplicationDetailsForfeit
             }
             sx={{ gridColumn: "span 2" }}
           />
@@ -264,22 +95,22 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         }}
       >
         <Typography variant="h5">
-          Has the Applicant/Beneficial Owner/Partner at any time in the previous
-          7 years been criticised, censured, disciplined, suspended, or fined by
-          any regulatory body in Rwanda or by any regulatory body in any other
-          jurisdiction?
+          Has the Applicant/Beneficial Owner/ Partner at any time in the
+          previous 7 years had a Receiver or an Administrator appointed or
+          failed to satisfy a debt adjudged due, or come to a compromise or
+          similar arrangement with any of its creditors?
         </Typography>
         <TextField
           select
-          value={values.criticised}
+          value={values.receiverAppointed}
           onChange={handleChange}
-          name="criticised"
+          name="receiverAppointed"
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.criticised === "yes" && (
+      {values.receiverAppointed === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -306,15 +137,231 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             label="Details of Similar Application"
             onBlur={handleBlur}
             onChange={handleChange}
-            value={values.similarApplicationDetailsJurisdictions}
-            name="similarApplicationDetailsJurisdictions"
+            value={values.similarApplicationDetailsReceiver}
+            name="similarApplicationDetailsReceiver"
             error={
-              !!touched.similarApplicationDetailsJurisdictions &&
-              !!errors.similarApplicationDetailsJurisdictions
+              !!touched.similarApplicationDetailsReceiver &&
+              !!errors.similarApplicationDetailsReceiver
             }
             helperText={
-              touched.similarApplicationDetailsJurisdictions &&
-              errors.similarApplicationDetailsJurisdictions
+              touched.similarApplicationDetailsReceiver &&
+              errors.similarApplicationDetailsReceiver
+            }
+            sx={{ gridColumn: "span 2" }}
+          />
+        </>
+      )}
+
+      <Box
+        variant="outlined"
+        display="inline-flex"
+        justifyContent="space-between"
+        sx={{
+          backgroundColor: colors.primary[400],
+          gridColumn: "span 4",
+          margin: "1px 0px 1px",
+          borderRadius: "4px",
+          padding: "3px 3px",
+          height: "auto",
+          flex: "4",
+        }}
+      >
+        <Typography variant="h5">
+          Has the Applicant/Beneficial Owner/ Partner been engaged in any civil
+          proceedings or arbitration at any time in the previous 7 years in
+          which a debt was adjudged due from, or judgement given against, the
+          Applicant in relation to any financial service?
+        </Typography>
+        <TextField
+          select
+          value={values.civilProceedings}
+          onChange={handleChange}
+          name="civilProceedings"
+        >
+          <MenuItem value="yes">Yes</MenuItem>
+          <MenuItem value="no">No</MenuItem>
+        </TextField>
+      </Box>
+      {values.civilProceedings === "yes" && (
+        <>
+          <Box
+            variant="outlined"
+            display="inline-flex"
+            justifyContent="space-between"
+            sx={{
+              backgroundColor: colors.primary[400],
+              gridColumn: "span 2",
+              margin: "1px 0px 1px",
+              borderRadius: "4px",
+              padding: "3px 3px",
+              height: "auto",
+              flex: "4",
+            }}
+          >
+            <Typography variant="body1">
+              - If yes, please provide details:
+            </Typography>
+          </Box>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            label="Details of Similar Application"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.similarApplicationDetailsFinancial}
+            name="similarApplicationDetailsFinancial"
+            error={
+              !!touched.similarApplicationDetailsFinancial &&
+              !!errors.similarApplicationDetailsFinancial
+            }
+            helperText={
+              touched.similarApplicationDetailsFinancial &&
+              errors.similarApplicationDetailsFinancial
+            }
+            sx={{ gridColumn: "span 2" }}
+          />
+        </>
+      )}
+
+      <Box
+        variant="outlined"
+        display="inline-flex"
+        justifyContent="space-between"
+        sx={{
+          backgroundColor: colors.primary[400],
+          gridColumn: "span 4",
+          margin: "1px 0px 1px",
+          borderRadius: "4px",
+          padding: "3px 3px",
+          height: "auto",
+          flex: "4",
+        }}
+      >
+        <Typography variant="h5">
+          Has the Applicant/Beneficial Owner/ Partner at any time been convicted
+          of any offence involving fraud, or other dishonesty, or any other
+          offence such as an economic offence or money laundering or been
+          subject to penalties for tax evasion (whether or not in Rwanda)
+          relating to companies carrying out financial services business?
+        </Typography>
+        <TextField
+          select
+          value={values.convicted}
+          onChange={handleChange}
+          name="convicted"
+        >
+          <MenuItem value="yes">Yes</MenuItem>
+          <MenuItem value="no">No</MenuItem>
+        </TextField>
+      </Box>
+      {values.convicted === "yes" && (
+        <>
+          <Box
+            variant="outlined"
+            display="inline-flex"
+            justifyContent="space-between"
+            sx={{
+              backgroundColor: colors.primary[400],
+              gridColumn: "span 2",
+              margin: "1px 0px 1px",
+              borderRadius: "4px",
+              padding: "3px 3px",
+              height: "auto",
+              flex: "4",
+            }}
+          >
+            <Typography variant="body1">
+              - If yes, please provide details:
+            </Typography>
+          </Box>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            label="Details of Similar Application"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.similarApplicationDetailsOffence}
+            name="similarApplicationDetailsOffence"
+            error={
+              !!touched.similarApplicationDetailsOffence &&
+              !!errors.similarApplicationDetailsOffence
+            }
+            helperText={
+              touched.similarApplicationDetailsOffence &&
+              errors.similarApplicationDetailsOffence
+            }
+            sx={{ gridColumn: "span 2" }}
+          />
+        </>
+      )}
+      <Box
+        variant="outlined"
+        display="inline-flex"
+        justifyContent="space-between"
+        sx={{
+          backgroundColor: colors.primary[400],
+          gridColumn: "span 4",
+          margin: "1px 0px 1px",
+          borderRadius: "4px",
+          padding: "3px 3px",
+          height: "auto",
+          flex: "4",
+        }}
+      >
+        <Typography variant="h5">
+          Has any Director, Officer or Partner of the Applicant been convicted
+          in any Court of Law for a criminal offence or penalised or sanctioned,
+          or is currently or has ever been under investigation for professional
+          negligence or malpractice by any Regulatory Authority in any country?
+        </Typography>
+        <TextField
+          select
+          value={values.directorConvicted}
+          onChange={handleChange}
+          name="directorConvicted"
+        >
+          <MenuItem value="yes">Yes</MenuItem>
+          <MenuItem value="no">No</MenuItem>
+        </TextField>
+      </Box>
+      {values.directorConvicted === "yes" && (
+        <>
+          <Box
+            variant="outlined"
+            display="inline-flex"
+            justifyContent="space-between"
+            sx={{
+              backgroundColor: colors.primary[400],
+              gridColumn: "span 2",
+              margin: "1px 0px 1px",
+              borderRadius: "4px",
+              padding: "3px 3px",
+              height: "auto",
+              flex: "4",
+            }}
+          >
+            <Typography variant="body1">
+              - If yes, please provide details:
+            </Typography>
+          </Box>
+          <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            label="Details of Similar Application"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.similarApplicationDetailsDirector}
+            name="similarApplicationDetailsDirector"
+            error={
+              !!touched.similarApplicationDetailsDirector &&
+              !!errors.similarApplicationDetailsDirector
+            }
+            helperText={
+              touched.similarApplicationDetailsDirector &&
+              errors.similarApplicationDetailsDirector
             }
             sx={{ gridColumn: "span 2" }}
           />
@@ -324,4 +371,4 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
   );
 };
 
-export default FormFields4;
+export default FormFields5;
