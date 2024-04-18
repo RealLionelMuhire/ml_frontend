@@ -12,6 +12,10 @@ import FormFields2 from "./FormField2";
 import FormFields3 from "./FormField3";
 import FormFields4 from "./FormField4";
 import FormFields5 from "./FormField5";
+import FormFields6 from "./FormField6";
+import FormFields7 from "./FormField7";
+import FormFields8 from "./FormField8";
+import FormFields9 from "./FormField9";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -164,6 +168,34 @@ const ClientForm = () => {
     imilarApplicationDetailsOffence: yup.string(),
     directorConvicted: yup.string(),
     similarApplicationDetailsDirector: yup.string(),
+
+    // Remitting Party
+    RemittingParty: yup.string(),
+    ModeOfPayment: yup.string(),
+    RelationshipWithApplicant: yup.string(),
+    ProposedNameOption1: yup.string(),
+    ProposedNameOption2: yup.string(),
+    ProposedNameOption3: yup.string(),
+
+    // Company Details
+    proposedActivity: yup.string(),
+    targetSectors: yup.string(),
+    targetedCountries: yup.string(),
+    specialLicense: yup.string(),
+    secretary: yup.string(),
+    productService: yup.string(),
+    businessAddress: yup.string(),
+
+    // Source of Funds
+    sourceOfFunds: yup.string(),
+    otherSourceOfFunds: yup.string(),
+    countrySourceFunds: yup.string(),
+    netAnnualIncome: yup.string(),
+    estimatedNetWorth: yup.string(),
+    sourceOfWealth: yup.string(),
+    otherSourceOfWealth: yup.string(),
+    countrySourceWealth: yup.string(),
+    bankInvolvedWealth: yup.string(),
   });
   const initialValues = {
     firstName: "",
@@ -227,6 +259,31 @@ const ClientForm = () => {
     imilarApplicationDetailsOffence: "",
     directorConvicted: "",
     similarApplicationDetailsDirector: "",
+
+    RemittingParty: "",
+    ModeOfPayment: "",
+    RelationshipWithApplicant: "",
+    ProposedNameOption1: "",
+    ProposedNameOption2: "",
+    ProposedNameOption3: "",
+
+    proposedActivity: "",
+    targetSectors: "",
+    targetedCountries: "",
+    specialLicense: "",
+    secretary: "",
+    productService: "",
+    businessAddress: "",
+
+    sourceOfFunds: "",
+    otherSourceOfFunds: "",
+    countrySourceFunds: "",
+    netAnnualIncome: "",
+    estimatedNetWorth: "",
+    sourceOfWealth: "",
+    otherSourceOfWealth: "",
+    countrySourceWealth: "",
+    bankInvolvedWealth: "",
   };
 
   const nextStep = () => {
@@ -329,6 +386,50 @@ const ClientForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              {step === 6 && (
+                <FormFields6
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 7 && (
+                <FormFields7
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 8 && (
+                <FormFields8
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 9 && (
+                <FormFields9
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -391,12 +492,60 @@ const ClientForm = () => {
               {step === 5 && (
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 6 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 7 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 8 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 9 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
                     type="submit"
                     variant="contained"
                     color="secondary"
                     disabled={isLoading}
                   >
-                    {isLoading ? <CircularProgress size={24} /> : "Submit"}
+                    {isLoading ? (
+                      <CircularProgress size={24} color="secondary" />
+                    ) : (
+                      "Submit"
+                    )}
                   </Button>
                 </Box>
               )}
