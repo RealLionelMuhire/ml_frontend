@@ -8,25 +8,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-
-const sourceOfFundsOptions = [
-  "Savings",
-  "Salary Earnings",
-  "Dividend Income",
-  "Rental Income",
-  "Business Income",
-  "Proceeds from sale of property",
-  "Donation",
-  "Gift",
-  "Lottery",
-  "Creditor",
-  "Inheritance",
-  "Loans from Banks or other Financial Institution",
-  "Loan from related third parties",
-  "Loan from unrelated third parties",
-  "Real Estate",
-  "Others",
-];
+// import FinancialForecastTable2 from "./Table2";
 
 const sourceOfWealthOptions = [
   "Savings",
@@ -59,6 +41,10 @@ const FormFields9 = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  //   const handleFinancialDataChange = (newData) => {
+  //     setFieldValue("financialForecast", newData);
+  //   };
+
   return (
     <React.Fragment>
       <Box
@@ -77,6 +63,10 @@ const FormFields9 = ({
           D. ORIGIN OF FUNDS / PROPERTY & SOURCE OF WEALTH (if applicable)
         </Typography>
       </Box>
+      {/* <FinancialForecastTable2
+        financialData={values.financialForecast}
+        handleFinancialDataChange={handleFinancialDataChange}
+      /> */}
       <Box
         variant="outlined"
         display="flex"

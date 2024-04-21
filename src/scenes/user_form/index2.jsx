@@ -66,12 +66,12 @@ const UserForm = () => {
         "Invalid file format. Please upload a PDF file.",
         (value) => {
           if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
+            return true;
           }
           if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
+            return false;
           }
-          return true; // Validation passes
+          return true;
         }
       ),
     contract_file: yup
@@ -106,9 +106,33 @@ const UserForm = () => {
     cv_file: null,
     contract_file: null,
     national_id_file: null,
+    financialForecast: [
+      {
+        id: 0,
+        description: "Currency",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 1,
+        description: "Initial Investment",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 2,
+        description: "Income from Business Activities",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
+      { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
+    ],
   };
 
-  // Handle next and previous steps
   const nextStep = () => {
     setStep(step + 1);
   };
@@ -162,14 +186,17 @@ const UserForm = () => {
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
                 />
               )}
               {step === 2 && (
                 <FileUpload
                   values={values}
-                  touched={touched}
                   errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
                   handleChange={handleChange}
+                  isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
                 />
               )}

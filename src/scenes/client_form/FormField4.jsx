@@ -14,7 +14,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         justifyContent="space-between"
         sx={{
           backgroundColor: colors.primary[400],
-          gridColumn: "span 4",
+          gridColumn: "span 2",
           margin: "1px 0px 1px",
           borderRadius: "4px",
           padding: "3px 3px",
@@ -43,7 +43,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             justifyContent="space-between"
             sx={{
               backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
+              gridColumn: "span 1",
               margin: "1px 0px 1px",
               borderRadius: "4px",
               padding: "3px 3px",
@@ -74,7 +74,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
               touched.similarApplicationDetailsName &&
               errors.similarApplicationDetailsName
             }
-            sx={{ gridColumn: "span 2" }}
+            sx={{ gridColumn: "span 1" }}
           />
         </>
       )}

@@ -196,7 +196,91 @@ const ClientForm = () => {
     otherSourceOfWealth: yup.string(),
     countrySourceWealth: yup.string(),
     bankInvolvedWealth: yup.string(),
+
+    financialForecast: yup.array().of(
+      yup.object().shape({
+        year1: yup
+          .number()
+          .nullable()
+          .required("Year 1 is required")
+          .min(0, "Year 1 must be a positive number"),
+        year2: yup
+          .number()
+          .nullable()
+          .required("Year 2 is required")
+          .min(0, "Year 2 must be a positive number"),
+        year3: yup
+          .number()
+          .nullable()
+          .required("Year 3 is required")
+          .min(0, "Year 3 must be a positive number"),
+      })
+    ),
+    salaryEvidence_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+
+    bank_statement_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+
+    custody_accounts_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+
+    source_of_funds_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
   });
+
   const initialValues = {
     firstName: "",
     lastName: "",
@@ -284,6 +368,36 @@ const ClientForm = () => {
     otherSourceOfWealth: "",
     countrySourceWealth: "",
     bankInvolvedWealth: "",
+
+    financialForecast: [
+      {
+        id: 0,
+        description: "Currency",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 1,
+        description: "Initial Investment",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 2,
+        description: "Income from Business Activities",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
+      { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
+    ],
+    salaryEvidence_file: null,
+    bank_statement_file: null,
+    custody_accounts_file: null,
+    source_of_funds_file: null,
   };
 
   const nextStep = () => {
