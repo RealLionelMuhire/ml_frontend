@@ -216,7 +216,7 @@ const ClientForm = () => {
           .min(0, "Year 3 must be a positive number"),
       })
     ),
-    salaryEvidence_file: yup
+    confirmationLetter_file: yup
       .mixed()
       .test(
         "fileType",
@@ -265,6 +265,53 @@ const ClientForm = () => {
       ),
 
     source_of_funds_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+    payslips_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+
+    due_diligence_file: yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      ),
+
+    financial_statements_file: yup
       .mixed()
       .test(
         "fileType",
@@ -394,10 +441,13 @@ const ClientForm = () => {
       { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
       { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
     ],
-    salaryEvidence_file: null,
+    confirmationLetter_file: null,
     bank_statement_file: null,
     custody_accounts_file: null,
     source_of_funds_file: null,
+    payslips_file: null,
+    due_diligence_file: null,
+    financial_statements_file: null,
   };
 
   const nextStep = () => {

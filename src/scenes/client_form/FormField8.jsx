@@ -28,21 +28,6 @@ const sourceOfFundsOptions = [
   "Others",
 ];
 
-// Savings
-
-// - Bank Statements for the past 3 months;
-// - Custody accounts for the past 3 months; or
-// - Portfolio Statements for the past 3 months from regulated financialservices providers.
-
-// Additional document may be required upon review of the above documents to ascertain the
-// source of the funds available in the bank account.
-
-// Salary Earnings
-
-// - 3 months’ recent payslips;
-// - Letter of confirmation from employer of income detailing the amount of monthly salary; and
-// - Bank statements clearly showing receipt of the 3 recent months’ regular salary payments from named employer.
-
 // Dividend Income
 
 // - Due diligence documents on the entity from which the client is obtaining the dividend income
@@ -145,8 +130,15 @@ const FormFields8 = ({
 
   const handleSourceOfFundsChange = (e) => {
     handleChange(e);
-    if (e.target.value === "Salary Earnings") {
-      setFieldValue("salaryEvidence_file", e.currentTarget.files[0]);
+
+    if (e.target.checked) {
+      setFieldValue("sourceOfFunds", [...values.sourceOfFunds, e.target.value]);
+      setFieldValue("sourceOfFundsOther", "");
+    } else {
+      setFieldValue(
+        "sourceOfFunds",
+        values.sourceOfFunds.filter((item) => item !== e.target.value)
+      );
     }
   };
 
@@ -271,15 +263,13 @@ const FormFields8 = ({
             justifyContent="space-between"
             sx={{
               backgroundColor: colors.primary[400],
-              gridColumn: "span 1",
+              gridColumn: "span 2",
               margin: "1px 0px 1px",
               borderRadius: "4px",
               padding: "13px 5px",
-              height: "auto",
-              flex: "4",
             }}
           >
-            <Typography variant="h5">
+            <Typography variant="h5" gutterBottom>
               Upload Bank Statement for the past 3 months
             </Typography>
             <input
@@ -302,16 +292,14 @@ const FormFields8 = ({
             justifyContent="space-between"
             sx={{
               backgroundColor: colors.primary[400],
-              gridColumn: "span 1",
+              gridColumn: "span 2",
               margin: "1px 0px 1px",
               borderRadius: "4px",
               padding: "13px 5px",
-              height: "auto",
-              flex: "4",
             }}
           >
-            <Typography variant="h5">
-              Custody accounts for the past 3 months
+            <Typography variant="h5" gutterBottom>
+              Upload Custody accounts file for the past 3 months
             </Typography>
             <input
               type="file"
@@ -336,16 +324,14 @@ const FormFields8 = ({
             justifyContent="space-between"
             sx={{
               backgroundColor: colors.primary[400],
-              gridColumn: "span 1",
+              gridColumn: "span 2",
               margin: "1px 0px 1px",
               borderRadius: "4px",
               padding: "13px 5px",
-              height: "auto",
-              flex: "4",
             }}
           >
-            <Typography variant="h5">
-              Source of funds for the past 3 months
+            <Typography variant="h5" gutterBottom>
+              Upload Source of funds for the past 3 months
             </Typography>
             <input
               type="file"
@@ -363,6 +349,179 @@ const FormFields8 = ({
           </Box>
         </>
       )}
+      {values.sourceOfFunds &&
+        values.sourceOfFunds.includes("Salary Earnings") && (
+          <>
+            <Box
+              variant="outlined"
+              display="flex"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: colors.primary[400],
+                gridColumn: "span 2",
+                margin: "1px 0px 1px",
+                borderRadius: "4px",
+                padding: "13px 5px",
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                Letter of confirmation from employer of income detailing the
+                amount of monthly salary
+              </Typography>
+              <input
+                type="file"
+                accept=".pdf"
+                name="confirmationLetter_file"
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldValue(
+                    "confirmationLetter_file",
+                    e.currentTarget.files[0]
+                  );
+                }}
+                sx={{ gridColumn: "span 1" }}
+              />
+              {touched.confirmationLetter_file &&
+                errors.confirmationLetter_file && (
+                  <div>{errors.confirmationLetter_file}</div>
+                )}
+            </Box>
+            <Box
+              variant="outlined"
+              display="flex"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: colors.primary[400],
+                gridColumn: "span 2",
+                margin: "1px 0px 1px",
+                borderRadius: "4px",
+                padding: "13px 5px",
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                Upload 3 months' recent payslips
+              </Typography>
+              <input
+                type="file"
+                accept=".pdf"
+                name="payslips_file"
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldValue("payslips_file", e.currentTarget.files[0]);
+                }}
+                sx={{ gridColumn: "span 2" }}
+              />
+              {touched.payslips_file && errors.payslips_file && (
+                <div>{errors.payslips_file}</div>
+              )}
+            </Box>
+            <Box
+              variant="outlined"
+              display="flex"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: colors.primary[400],
+                gridColumn: "span 2",
+                margin: "1px 0px 1px",
+                borderRadius: "4px",
+                padding: "13px 5px",
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                Upload Bank Statement for the past 3 months
+              </Typography>
+              <input
+                type="file"
+                accept=".pdf"
+                name="bank_statement_file"
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldValue(
+                    "bank_statement_file",
+                    e.currentTarget.files[0]
+                  );
+                }}
+                sx={{ gridColumn: "span 2" }}
+              />
+              {touched.bank_statement_file && errors.bank_statement_file && (
+                <div>{errors.bank_statement_file}</div>
+              )}
+            </Box>
+          </>
+        )}
+      {/* Dividend Income
+
+- Due diligence documents on the entity from which the client is obtaining the dividend income
+- Annual financial statements of the business that declared the dividend or any such proof of dividend pay-outs. */}
+      {values.sourceOfFunds &&
+        values.sourceOfFunds.includes("Dividend Income") && (
+          <>
+            <Box
+              variant="outlined"
+              display="flex"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: colors.primary[400],
+                gridColumn: "span 2",
+                margin: "1px 0px 1px",
+                borderRadius: "4px",
+                padding: "13px 5px",
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                Upload Due diligence documents on the entity from which the
+                client is obtaining the dividend income
+              </Typography>
+              <input
+                type="file"
+                accept=".pdf"
+                name="due_diligence_file"
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldValue("due_diligence_file", e.currentTarget.files[0]);
+                }}
+                sx={{ gridColumn: "span 1" }}
+              />
+              {touched.due_diligence_file && errors.due_diligence_file && (
+                <div>{errors.due_diligence_file}</div>
+              )}
+            </Box>
+            <Box
+              variant="outlined"
+              display="flex"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: colors.primary[400],
+                gridColumn: "span 2",
+                margin: "1px 0px 1px",
+                borderRadius: "4px",
+                padding: "13px 5px",
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                Upload Annual financial statements of the business that declared
+                the dividend or any such proof of dividend pay-outs.
+              </Typography>
+              <input
+                type="file"
+                accept=".pdf"
+                name="financial_statements_file"
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldValue(
+                    "financial_statements_file",
+                    e.currentTarget.files[0]
+                  );
+                }}
+                sx={{ gridColumn: "span 1" }}
+              />
+              {touched.financial_statements_file &&
+                errors.financial_statements_file && (
+                  <div>{errors.financial_statements_file}</div>
+                )}
+            </Box>
+          </>
+        )}
       <Box
         variant="outlined"
         display="flex"
@@ -422,3 +581,12 @@ const FormFields8 = ({
 };
 
 export default FormFields8;
+
+// confirmationLetter_file: null,
+// bank_statement_file: null,
+// custody_accounts_file: null,
+// source_of_funds_file: null,
+// payslips_file: null,
+// confirmationLetter_file
+// due_diligence_file
+// financial_statements_file
