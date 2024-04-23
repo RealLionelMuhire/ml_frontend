@@ -184,7 +184,11 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Bank Statement for the past 3 months
+              {values.bank_statement_file ? (
+              values.bank_statement_file.name
+              ) : (
+              <label htmlFor="bank_statement_file">Upload Bank Statement for the past 3 months</label>
+              )}
             </Typography>
             <input
               type="file"
@@ -213,7 +217,11 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Custody accounts file for the past 3 months
+              {values.custody_accounts_file ? (
+              values.custody_accounts_file.name
+              ) : (
+              <label htmlFor="custody_accounts_file">Upload Custody accounts file for the past 3 months</label>
+              )}
             </Typography>
             <input
               type="file"
@@ -245,7 +253,11 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Source of funds for the past 3 months
+              {values.source_of_funds_file ? (
+              values.source_of_funds_file.name
+              ) : (
+              <label htmlFor="source_of_funds_file">Upload Source of funds for the past 3 months</label>
+              )}
             </Typography>
             <input
               type="file"
@@ -279,8 +291,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
+                {values.confirmationLetter_file ? (
+              values.confirmationLetter_file.name
+              ) : (
+              <label htmlFor="confirmationLetter_file">
                 Letter of confirmation from employer of income detailing the
-                amount of monthly salary
+                amount of monthly salary</label>
+              )}
               </Typography>
               <input
                 type="file"
@@ -313,7 +330,11 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload 3 months' recent payslips
+                {values.payslips_file ? (
+              values.payslips_file.name
+              ) : (
+              <label htmlFor="payslips_file">Upload 3 months' recent payslips</label>
+              )}
               </Typography>
               <input
                 type="file"
@@ -342,7 +363,11 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank Statement for the past 3 months
+                {values.bank_statement_file ? (
+                  values.bank_statement_file.name
+                ) : (
+                  <label htmlFor="bank_statement_file">Upload Bank Statement for the past 3 months</label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -380,8 +405,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Due diligence documents on the entity from which the
-                client is obtaining the dividend income
+                {values.due_diligence_file ? (
+                  values.due_diligence_file.name
+                ) : (
+                  <label htmlFor="due_diligence_file">
+                    Upload Due diligence documents on the entity from which the
+                    client is obtaining the dividend income
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -410,8 +441,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Annual financial statements of the business that declared
-                the dividend or any such proof of dividend pay-outs.
+                {values.financial_statements_file ? (
+                  values.financial_statements_file.name
+                ) : (
+                  <label htmlFor="financial_statements_file">
+                    Upload Annual financial statements of the business that declared
+                    the dividend or any such proof of dividend pay-outs.
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -450,7 +487,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Proof of ownership of the asset being rented / leased;
+                {values.proof_of_ownership_file ? (
+                  values.proof_of_ownership_file.name
+                ) : (
+                  <label htmlFor="proof_of_ownership_file">
+                    Upload Proof of ownership of the asset being rented / leased;
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -483,7 +526,11 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Lease agreement;
+                {values.lease_agreement_file ? (
+                  values.lease_agreement_file.name
+                ) : (
+                  <label htmlFor="lease_agreement_file">Upload Lease agreement;</label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -515,8 +562,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank statements (over the recent 3 months) showing
-                receipt of funds from the lessee.
+                {values.bank_statements_file ? (
+                  values.bank_statements_file.name
+                ) : (
+                  <label htmlFor="bank_statements_file">
+                    Upload Bank statements (over the recent 3 months) showing
+                    receipt of funds from the lessee.
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -555,8 +608,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload CDD Documents on the legal entity from which profit is
-                being derived;
+                {values.cdd_documents_file ? (
+                  values.cdd_documents_file.name
+                ) : (
+                  <label htmlFor="cdd_documents_file">
+                    Upload CDD Documents on the legal entity from which profit is
+                    being derived;
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -585,8 +644,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Documentary evidence of link between legal entity and the
-                client;
+                {values.documentary_evidence_file ? (
+                  values.documentary_evidence_file.name
+                ) : (
+                  <label htmlFor="documentary_evidence_file">
+                    Upload Documentary evidence of link between legal entity and the
+                    client;
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -619,9 +684,15 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank statement showing receipt of funds provided from
-                business income (to the extent possible over the recent 3
-                months);
+                {values.bank_statement_file ? (
+                  values.bank_statement_file.name
+                ) : (
+                  <label htmlFor="bank_statement_file">
+                    Upload Bank statement showing receipt of funds provided from
+                    business income (to the extent possible over the recent 3
+                    months);
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -653,7 +724,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Latest Audited financial statements of the entity.
+               {values.financial_statements_file ? (
+                  values.financial_statements_file.name
+                ) : (
+                  <label htmlFor="financial_statements_file">
+                    Upload Latest Audited financial statements of the entity.
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -692,7 +769,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Notarised documents proving sale of property
+                {values.notarised_documents_file ? (
+                  values.notarised_documents_file.name
+                ) : (
+                  <label htmlFor="notarised_documents_file">
+                    Upload Notarised documents proving sale of property
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -725,8 +808,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank statement showing receipt of funds following
-                proceeds of sale
+                {values.bank_statement_proceeds_file ? (
+                  values.bank_statement_proceeds_file.name
+                ) : (
+                  <label htmlFor="bank_statement_proceeds_file">
+                    Upload Bank statement showing receipt of funds following
+                    proceeds of sale
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -764,7 +853,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Letter from donor confirming details of gift
+              {values.donor_confirmation_file ? (
+                values.donor_confirmation_file.name
+              ) : (
+                <label htmlFor="donor_confirmation_file">
+                  Letter from donor confirming details of gift
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -797,8 +892,14 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Details and documentary evidence of the donor’s source of
-              wealth
+              {values.donor_wealth_file ? (
+                values.donor_wealth_file.name
+              ) : (
+                <label htmlFor="donor_wealth_file">
+                  Upload Details and documentary evidence of the donor’s source of
+                  wealth
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -832,7 +933,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Letter from donor confirming details of gift
+              {values.donor_confirmation_file ? (
+                values.donor_confirmation_file.name
+              ) : (
+                <label htmlFor="donor_confirmation_file">
+                  Letter from donor confirming details of gift
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -865,8 +972,14 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Details and documentary evidence of the donor’s source of
-              wealth
+              {values.donor_wealth_file ? (
+                values.donor_wealth_file.name
+              ) : (
+                <label htmlFor="donor_wealth_file">
+                  Upload Details and documentary evidence of the donor’s source of
+                  wealth
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -895,7 +1008,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Bank statement showing receipt of funds
+              {values.bank_statement_gift_file ? (
+                values.bank_statement_gift_file.name
+              ) : (
+                <label htmlFor="bank_statement_gift_file">
+                  Upload Bank statement showing receipt of funds
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -933,8 +1052,14 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Letter from relevant organisation (Lottery headquarters /
-              betting shop / casino)
+              {values.lottery_letter_file ? (
+                values.lottery_letter_file.name
+              ) : (
+                <label htmlFor="lottery_letter_file">
+                  Upload Letter from relevant organisation (Lottery headquarters /
+                  betting shop / casino)
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -963,8 +1088,14 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Bank statement showing funds deposited including name of
-              the paying organisation
+              {values.bank_statement_lottery_file ? (
+                values.bank_statement_lottery_file.name
+              ) : (
+                <label htmlFor="bank_statement_lottery_file">
+                  Upload Bank statement showing funds deposited including name of
+                  the paying organisation
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1002,7 +1133,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Agreement with regards to the arrangement in place
+              {values.agreement_file ? (
+                values.agreement_file.name
+              ) : (
+                <label htmlFor="agreement_file">
+                  Agreement with regards to the arrangement in place
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1031,7 +1168,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload CDD on creditor (applicable to non-regulated parties)
+              {values.cdd_creditor_file ? (
+                values.cdd_creditor_file.name
+              ) : (
+                <label htmlFor="cdd_creditor_file">
+                  Upload CDD on creditor (applicable to non-regulated parties)
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1060,7 +1203,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Bank statement showing receipt of funds
+              {values.bank_statement_creditor_file ? (
+                values.bank_statement_creditor_file.name
+              ) : (
+                <label htmlFor="bank_statement_creditor_file">
+                  Upload Bank statement showing receipt of funds
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1098,8 +1247,14 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Legal document which must include the value of the
-              inheritance
+              {values.legal_document_inheritance_file ? (
+                values.legal_document_inheritance_file.name
+              ) : (
+                <label htmlFor="legal_document_inheritance_file">
+                  Upload Legal document which must include the value of the
+                  inheritance
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1132,7 +1287,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Notary’s letter confirming inheritance details
+              {values.notary_letter_inheritance_file ? (
+                values.notary_letter_inheritance_file.name
+              ) : (
+                <label htmlFor="notary_letter_inheritance_file">
+                  Upload Notary’s letter confirming inheritance details
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1165,7 +1326,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Executer’s letter confirming inheritance details
+              {values.executer_letter_inheritance_file ? (
+                values.executer_letter_inheritance_file.name
+              ) : (
+                <label htmlFor="executer_letter_inheritance_file">
+                  Upload Executer’s letter confirming inheritance details
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1206,7 +1373,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Loan / Facility Agreement
+                {values.loan_agreement_file ? (
+                  values.loan_agreement_file.name
+                ) : (
+                  <label htmlFor="loan_agreement_file">
+                    Upload Loan / Facility Agreement
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1238,7 +1411,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank statement showing receipt of funds
+                {values.bank_statement_loan_file ? (
+                  values.bank_statement_loan_file.name
+                ) : (
+                  <label htmlFor="bank_statement_loan_file">
+                    Upload Bank statement showing receipt of funds
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1279,7 +1458,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Loan Agreement
+                {values.loan_agreement_related_file ? (
+                  values.loan_agreement_related_file.name
+                ) : (
+                  <label htmlFor="loan_agreement_related_file">
+                    Upload Loan Agreement
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1312,7 +1497,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload CDD on third party
+                {values.cdd_third_party_related_file ? (
+                  values.cdd_third_party_related_file.name
+                ) : (
+                  <label htmlFor="cdd_third_party_related_file">
+                    Upload CDD on third party
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1345,7 +1536,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank statement showing receipt of funds
+                {values.bank_statement_loan_related_file ? (
+                  values.bank_statement_loan_related_file.name
+                ) : (
+                  <label htmlFor="bank_statement_loan_related_file">
+                    Upload Bank statement showing receipt of funds
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1384,7 +1581,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Loan Agreement
+                {values.loan_agreement_unrelated_file ? (
+                  values.loan_agreement_unrelated_file.name
+                ) : (
+                  <label htmlFor="loan_agreement_unrelated_file">
+                    Upload Loan Agreement
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1417,7 +1620,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload CDD on third party
+                {values.cdd_third_party_unrelated_file ? (
+                  values.cdd_third_party_unrelated_file.name
+                ) : (
+                  <label htmlFor="cdd_third_party_unrelated_file">
+                    Upload CDD on third party
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1450,7 +1659,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Bank statement showing receipt of funds
+                {values.bank_statement_loan_unrelated_file ? (
+                  values.bank_statement_loan_unrelated_file.name
+                ) : (
+                  <label htmlFor="bank_statement_loan_unrelated_file">
+                    Upload Bank statement showing receipt of funds
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1488,7 +1703,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Signed letter from Notary
+              {values.notary_letter_real_estate_file ? (
+                values.notary_letter_real_estate_file.name
+              ) : (
+                <label htmlFor="notary_letter_real_estate_file">
+                  Upload Signed letter from Notary
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1521,7 +1742,13 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Property Contract or any equivalent document
+              {values.sample_file ? (
+                values.sample_file.name
+              ) : (
+                <label htmlFor="sample_file">
+                  Upload Property Contract or any equivalent document
+                </label>
+              )}
             </Typography>
             <input
               type="file"
@@ -1560,8 +1787,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                Upload Proof of remittance from the Insurance Policy pay-out
-                (from an approved licensed insurance company)
+                {values.insurance_payout_file ? (
+                  values.insurance_payout_file.name
+                ) : (
+                  <label htmlFor="insurance_payout_file">
+                    Upload Proof of remittance from the Insurance Policy pay-out
+                    (from an approved licensed insurance company)
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -1599,8 +1832,14 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Upload Retirement Annuity Fund Statement recent valuation (from an
-              approved licensed financial services provider)
+              {values.retirement_annuity_file ? (
+                values.retirement_annuity_file.name
+              ) : (
+                <label htmlFor="retirement_annuity_file">
+                  Upload Retirement Annuity Fund Statement recent valuation (from an
+                  approved licensed financial services provider)
+                </label>
+              )}
             </Typography>
             <input
               type="file"
