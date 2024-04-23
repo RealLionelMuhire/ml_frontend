@@ -125,9 +125,7 @@ const FormFields3 = ({
           {values.sample_file ? (
             values.sample_file.name
           ) : (
-            <label htmlFor="sample_file">
-              Sample File Lebel
-            </label>
+            <label htmlFor="sample_file">Sample File Lebel</label>
           )}
         </Typography>
         <input

@@ -94,52 +94,12 @@ const ClientForm = () => {
       .matches(phoneRegExp, "Phone number is not valid"),
     authorisedCurrentAddress: yup.string(),
     authorisedRelationship: yup.string(),
-    signature_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true;
-          }
-          if (value[0].type !== "application/pdf") {
-            return false;
-          }
-          return true;
-        }
-      ),
+    signature_file: createFileSchema(),
+
     isPep: yup.string().required("required"),
-    bankStatement_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-    professionalReference_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
+    bankStatement_file: createFileSchema(),
+    professionalReference_file: createFileSchema(),
+
     countryOfIncorporation: yup.string(),
     incorporationDate: yup.date(),
     registeredOfficeAddress: yup.string(),
@@ -216,117 +176,63 @@ const ClientForm = () => {
           .min(0, "Year 3 must be a positive number"),
       })
     ),
-    confirmationLetter_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-
-    bank_statement_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-
-    custody_accounts_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-
-    source_of_funds_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-    payslips_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-
-    due_diligence_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
-
-    financial_statements_file: yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
+    confirmationLetter_file: createFileSchema(),
+    custody_accounts_file: createFileSchema(),
+    source_of_funds_file: createFileSchema(),
+    payslips_file: createFileSchema(),
+    due_diligence_file: createFileSchema(),
+    financial_statements_file: createFileSchema(),
+    proof_of_ownership_file: createFileSchema(),
+    lease_agreement_file: createFileSchema(),
+    documentary_evidence_file: createFileSchema(),
+    bank_statement_proceeds_file: createFileSchema(),
+    bank_statement_file: createFileSchema(),
+    cdd_documents_file: createFileSchema(),
+    bank_statements_file: createFileSchema(),
+    bank_statements_proceeds_file: createFileSchema(),
+    notarised_documents_file: createFileSchema(),
+    letter_from_donor_file: createFileSchema(),
+    donor_source_of_wealth_file: createFileSchema(),
+    donor_bank_statement_file: createFileSchema(),
+    letter_from_relevant_org_file: createFileSchema(),
+    lottery_bank_statement_file: createFileSchema(),
+    creditor_agreement_file: createFileSchema(),
+    creditor_cdd_file: createFileSchema(),
+    creditor_bank_statement_file: createFileSchema(),
+    legal_document_file: createFileSchema(),
+    notary_letter_file: createFileSchema(),
+    executor_letter_file: createFileSchema(),
+    loan_agreement_file: createFileSchema(),
+    loan_bank_statement_file: createFileSchema(),
+    related_third_party_loan_agreement_file: createFileSchema(),
+    related_third_party_cdd_file: createFileSchema(),
+    related_third_party_bank_statement_file: createFileSchema(),
+    unrelated_third_party_loan_agreement_file: createFileSchema(),
+    unrelated_third_party_cdd_file: createFileSchema(),
+    unrelated_third_party_bank_statement_file: createFileSchema(),
+    signed_letter_from_notary_file: createFileSchema(),
+    property_contract_file: createFileSchema(),
+    insurance_pay_out_file: createFileSchema(),
+    retirement_annuity_fund_statement_file: createFileSchema(),
   });
+
+  function createFileSchema() {
+    return yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true; // No file provided or empty array, validation passes
+          }
+          if (value[0].type !== "application/pdf") {
+            return false; // File type is not PDF, validation fails
+          }
+          return true; // Validation passes
+        }
+      );
+  }
 
   const initialValues = {
     firstName: "",
@@ -448,6 +354,36 @@ const ClientForm = () => {
     payslips_file: null,
     due_diligence_file: null,
     financial_statements_file: null,
+    proof_of_ownership_file: null,
+    lease_agreement_file: null,
+    bank_statements_file: null,
+    cdd_documents_file: null,
+    documentary_evidence_file: null,
+    bank_statement_proceeds_file: null,
+    notarised_documents_file: null,
+    letter_from_donor_file: null,
+    donor_source_of_wealth_file: null,
+    donor_bank_statement_file: null,
+    letter_from_relevant_org_file: null,
+    lottery_bank_statement_file: null,
+    creditor_agreement_file: null,
+    creditor_cdd_file: null,
+    creditor_bank_statement_file: null,
+    legal_document_file: null,
+    notary_letter_file: null,
+    executor_letter_file: null,
+    loan_agreement_file: null,
+    loan_bank_statement_file: null,
+    related_third_party_loan_agreement_file: null,
+    related_third_party_cdd_file: null,
+    related_third_party_bank_statement_file: null,
+    unrelated_third_party_loan_agreement_file: null,
+    unrelated_third_party_cdd_file: null,
+    unrelated_third_party_bank_statement_file: null,
+    signed_letter_from_notary_file: null,
+    property_contract_file: null,
+    insurance_pay_out_file: null,
+    retirement_annuity_fund_statement_file: null,
   };
 
   const nextStep = () => {
