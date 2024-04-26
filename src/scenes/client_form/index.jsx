@@ -16,6 +16,7 @@ import FormFields6 from "./FormField6";
 import FormFields7 from "./FormField7";
 import FormFields8 from "./FormField8";
 import FormFields9 from "./FormField9";
+import FormFields10 from "./FormField10";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -384,6 +385,66 @@ const ClientForm = () => {
     property_contract_file: null,
     insurance_pay_out_file: null,
     retirement_annuity_fund_statement_file: null,
+    isMlDirectors: "",
+    Director1FirstName: "",
+    Director1LastName: "",
+    Director1email: "",
+    Director1contact: "",
+    Director1password: "",
+    Director1confirmPassword: "",
+    Director1BirthDate: "",
+    Director1NationalID: "",
+    Director1passportIdNumber: "",
+    Director1countryOfIssue: "",
+    Director1passportExpiryDate: "",
+    Director1citizenship: "",
+    Director1specifiedCitizenship: "",
+    Director1countryOfResidence: "",
+    Director1preferredLanguage: "",
+    Director1NameOfEntity: "",
+    Director1tinNumber: "",
+    Director1taxResidency: "",
+    Director2FirstName: "",
+    Director2LastName: "",
+    Director2email: "",
+    Director2contact: "",
+    Director2BirthDate: "",
+    Director2NationalID: "",
+    Director2passportIdNumber: "",
+    Director2countryOfIssue: "",
+    Director2passportExpiryDate: "",
+    Director2citizenship: "",
+    Director2specifiedCitizenship: "",
+    Director2countryOfResidence: "",
+    Director2preferredLanguage: "",
+    Director2NameOfEntity: "",
+    Director2tinNumber: "",
+    Director2taxResidency: "",
+    Director3FirstName: "",
+    Director3LastName: "",
+    Director3email: "",
+    Director3contact: "",
+    Director3BirthDate: "",
+    Director3NationalID: "",
+    Director3passportIdNumber: "",
+    Director3countryOfIssue: "",
+    Director3passportExpiryDate: "",
+    Director3citizenship: "",
+    Director3specifiedCitizenship: "",
+    Director3countryOfResidence: "",
+    Director3preferredLanguage: "",
+    Director3NameOfEntity: "",
+    Director3tinNumber: "",
+    Director3taxResidency: "",
+    Director1isPep: "",
+    Director2isPep: "",
+    Director3isPep: "",
+    Director1_national_id_file: null,
+    Director1_passport_file: null,
+    Director2_national_id_file: null,
+    Director2_passport_file: null,
+    Director3_national_id_file: null,
+    Director3_passport_file: null,
   };
 
   const nextStep = () => {
@@ -530,6 +591,17 @@ const ClientForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              {step === 10 && (
+                <FormFields10
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -636,16 +708,22 @@ const ClientForm = () => {
               {step === 9 && (
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
-                    type="submit"
                     variant="contained"
+                    onClick={nextStep}
                     color="secondary"
-                    disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <CircularProgress size={24} color="secondary" />
-                    ) : (
-                      "Submit"
-                    )}
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 10 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Submit
                   </Button>
                 </Box>
               )}

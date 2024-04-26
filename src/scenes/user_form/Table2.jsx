@@ -9,6 +9,7 @@ const FinancialForecastTable2 = ({
   handleFinancialDataChange,
 }) => {
   const columns = [
+    { field: "id", headerName: "ID", hide: true },
     { field: "description", headerName: "FINANCIAL FORECAST", flex: 1 },
     { field: "year1", headerName: "YEAR 1", flex: 1, editable: true },
     { field: "year2", headerName: "YEAR 2", flex: 1, editable: true },
@@ -18,7 +19,10 @@ const FinancialForecastTable2 = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const rows = financialData;
+  const rows = financialData.map((item, index) => ({
+    ...item,
+    id: index, // Add ID field
+  }));
 
   return (
     <Box

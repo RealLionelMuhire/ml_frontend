@@ -23,9 +23,13 @@ const UserForm = () => {
     try {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        formData.append(key, value);
+        if (key === "financialForecast") {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, value);
+        }
       });
-      console.log("form data:");
+      console.log("form data:", formData);
 
       const response = await createUser(formData);
 
