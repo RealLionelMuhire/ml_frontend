@@ -80,7 +80,7 @@ const FormFields6 = ({
       <TextField
         fullWidth
         variant="filled"
-        type="text"
+        select
         label="Relationship with the applicant"
         onBlur={handleBlur}
         onChange={handleChange}
@@ -94,7 +94,12 @@ const FormFields6 = ({
           touched.RelationshipWithApplicant && errors.RelationshipWithApplicant
         }
         sx={{ gridColumn: "span 1" }}
-      />
+      >
+        <MenuItem value="individual">Individual</MenuItem>
+        <MenuItem value="legal entity">Legal entity</MenuItem>
+        <MenuItem value="Trust">Trust</MenuItem>
+        <MenuItem value="Foundation">Foundation</MenuItem>
+      </TextField>
       <Box
         variant="outlined"
         display="flex"

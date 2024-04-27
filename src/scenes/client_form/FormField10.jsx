@@ -1041,25 +1041,31 @@ const FormFields10 = ({
                   padding: "13px 5px",
                 }}
               >
-                <Typography variant="h5" gutterBottom>
-                  Upload Passport Document
+                <Typography variant="h6">
+                  {values.Director2_passport_file ? (
+                    values.Director2_passport_file.name
+                  ) : (
+                    <label htmlFor="Director2_passport_file">
+                      Upload Passport
+                    </label>
+                  )}
                 </Typography>
                 <input
                   type="file"
                   accept=".pdf"
-                  name="Director2_national_id_file"
+                  name="Director2_passport_file"
                   onChange={(e) => {
                     handleChange(e);
                     setFieldValue(
-                      "Director2_national_id_file",
+                      "Director2_passport_file",
                       e.currentTarget.files[0]
                     );
                   }}
                   sx={{ gridColumn: "span 2" }}
                 />
-                {touched.Director2_national_id_file &&
-                  errors.Director2_national_id_file && (
-                    <div>{errors.Director2_national_id_file}</div>
+                {touched.Director2_passport_file &&
+                  errors.Director2_passport_file && (
+                    <div>{errors.Director2_passport_file}</div>
                   )}
               </Box>
             </>
@@ -1068,7 +1074,7 @@ const FormFields10 = ({
       )}
 
       {/* Director 3 */}
-      {values.DirectorCount === "1" && (
+      {values.DirectorCount === "3" && (
         <>
           <Box
             variant="outlined"
