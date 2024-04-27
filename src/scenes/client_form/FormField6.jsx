@@ -1587,33 +1587,3 @@ const FormFields6 = ({
     </React.Fragment>
   );
 };
-
-export default FormFields6;
-
-const initialValues = {
-  passport_file: null,
-  utility_file: null,
-  wealth_file: null,
-  professionalReference_file: null,
-  cv_file: null,
-  funds_file: null,
-  source_of_funds_file: null,
-  source_of_wealth_file: null,
-  financialStatements_file: null,
-  principals_identification_file: null,
-  shareholders_file: null,
-  declaration_of_trust_file: null,
-  certificate_of_registration_file: null,
-  deed_of_retirement_file: null,
-  business_plan_file: null,
-  registered_office_file: null,
-  register_of_trustee_file: null,
-  proof_of_source_of_funds_file: null,
-  proof_of_source_of_wealth_file: null,
-  latest_accounts_or_bank_statements_file: null,
-  licence_file: null,
-  certificate_of_incumbency_file: null,
-  charter_file: null,
-  latest_accounts_file: null,
-  identification_documents_of_the_principals_of_the_foundation_file: null,
-};

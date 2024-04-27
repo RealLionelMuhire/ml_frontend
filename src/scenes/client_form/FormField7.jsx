@@ -67,10 +67,12 @@ const FormFields7 = ({
         helperText={touched.proposedActivity && errors.proposedActivity}
         sx={{ gridColumn: "span 1" }}
       />
+
+      {/* Target sectors */}
       <TextField
         fullWidth
         variant="filled"
-        type="text"
+        select
         label="Target sectors"
         onBlur={handleBlur}
         onChange={handleChange}
@@ -79,7 +81,101 @@ const FormFields7 = ({
         error={!!touched.targetSectors && !!errors.targetSectors}
         helperText={touched.targetSectors && errors.targetSectors}
         sx={{ gridColumn: "span 1" }}
-      />
+      >
+        <MenuItem value="Accounting & Auditing">Accounting & Auditing</MenuItem>
+        <MenuItem value="Antique Dealers">Antique Dealers</MenuItem>
+        <MenuItem value="A­viation">A­viation</MenuItem>
+        <MenuItem value="Automobiles">Automobiles</MenuItem>
+        <MenuItem value="Cash Intensive Business">
+          Cash Intensive Business
+        </MenuItem>
+        <MenuItem value="Banking and Finance">Banking and Finance</MenuItem>
+        <MenuItem value="Brokers">Brokers</MenuItem>
+        <MenuItem value="Charities/Trust/Foundations">
+          Charities/Trust/Foundations
+        </MenuItem>
+        <MenuItem value="Chemical Industries">Chemical Industries</MenuItem>
+        <MenuItem value="Training">Training</MenuItem>
+        <MenuItem value="Restaurant">Restaurant</MenuItem>
+        <MenuItem value="Consultancy Services">Consultancy Services</MenuItem>
+        <MenuItem value="Construction">Construction</MenuItem>
+        <MenuItem value="Consumer Finance (credit card provider)">
+          Consumer Finance (credit card provider)
+        </MenuItem>
+        <MenuItem value="Custom Clearance">Custom Clearance</MenuItem>
+        <MenuItem value="Crude oil exportation">Crude oil exportation</MenuItem>
+        <MenuItem value="Designer Goods (High Value Items)">
+          Designer Goods (High Value Items)
+        </MenuItem>
+        <MenuItem value="Drilling & Field Development">
+          Drilling & Field Development
+        </MenuItem>
+        <MenuItem value="E-commerce">E-commerce</MenuItem>
+        <MenuItem value="Education">Education</MenuItem>
+        <MenuItem value="Film & Entertainment">Film & Entertainment</MenuItem>
+        <MenuItem value="Food & Beverages">Food & Beverages</MenuItem>
+        <MenuItem value="Foreign Exchange">Foreign Exchange</MenuItem>
+        <MenuItem value="Funds/Investment Business">
+          Funds/Investment Business
+        </MenuItem>
+        <MenuItem value="Gambling (online or across any line)">
+          Gambling (online or across any line)
+        </MenuItem>
+        <MenuItem value="Healthcare">Healthcare</MenuItem>
+        <MenuItem value="Hospitality & Tourism">Hospitality & Tourism</MenuItem>
+        <MenuItem value="ICT/BPO Sector">ICT/BPO Sector</MenuItem>
+        <MenuItem value="Insurance">Insurance</MenuItem>
+        <MenuItem value="Intellectual Property">Intellectual Property</MenuItem>
+        <MenuItem value="Jewellery & Precious Metals">
+          Jewellery & Precious Metals
+        </MenuItem>
+        <MenuItem value="Legal/Paralegal">Legal/Paralegal</MenuItem>
+        <MenuItem value="Logistics (including Transportation & Warehousing)">
+          Logistics (including Transportation & Warehousing)
+        </MenuItem>
+        <MenuItem value="Luxury Goods">Luxury Goods</MenuItem>
+        <MenuItem value="Manufacturing/Textile Sector">
+          Manufacturing/Textile Sector
+        </MenuItem>
+        <MenuItem value="Media">Media</MenuItem>
+        <MenuItem value="Mining">Mining</MenuItem>
+        <MenuItem value="Money Changers">Money Changers</MenuItem>
+        <MenuItem value="Oil, Petroleum & mineral Resources">
+          Oil, Petroleum & mineral Resources
+        </MenuItem>
+        <MenuItem value="Pharmaceutical -licensed product">
+          Pharmaceutical -licensed product
+        </MenuItem>
+        <MenuItem value="Pharmaceutical -unlicensed product / alternative medicine">
+          Pharmaceutical -unlicensed product / alternative medicine
+        </MenuItem>
+        <MenuItem value="Real Estate">Real Estate</MenuItem>
+        <MenuItem value="Shipping">Shipping</MenuItem>
+        <MenuItem value="Sports Activities">Sports Activities</MenuItem>
+        <MenuItem value="Stock Market">Stock Market</MenuItem>
+        <MenuItem value="Supply of Manpower">Supply of Manpower</MenuItem>
+        <MenuItem value="Tobacco/related">Tobacco/related</MenuItem>
+        <MenuItem value="Telecommunications">Telecommunications</MenuItem>
+        <MenuItem value="Trade Finance">Trade Finance</MenuItem>
+        <MenuItem value="Virtual Currencies">Virtual Currencies</MenuItem>
+        <MenuItem value="Other">Other</MenuItem>
+      </TextField>
+      {values.targetSectors === "Other" && (
+        <TextField
+          fullWidth
+          variant="filled"
+          type="text"
+          label="Specify a target sector"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={values.otherTargetSectors}
+          name="otherTargetSectors"
+          error={!!touched.otherTargetSectors && !!errors.otherTargetSectors}
+          helperText={touched.otherTargetSectors && errors.otherTargetSectors}
+          sx={{ gridColumn: "span 1" }}
+        />
+      )}
+
       <TextField
         fullWidth
         variant="filled"
@@ -99,7 +195,7 @@ const FormFields7 = ({
         justifyContent="space-between"
         sx={{
           backgroundColor: colors.primary[400],
-          gridColumn: "span 4",
+          gridColumn: "span 2",
           margin: "1px 0px 1px",
           borderRadius: "4px",
           padding: "3px 3px",
@@ -182,6 +278,47 @@ const FormFields7 = ({
           />
         </>
       )}
+      <TextField
+        fullWidth
+        variant="filled"
+        type="text"
+        label="Type of Product(s) Or Service(s)"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={values.productService}
+        name="productService"
+        error={errors.productService && !!errors.productService}
+        helperText={touched.productService && errors.productService}
+        sx={{ gridColumn: "span 1" }}
+      />
+
+      <TextField
+        fullWidth
+        variant="filled"
+        type="text"
+        label="Business Address"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={values.businessAddress}
+        name="businessAddress"
+        error={errors.businessAddress && !!errors.businessAddress}
+        helperText={touched.businessAddress && errors.businessAddress}
+        sx={{ gridColumn: "span 1" }}
+      />
+
+      <TextField
+        fullWidth
+        variant="filled"
+        type="text"
+        label="Secretary"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={values.secretaryService}
+        name="secretaryService"
+        error={errors.secretaryService && !!errors.secretaryService}
+        helperText={touched.secretaryService && errors.secretaryService}
+        sx={{ gridColumn: "span 1" }}
+      />
       <Box
         variant="outlined"
         display="flex"

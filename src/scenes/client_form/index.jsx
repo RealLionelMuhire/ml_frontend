@@ -141,6 +141,7 @@ const ClientForm = () => {
     // Company Details
     proposedActivity: yup.string(),
     targetSectors: yup.string(),
+    otherTargetSectors: yup.string(),
     targetedCountries: yup.string(),
     specialLicense: yup.string(),
     secretary: yup.string(),
@@ -386,6 +387,7 @@ const ClientForm = () => {
 
     proposedActivity: "",
     targetSectors: "",
+    otherTargetSectors: "",
     targetedCountries: "",
     specialLicense: "",
     secretary: "",
