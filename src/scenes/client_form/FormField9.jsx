@@ -75,22 +75,6 @@ const FormFields9 = ({
         <Typography variant="h6" fontWeight="500" fontStyle="italic">
           D. ORIGIN OF FUNDS / PROPERTY & SOURCE OF WEALTH (if applicable)
         </Typography>
-        <Box
-          variant="outlined"
-          display="flex"
-          justifyContent="space-between"
-          sx={{
-            backgroundColor: colors.primary[400],
-            gridColumn: "span 4",
-            margin: "1px 0px 1px",
-            borderRadius: "4px",
-            padding: "13px 5px",
-          }}
-        >
-          <Typography variant="h6" fontWeight="500" fontStyle="italic">
-            Part A - Source of funds (Please provide information as appropriate)
-          </Typography>
-        </Box>
       </Box>
       <Box sx={{ marginBottom: 2, gridColumn: "span 2" }}>
         <Box
@@ -106,7 +90,7 @@ const FormFields9 = ({
           }}
         >
           <Typography variant="h5" gutterBottom>
-            Part A - Source of Wealth (Please select all that apply)
+            Part B- Source of wealth (It is a measure of enhanced due diligence)
           </Typography>
         </Box>
         <Box

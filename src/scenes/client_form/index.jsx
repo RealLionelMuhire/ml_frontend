@@ -17,6 +17,8 @@ import FormFields7 from "./FormField7";
 import FormFields8 from "./FormField8";
 import FormFields9 from "./FormField9";
 import FormFields10 from "./FormField10";
+import FormFields11 from "./FormField11";
+import FormFields12 from "./FormField12";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -159,26 +161,6 @@ const ClientForm = () => {
     countrySourceWealth: yup.string(),
     bankInvolvedWealth: yup.string(),
 
-    financialForecast: yup.array().of(
-      yup.object().shape({
-        year1: yup
-          .number()
-          .nullable()
-          .required("Year 1 is required")
-          .min(0, "Year 1 must be a positive number"),
-        year2: yup
-          .number()
-          .nullable()
-          .required("Year 2 is required")
-          .min(0, "Year 2 must be a positive number"),
-        year3: yup
-          .number()
-          .nullable()
-          .required("Year 3 is required")
-          .min(0, "Year 3 must be a positive number"),
-      })
-    ),
-
     isMlDirectors: yup.string(),
     Director1FirstName: yup.string(),
     Director1LastName: yup.string(),
@@ -231,6 +213,28 @@ const ClientForm = () => {
     Director1isPep: yup.string(),
     Director2isPep: yup.string(),
     Director3isPep: yup.string(),
+
+    bankName: yup.string(),
+    Currency: yup.string(),
+    groupASignatory1: yup.string(),
+    groupASignatory2: yup.string(),
+    groupASignatory3: yup.string(),
+    groupASignatory4: yup.string(),
+    groupBSignatory1: yup.string(),
+    groupBSignatory2: yup.string(),
+    groupBSignatory3: yup.string(),
+    groupBSignatory4: yup.string(),
+    authorizedUser1: yup.string(),
+    authorizedUser1AccessRights: yup.string(),
+    authorizedUser2: yup.string(),
+    authorizedUser2AccessRights: yup.string(),
+    authorizedUser3: yup.string(),
+    authorizedUser3AccessRights: yup.string(),
+    authorizedUser4: yup.string(),
+    authorizedUser4AccessRights: yup.string(),
+    modeOfOperation: yup.string(),
+    callBackProcessContact: yup.string(),
+    nameOfProposedOfficer: yup.string(),
 
     confirmationLetter_file: createFileSchema(),
     custody_accounts_file: createFileSchema(),
@@ -429,6 +433,57 @@ const ClientForm = () => {
       { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
       { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
     ],
+
+    // Estimated Deposit Yearly (Currency)
+    // Estimated Number of Transactions (monthly or yearly)
+    //   Estimated Value of Transactions (monthly or yearly)
+
+    expectedAccountActivity: [
+      {
+        id: 0,
+        description: "Estimated Deposit Yearly (Currency)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 1,
+        description: "Estimated Number of Transactions (monthly or yearly)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 2,
+        description: "Estimated Value of Transactions (monthly or yearly)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+    ],
+
+    bankName: "",
+    Currency: "",
+    groupASignatory1: "",
+    groupASignatory2: "",
+    groupASignatory3: "",
+    groupASignatory4: "",
+    groupBSignatory1: "",
+    groupBSignatory2: "",
+    groupBSignatory3: "",
+    groupBSignatory4: "",
+    authorizedUser1: "",
+    authorizedUser1AccessRights: "",
+    authorizedUser2: "",
+    authorizedUser2AccessRights: "",
+    authorizedUser3: "",
+    authorizedUser3AccessRights: "",
+    authorizedUser4: "",
+    authorizedUser4AccessRights: "",
+    modeOfOperation: "",
+    callBackProcessContact: "",
+    nameOfProposedOfficer: "",
+
     confirmationLetter_file: null,
     bank_statement_file: null,
     custody_accounts_file: null,
@@ -706,6 +761,28 @@ const ClientForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              {step === 11 && (
+                <FormFields11
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 12 && (
+                <FormFields12
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -821,6 +898,28 @@ const ClientForm = () => {
                 </Box>
               )}
               {step === 10 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 11 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 12 && (
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"

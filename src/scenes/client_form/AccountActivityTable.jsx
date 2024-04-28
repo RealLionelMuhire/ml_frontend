@@ -4,12 +4,14 @@ import { Box } from "@mui/material";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 
-const FinancialForecastTable2 = ({
-  financialData,
+const AccountAtivityTable = ({
+  accountActivityData,
   handleFinancialDataChange,
+  setFieldValue,
 }) => {
   const columns = [
-    { field: "description", headerName: "FINANCIAL FORECAST", flex: 1 },
+    { field: "id", headerName: "ID", hide: true },
+    { field: "description", headerName: "ACCOUNT ACTIVITY", flex: 1 },
     { field: "year1", headerName: "YEAR 1", flex: 1, editable: true },
     { field: "year2", headerName: "YEAR 2", flex: 1, editable: true },
     { field: "year3", headerName: "YEAR 3", flex: 1, editable: true },
@@ -18,19 +20,32 @@ const FinancialForecastTable2 = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const rows = financialData;
+  const rows = accountActivityData.map((item, index) => ({
+    ...item,
+    id: index, // Add ID field
+  }));
+
+  const calculateHeight = () => {
+    // Calculate height based on number of rows
+    return 95 + rows.length * 55; // Adjust 50 and 52.5 according to your row height
+  };
+
+  const calculateWidth = () => {
+    // Calculate width based on number of columns
+    return 200 + columns.length * 120; // Adjust 100 and 150 according to your column width
+  };
 
   return (
     <Box
       m="10px 0 0 0"
-      height="47.5vh"
+      height={`${calculateHeight()}px`}
+      width={`${calculateWidth()}px`}
       sx={{
-        gridColumn: "span 3",
         "& .MuiDataGrid-root": {
           border: "none",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: `1px solid ${colors.grey[400]}`,
+          borderBottom: `2px solid ${colors.grey[400]}`,
           borderRight: `1px solid ${colors.grey[400]}`,
           borderLeft: `1px solid ${colors.grey[400]}`,
         },
@@ -60,10 +75,10 @@ const FinancialForecastTable2 = ({
         rows={rows}
         columns={columns}
         disableColumnMenu
-        onEditCellChangeCommitted={handleFinancialDataChange}
+        onEditRowsModelChange={handleFinancialDataChange}
       />
     </Box>
   );
 };
 
-export default FinancialForecastTable2;
+export default AccountAtivityTable;

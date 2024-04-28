@@ -4,93 +4,56 @@ import { Box } from "@mui/material";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 
-const FinancialForecastTable = ({
+const FinancialForecastTable2 = ({
   financialData,
   handleFinancialDataChange,
 }) => {
+  const columns = [
+    { field: "id", headerName: "ID", hide: true },
+    { field: "description", headerName: "FINANCIAL FORECAST", flex: 1 },
+    { field: "year1", headerName: "YEAR 1", flex: 1, editable: true },
+    { field: "year2", headerName: "YEAR 2", flex: 1, editable: true },
+    { field: "year3", headerName: "YEAR 3", flex: 1, editable: true },
+  ];
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const columns = [
-    { field: "description", headerName: "", width: 200 },
-    {
-      field: "financialForecast_year1",
-      headerName: "YEAR 1",
-      width: 150,
-      editable: true,
-      cellClassName: "editable-cell",
-    },
-    {
-      field: "financialForecast_year2",
-      headerName: "YEAR 2",
-      width: 150,
-      editable: true,
-      cellClassName: "editable-cell",
-    },
-    {
-      field: "financialForecast_year3",
-      headerName: "YEAR 3",
-      width: 150,
-      editable: true,
-    },
-  ];
+  const rows = financialData.map((item, index) => ({
+    ...item,
+    id: index, // Add ID field
+  }));
 
-  const rows = [
-    {
-      id: 0,
-      description: "Currency",
-      financialForecast_year1: "",
-      financialForecast_year2: "",
-      financialForecast_year3: "",
-    },
-    {
-      id: 2,
-      description: "Initial Investment",
-      financialForecast_year1: "",
-      financialForecast_year2: "",
-      financialForecast_year3: "",
-    },
-    {
-      id: 3,
-      description: "Income from Business Activities",
-      financialForecast_year1: "",
-      financialForecast_year2: "",
-      financialForecast_year3: "",
-    },
-    {
-      id: 4,
-      description: "Expenses",
-      financialForecast_year1: "",
-      financialForecast_year2: "",
-      financialForecast_year3: "",
-    },
-    {
-      id: 5,
-      description: "Net Profit",
-      financialForecast_year1: "",
-      financialForecast_year2: "",
-      financialForecast_year3: "",
-    },
-  ];
+  const calculateHeight = () => {
+    // Calculate height based on number of rows
+    return 90 + rows.length * 55; // Adjust 50 and 52.5 according to your row height
+  };
+
+  const calculateWidth = () => {
+    // Calculate width based on number of columns
+    return 200 + columns.length * 120; // Adjust 100 and 150 according to your column width
+  };
 
   return (
     <Box
       m="10px 0 0 0"
-      height="47.5vh"
+      height={`${calculateHeight()}px`}
+      width={`${calculateWidth()}px`}
       sx={{
-        gridColumn: "span 2",
         "& .MuiDataGrid-root": {
           border: "none",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: "none",
+          borderBottom: `2px solid ${colors.grey[400]}`,
+          borderRight: `1px solid ${colors.grey[400]}`,
+          borderLeft: `1px solid ${colors.grey[400]}`,
         },
         "& .name-column--cell": {
           color: colors.greenAccent[300],
         },
         "& .MuiDataGrid-columnHeaders": {
           backgroundColor: colors.blueAccent[700],
-          borderBottom: "none",
+          borderRight: `1px solid ${colors.grey[400]}`,
         },
         "& .MuiDataGrid-virtualScroller": {
           backgroundColor: colors.primary[400],
@@ -110,15 +73,11 @@ const FinancialForecastTable = ({
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10, 20]}
-        disableSelectionOnClick
-        editMode="row"
-        onEditCellChangeCommitted={handleFinancialDataChange}
-        editRowsModel={{ id: "id", commit: "change", validation: "blur" }}
+        disableColumnMenu
+        onEditRowsModelChange={handleFinancialDataChange}
       />
     </Box>
   );
 };
 
-export default FinancialForecastTable;
+export default FinancialForecastTable2;
