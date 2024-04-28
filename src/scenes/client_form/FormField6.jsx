@@ -100,17 +100,6 @@ const FormFields6 = ({
         <MenuItem value="Trust">Trust</MenuItem>
         <MenuItem value="Foundation">Foundation</MenuItem>
       </TextField>
-      {/* ## In case of an individual
-
-- Current Valid Passport or National Identity Card
-- Utility bill dated less than 3 months confirming the permanent residential address
-
-- bank reference on the client from a reputable Bank/professional reference in case
-- the person is a Politically Exposed Person (PEP)
-- Updated Curriculum Vitae
-- Proof of source of funds (please refer to Part B below)
-- Proof of source of wealth (if applicable in case of high risk clients, high net worth clients, PEP, hit found on the concerned persons)
-- Recent professional reference in case the person is a Politically Exposed Person (PEP) (as a measure of EDD) */}
       {values.RelationshipWithApplicant === "individual" && (
         <>
           <Box
@@ -368,20 +357,6 @@ const FormFields6 = ({
         </>
       )}
 
-      {/* ## In case of a legal entity
-
-- Certificate of incorporation
-- Certificate of good standing or incumbency (if hit has been recorded on the legal
-  entity)
-- Constitution or memorandum and articles of association
-- Business plan with details of the group structure, the nature of business and countries of operation
-- Details of registered office and place of business
-- Register of shareholders and directors
-- Latest Audited financial accounts
-- Identification documents of the principals of the company (shareholders, ultimate beneficial owners, promoters, officers and at least 2 directors)
-- Proof of source of funds (please refer to Part B below)
-- Proof of source of wealth (if applicable in case of high risk clients, high net worth clients, PEP, hit found on the concerned persons)
- */}
       {values.RelationshipWithApplicant === "legal entity" && (
         <>
           <Box
@@ -757,18 +732,6 @@ const FormFields6 = ({
           </Box>
         </>
       )}
-      {/* ## In case of a Trust
-
-- Declaration of Trust or Trust Deed
-- Deed of Retirement and Appointment of Trustee, beneficiary, etc (if applicable)
-- Certificate of Registration (if available)
-- Business plan with details of the group structure, the nature of business and countries of operation
-- Details of registered office and place of business
-- Register of trustee, settlor, protector, enforcer, beneficiaries, ultimate beneficial owner
-- Latest accounts or bank statements
-- Identification documents of the principals of the Trust (trustee, settlor, protector, enforcer, beneficiaries, ultimate beneficial owners)
-- Proof of source of funds (please refer to Part B below)
-- Proof of source of wealth (if applicable) */}
       {values.RelationshipWithApplicant === "Trust" && (
         <>
           <Box
@@ -1386,9 +1349,7 @@ const FormFields6 = ({
                 <div>{errors.register_of_council_members_file}</div>
               )}
           </Box>
-          {/* - Latest accounts
-- Identification documents of the principals of the Foundation (Founder,  Beneficiary / Ultimate Beneficial Owner and Council Members)
-- Proof of source of funds (please refer to Part B below) */}
+
           <Box
             variant="outlined"
             display="flex"
@@ -1587,3 +1548,5 @@ const FormFields6 = ({
     </React.Fragment>
   );
 };
+
+export default FormFields6;
