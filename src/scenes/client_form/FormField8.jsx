@@ -104,7 +104,7 @@ const FormFields8 = ({
           }}
         >
           <Typography variant="h5" gutterBottom>
-            Part A – Source of funds (Please select all that apply)
+            Part A - Source of funds (Please select all that apply)
           </Typography>
         </Box>
         <Box

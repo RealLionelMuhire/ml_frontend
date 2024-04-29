@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import TokenRetrieval from "./utils/TokenRetrieval";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
@@ -43,8 +43,11 @@ import ClientLogin from "./client_scenes/login_client";
 import AuthLandingClient from "./client_scenes/logged_in_welcome";
 import ClientWelcomePage from "./client_scenes/welcome_page";
 
-
-const ProtectedRoute = ({ isAuthenticated, isClientAuthenticated, isUserAuthenticated }) => {
+const ProtectedRoute = ({
+  isAuthenticated,
+  isClientAuthenticated,
+  isUserAuthenticated,
+}) => {
   const userType = localStorage.getItem("userType");
 
   if (isAuthenticated || isClientAuthenticated || isUserAuthenticated) {
@@ -73,10 +76,13 @@ function App() {
       setIsAuthenticated(true);
       if (userType === "client") {
         setIsClientAuthenticated(true);
-      } else if (userType === "user" || userType === "admin" || userType === "manager") {
+      } else if (
+        userType === "user" ||
+        userType === "admin" ||
+        userType === "manager"
+      ) {
         setIsUserAuthenticated(true);
-      }
-      else {
+      } else {
         setIsClientAuthenticated(false);
         setIsUserAuthenticated(false);
       }
@@ -86,7 +92,6 @@ function App() {
       setIsUserAuthenticated(false);
     }
   }, []);
-
 
   return (
     <Router>
@@ -102,50 +107,238 @@ function App() {
               <Route path="/testCal" element={<TestCalendar />} />
               <Route path="/client-login" element={<ClientLogin />} />
               <Route path="/client-welcome" element={<ClientWelcomePage />} />
-              
 
               {/* Routes accessible only to authenticated users */}
               <Route
-                element={<ProtectedRoute
-                  isAuthenticated={isAuthenticated}
-                  isUserAuthenticated={isUserAuthenticated}
-                  />}
+                element={
+                  <ProtectedRoute
+                    isAuthenticated={isAuthenticated}
+                    isUserAuthenticated={isUserAuthenticated}
+                  />
+                }
               >
                 <Route path="/landing-user" element={<AuthLandingUser />} />
-                <Route path="/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>}/>
-                <Route path="/team" element={<AdminLayout><Team /></AdminLayout>}/>
-                <Route path="/clients" element={<AdminLayout><Clients /></AdminLayout>}/>
-                <Route path="/clients-id" element={<AdminLayout><ClientWithID /></AdminLayout>}/>
-                <Route path="/services-form" element={<AdminLayout><ServicesForm /></AdminLayout>}/>
-                <Route path="/services" element={<AdminLayout><Services /></AdminLayout>} />
-                <Route path="/service-id" element={<AdminLayout><ServiceByID /></AdminLayout>} />
-                <Route path="/alerts-form" element={<AdminLayout><AlertsForm /></AdminLayout>}/>
-                <Route path="/alerts" element={<AdminLayout><Alerts /></AdminLayout>} />
-                <Route path="/alert-id" element={<AdminLayout><AlertByID /></AdminLayout>}/>
-                <Route path="/roles" element={<AdminLayout><Roles /></AdminLayout>}/>
-                <Route path="/user-form" element={<AdminLayout> <UserForm /></AdminLayout>} />
-                <Route path="/alerts-page" element={<AdminLayout><AlertPage /></AdminLayout>}/>
-                <Route path="/update-user" element={<AdminLayout><ProfileUpdateForm /> </AdminLayout>}/>
-                <Route path="/client-form" element={<AdminLayout><ClientsForm /></AdminLayout>}/>
-                <Route path="/clients-data" element={<AdminLayout><ClientsData /> </AdminLayout>} />
-                <Route path="/bar" element={<AdminLayout> <Bar /></AdminLayout>} />
-                <Route path="/pie" element={<AdminLayout><Pie /></AdminLayout>} />
-                <Route path="/faq" element={<AdminLayout><FAQ /> </AdminLayout>} />
-                <Route path="/line" element={<AdminLayout> <Line /></AdminLayout> } />
-                <Route path="/calendar" element={<AdminLayout><Calendar /></AdminLayout>}/>
-                <Route path="/geography" element={<AdminLayout><Geography /></AdminLayout>} />
-                <Route path="/client-reservations" element={<AdminLayout><ClientReservations /></AdminLayout>} />
-                <Route path="/reservations-display" element={<AdminLayout><ReservationDisplay /></AdminLayout>} />
-                <Route path="/user-profile" element={<AdminLayout><UserProfileDisplay /></AdminLayout>} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <AdminLayout>
+                      <Dashboard />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/team"
+                  element={
+                    <AdminLayout>
+                      <Team />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/clients"
+                  element={
+                    <AdminLayout>
+                      <Clients />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/clients-id"
+                  element={
+                    <AdminLayout>
+                      <ClientWithID />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/services-form"
+                  element={
+                    <AdminLayout>
+                      <ServicesForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/services"
+                  element={
+                    <AdminLayout>
+                      <Services />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/service-id"
+                  element={
+                    <AdminLayout>
+                      <ServiceByID />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alerts-form"
+                  element={
+                    <AdminLayout>
+                      <AlertsForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alerts"
+                  element={
+                    <AdminLayout>
+                      <Alerts />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alert-id"
+                  element={
+                    <AdminLayout>
+                      <AlertByID />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/roles"
+                  element={
+                    <AdminLayout>
+                      <Roles />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/user-form"
+                  element={
+                    <AdminLayout>
+                      {" "}
+                      <UserForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/alerts-page"
+                  element={
+                    <AdminLayout>
+                      <AlertPage />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/update-user"
+                  element={
+                    <AdminLayout>
+                      <ProfileUpdateForm />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/client-form"
+                  element={
+                    <AdminLayout>
+                      <ClientsForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/clients-data"
+                  element={
+                    <AdminLayout>
+                      <ClientsData />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/bar"
+                  element={
+                    <AdminLayout>
+                      {" "}
+                      <Bar />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/pie"
+                  element={
+                    <AdminLayout>
+                      <Pie />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/faq"
+                  element={
+                    <AdminLayout>
+                      <FAQ />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/line"
+                  element={
+                    <AdminLayout>
+                      {" "}
+                      <Line />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/calendar"
+                  element={
+                    <AdminLayout>
+                      <Calendar />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/geography"
+                  element={
+                    <AdminLayout>
+                      <Geography />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/client-reservations"
+                  element={
+                    <AdminLayout>
+                      <ClientReservations />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/reservations-display"
+                  element={
+                    <AdminLayout>
+                      <ReservationDisplay />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/user-profile"
+                  element={
+                    <AdminLayout>
+                      <UserProfileDisplay />
+                    </AdminLayout>
+                  }
+                />
               </Route>
 
               <Route
-                element={<ProtectedRoute
-                  isAuthenticated={isAuthenticated}
-                  isClientAuthenticated={isClientAuthenticated}
-                  />}
+                element={
+                  <ProtectedRoute
+                    isAuthenticated={isAuthenticated}
+                    isClientAuthenticated={isClientAuthenticated}
+                  />
+                }
               >
-                <Route path="/client/dashboard" element={<ClientLayout><ClientDashboard /></ClientLayout>} />
+                <Route
+                  path="/client/dashboard"
+                  element={
+                    <ClientLayout>
+                      <ClientDashboard />
+                    </ClientLayout>
+                  }
+                />
                 <Route path="/landing" element={<AuthLandingClient />} />
               </Route>
 

@@ -7,6 +7,7 @@ import { useGetClientsByIdsQuery } from "../../state/api";
 import { tokens } from "../../theme";
 import { useLocation } from "react-router-dom";
 import { useMemo } from "react";
+import FileViewer from "../../utils/FileViewer";
 
 const ClientWithID = () => {
   const location = useLocation();
@@ -25,52 +26,43 @@ const ClientWithID = () => {
   // Create dynamic client columns based on the selected clients
   const clientColumns = selectedClientIds.map((clientId, index) => {
     const clientData = data && data[index];
-    const firstName = clientData ? clientData["First Name"] : '';
-    const lastName = clientData ? clientData["Last Name"] : '';
-    const headerName = clientData ? `${index + 1} - ${firstName} ${lastName}` : `Client ${index + 1}`;
-  
+    const firstName = clientData ? clientData["First Name"] : "";
+    const lastName = clientData ? clientData["Last Name"] : "";
+    const headerName = clientData
+      ? `${index + 1} - ${firstName} ${lastName}`
+      : `Client ${index + 1}`;
+
     return {
       field: `client${index + 1}`,
       headerName,
       flex: 2,
       renderCell: (params) => {
         // Check if the cell data is a link to a PDF file
-        const isPdfLink = typeof params.value === 'string' && params.value.endsWith(".pdf");
-  
+        const isPdfLink =
+          typeof params.value === "string" && params.value.endsWith(".pdf");
+
         if (isPdfLink) {
-          return (
-            <a
-              href={params.value}
-              target="_blank"
-              rel="noopener noreferrer"
-              download
-            >
-              Download PDF
-            </a>
-          );
+          return <FileViewer url={params.value} />;
         }
-  
+
         return params.value;
       },
     };
   });
 
-  
-
   const columns = [...commonColumns, ...clientColumns];
 
   const rows =
-  data && data.length > 0
-    ? Object.keys(data[0]).map((property) => ({
-        id: property,
-        property,
-        ...data.reduce((clients, client, index) => {
-          clients[`client${index + 1}`] = client[property];
-          return clients;
-        }, {}),
-      }))
-    : [];
-
+    data && data.length > 0
+      ? Object.keys(data[0]).map((property) => ({
+          id: property,
+          property,
+          ...data.reduce((clients, client, index) => {
+            clients[`client${index + 1}`] = client[property];
+            return clients;
+          }, {}),
+        }))
+      : [];
 
   return (
     <Box m="20px">

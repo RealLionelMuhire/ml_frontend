@@ -16,6 +16,9 @@ import FormFields6 from "./FormField6";
 import FormFields7 from "./FormField7";
 import FormFields8 from "./FormField8";
 import FormFields9 from "./FormField9";
+import FormFields10 from "./FormField10";
+import FormFields11 from "./FormField11";
+import FormFields12 from "./FormField12";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -140,6 +143,7 @@ const ClientForm = () => {
     // Company Details
     proposedActivity: yup.string(),
     targetSectors: yup.string(),
+    otherTargetSectors: yup.string(),
     targetedCountries: yup.string(),
     specialLicense: yup.string(),
     secretary: yup.string(),
@@ -157,25 +161,81 @@ const ClientForm = () => {
     countrySourceWealth: yup.string(),
     bankInvolvedWealth: yup.string(),
 
-    financialForecast: yup.array().of(
-      yup.object().shape({
-        year1: yup
-          .number()
-          .nullable()
-          .required("Year 1 is required")
-          .min(0, "Year 1 must be a positive number"),
-        year2: yup
-          .number()
-          .nullable()
-          .required("Year 2 is required")
-          .min(0, "Year 2 must be a positive number"),
-        year3: yup
-          .number()
-          .nullable()
-          .required("Year 3 is required")
-          .min(0, "Year 3 must be a positive number"),
-      })
-    ),
+    isMlDirectors: yup.string(),
+    Director1FirstName: yup.string(),
+    Director1LastName: yup.string(),
+    Director1email: yup.string().email("Invalid email"),
+    Director1contact: yup.string(),
+    Director1BirthDate: yup.date(),
+    Director1NationalID: yup.string(),
+    Director1passportIdNumber: yup.string(),
+    Director1countryOfIssue: yup.string(),
+    Director1passportExpiryDate: yup.date(),
+    Director1citizenship: yup.string(),
+    Director1specifiedCitizenship: yup.string(),
+    Director1countryOfResidence: yup.string(),
+    Director1preferredLanguage: yup.string(),
+    Director1NameOfEntity: yup.string(),
+    Director1tinNumber: yup.string(),
+    Director1taxResidency: yup.string(),
+    Director2FirstName: yup.string(),
+    Director2LastName: yup.string(),
+    Director2email: yup.string().email("Invalid email"),
+    Director2contact: yup.string(),
+    Director2BirthDate: yup.date(),
+    Director2NationalID: yup.string(),
+    Director2passportIdNumber: yup.string(),
+    Director2countryOfIssue: yup.string(),
+    Director2passportExpiryDate: yup.date(),
+    Director2citizenship: yup.string(),
+    Director2specifiedCitizenship: yup.string(),
+    Director2countryOfResidence: yup.string(),
+    Director2preferredLanguage: yup.string(),
+    Director2NameOfEntity: yup.string(),
+    Director2tinNumber: yup.string(),
+    Director2taxResidency: yup.string(),
+    Director3FirstName: yup.string(),
+    Director3LastName: yup.string(),
+    Director3email: yup.string().email("Invalid email"),
+    Director3contact: yup.string(),
+    Director3BirthDate: yup.date(),
+    Director3NationalID: yup.string(),
+    Director3passportIdNumber: yup.string(),
+    Director3countryOfIssue: yup.string(),
+    Director3passportExpiryDate: yup.date(),
+    Director3citizenship: yup.string(),
+    Director3specifiedCitizenship: yup.string(),
+    Director3countryOfResidence: yup.string(),
+    Director3preferredLanguage: yup.string(),
+    Director3NameOfEntity: yup.string(),
+    Director3tinNumber: yup.string(),
+    Director3taxResidency: yup.string(),
+    Director1isPep: yup.string(),
+    Director2isPep: yup.string(),
+    Director3isPep: yup.string(),
+
+    bankName: yup.string(),
+    Currency: yup.string(),
+    groupASignatory1: yup.string(),
+    groupASignatory2: yup.string(),
+    groupASignatory3: yup.string(),
+    groupASignatory4: yup.string(),
+    groupBSignatory1: yup.string(),
+    groupBSignatory2: yup.string(),
+    groupBSignatory3: yup.string(),
+    groupBSignatory4: yup.string(),
+    authorizedUser1: yup.string(),
+    authorizedUser1AccessRights: yup.string(),
+    authorizedUser2: yup.string(),
+    authorizedUser2AccessRights: yup.string(),
+    authorizedUser3: yup.string(),
+    authorizedUser3AccessRights: yup.string(),
+    authorizedUser4: yup.string(),
+    authorizedUser4AccessRights: yup.string(),
+    modeOfOperation: yup.string(),
+    callBackProcessContact: yup.string(),
+    nameOfProposedOfficer: yup.string(),
+
     confirmationLetter_file: createFileSchema(),
     custody_accounts_file: createFileSchema(),
     source_of_funds_file: createFileSchema(),
@@ -190,6 +250,7 @@ const ClientForm = () => {
     cdd_documents_file: createFileSchema(),
     bank_statements_file: createFileSchema(),
     bank_statements_proceeds_file: createFileSchema(),
+    
     notarised_documents_file: createFileSchema(),
     letter_from_donor_file: createFileSchema(),
     donor_source_of_wealth_file: createFileSchema(),
@@ -214,6 +275,31 @@ const ClientForm = () => {
     property_contract_file: createFileSchema(),
     insurance_pay_out_file: createFileSchema(),
     retirement_annuity_fund_statement_file: createFileSchema(),
+
+    passport_file: createFileSchema(),
+    utility_file: createFileSchema(),
+    wealth_file: createFileSchema(),
+    cv_file: createFileSchema(),
+    funds_file: createFileSchema(),
+    source_of_wealth_file: createFileSchema(),
+    financialStatements_file: createFileSchema(),
+    principals_identification_file: createFileSchema(),
+    shareholders_file: createFileSchema(),
+    declaration_of_trust_file: createFileSchema(),
+    certificate_of_registration_file: createFileSchema(),
+    deed_of_retirement_file: createFileSchema(),
+    business_plan_file: createFileSchema(),
+    registered_office_file: createFileSchema(),
+    register_of_trustee_file: createFileSchema(),
+    proof_of_source_of_funds_file: createFileSchema(),
+    proof_of_source_of_wealth_file: createFileSchema(),
+    latest_accounts_or_bank_statements_file: createFileSchema(),
+    licence_file: createFileSchema(),
+    certificate_of_incumbency_file: createFileSchema(),
+    charter_file: createFileSchema(),
+    latest_accounts_file: createFileSchema(),
+    identification_documents_of_the_principals_of_the_foundation_file:
+      createFileSchema(),
   });
 
   function createFileSchema() {
@@ -306,6 +392,7 @@ const ClientForm = () => {
 
     proposedActivity: "",
     targetSectors: "",
+    otherTargetSectors: "",
     targetedCountries: "",
     specialLicense: "",
     secretary: "",
@@ -347,6 +434,57 @@ const ClientForm = () => {
       { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
       { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
     ],
+
+    // Estimated Deposit Yearly (Currency)
+    // Estimated Number of Transactions (monthly or yearly)
+    //   Estimated Value of Transactions (monthly or yearly)
+
+    expectedAccountActivity: [
+      {
+        id: 0,
+        description: "Estimated Deposit Yearly (Currency)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 1,
+        description: "Estimated Number of Transactions (monthly or yearly)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 2,
+        description: "Estimated Value of Transactions (monthly or yearly)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+    ],
+
+    bankName: "",
+    Currency: "",
+    groupASignatory1: "",
+    groupASignatory2: "",
+    groupASignatory3: "",
+    groupASignatory4: "",
+    groupBSignatory1: "",
+    groupBSignatory2: "",
+    groupBSignatory3: "",
+    groupBSignatory4: "",
+    authorizedUser1: "",
+    authorizedUser1AccessRights: "",
+    authorizedUser2: "",
+    authorizedUser2AccessRights: "",
+    authorizedUser3: "",
+    authorizedUser3AccessRights: "",
+    authorizedUser4: "",
+    authorizedUser4AccessRights: "",
+    modeOfOperation: "",
+    callBackProcessContact: "",
+    nameOfProposedOfficer: "",
+
     confirmationLetter_file: null,
     bank_statement_file: null,
     custody_accounts_file: null,
@@ -384,6 +522,89 @@ const ClientForm = () => {
     property_contract_file: null,
     insurance_pay_out_file: null,
     retirement_annuity_fund_statement_file: null,
+    isMlDirectors: "",
+    Director1FirstName: "",
+    Director1LastName: "",
+    Director1email: "",
+    Director1contact: "",
+    Director1password: "",
+    Director1confirmPassword: "",
+    Director1BirthDate: "",
+    Director1NationalID: "",
+    Director1passportIdNumber: "",
+    Director1countryOfIssue: "",
+    Director1passportExpiryDate: "",
+    Director1citizenship: "",
+    Director1specifiedCitizenship: "",
+    Director1countryOfResidence: "",
+    Director1preferredLanguage: "",
+    Director1NameOfEntity: "",
+    Director1tinNumber: "",
+    Director1taxResidency: "",
+    Director2FirstName: "",
+    Director2LastName: "",
+    Director2email: "",
+    Director2contact: "",
+    Director2BirthDate: "",
+    Director2NationalID: "",
+    Director2passportIdNumber: "",
+    Director2countryOfIssue: "",
+    Director2passportExpiryDate: "",
+    Director2citizenship: "",
+    Director2specifiedCitizenship: "",
+    Director2countryOfResidence: "",
+    Director2preferredLanguage: "",
+    Director2NameOfEntity: "",
+    Director2tinNumber: "",
+    Director2taxResidency: "",
+    Director3FirstName: "",
+    Director3LastName: "",
+    Director3email: "",
+    Director3contact: "",
+    Director3BirthDate: "",
+    Director3NationalID: "",
+    Director3passportIdNumber: "",
+    Director3countryOfIssue: "",
+    Director3passportExpiryDate: "",
+    Director3citizenship: "",
+    Director3specifiedCitizenship: "",
+    Director3countryOfResidence: "",
+    Director3preferredLanguage: "",
+    Director3NameOfEntity: "",
+    Director3tinNumber: "",
+    Director3taxResidency: "",
+    Director1isPep: "",
+    Director2isPep: "",
+    Director3isPep: "",
+    Director1_national_id_file: null,
+    Director1_passport_file: null,
+    Director2_national_id_file: null,
+    Director2_passport_file: null,
+    Director3_national_id_file: null,
+    Director3_passport_file: null,
+    passport_file: null,
+    utility_file: null,
+    wealth_file: null,
+    cv_file: null,
+    funds_file: null,
+    source_of_wealth_file: null,
+    financialStatements_file: null,
+    principals_identification_file: null,
+    shareholders_file: null,
+    declaration_of_trust_file: null,
+    certificate_of_registration_file: null,
+    deed_of_retirement_file: null,
+    business_plan_file: null,
+    registered_office_file: null,
+    register_of_trustee_file: null,
+    proof_of_source_of_funds_file: null,
+    proof_of_source_of_wealth_file: null,
+    latest_accounts_or_bank_statements_file: null,
+    licence_file: null,
+    certificate_of_incumbency_file: null,
+    charter_file: null,
+    latest_accounts_file: null,
+    identification_documents_of_the_principals_of_the_foundation_file: null,
   };
 
   const nextStep = () => {
@@ -530,6 +751,39 @@ const ClientForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              {step === 10 && (
+                <FormFields10
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 11 && (
+                <FormFields11
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {step === 12 && (
+                <FormFields12
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  isNonMobile={isNonMobile}
+                  setFieldValue={setFieldValue}
+                />
+              )}
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -636,16 +890,44 @@ const ClientForm = () => {
               {step === 9 && (
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
-                    type="submit"
                     variant="contained"
+                    onClick={nextStep}
                     color="secondary"
-                    disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <CircularProgress size={24} color="secondary" />
-                    ) : (
-                      "Submit"
-                    )}
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 10 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 11 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+              {step === 12 && (
+                <Box display="flex" mt="20px" justifyContent="end">
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    color="secondary"
+                  >
+                    Submit
                   </Button>
                 </Box>
               )}

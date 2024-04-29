@@ -122,24 +122,24 @@ const FormFields3 = ({
         }}
       >
         <Typography variant="h6">
-          {values.sample_file ? (
-            values.sample_file.name
+          {values.signature_file ? (
+            values.signature_file.name
           ) : (
-            <label htmlFor="sample_file">Sample File Lebel</label>
+            <label htmlFor="signature_file">Upload Signature file</label>
           )}
         </Typography>
         <input
           type="file"
           accept=".pdf"
-          name="sample_file"
+          name="signature_file"
           onChange={(e) => {
             handleChange(e);
-            setFieldValue("sample_file", e.currentTarget.files[0]);
+            setFieldValue("signature_file", e.currentTarget.files[0]);
           }}
           sx={{ gridColumn: "span 2" }}
         />
-        {touched.sample_file && errors.sample_file && (
-          <div>{errors.sample_file}</div>
+        {touched.signature_file && errors.signature_file && (
+          <div>{errors.signature_file}</div>
         )}
       </Box>
       <Box
@@ -199,7 +199,7 @@ const FormFields3 = ({
               {values.bankStatement_file ? (
                 values.bankStatement_file.name
               ) : (
-                <label htmlFor="sample_file">
+                <label htmlFor="signature_file">
                   Upload last six months bank statements
                 </label>
               )}
@@ -235,7 +235,7 @@ const FormFields3 = ({
               {values.professionalReference_file ? (
                 values.professionalReference_file.name
               ) : (
-                <label htmlFor="sample_file">
+                <label htmlFor="signature_file">
                   Upload professional reference
                 </label>
               )}

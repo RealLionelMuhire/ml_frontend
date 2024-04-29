@@ -22,9 +22,9 @@ export const api = createApi({
         method: "POST",
         body: newUser,
       }),
-      headers:{
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `token ${localStorage.getItem("token")}`,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `token ${localStorage.getItem("token")}`,
       },
       invalidatesTags: ["Team"],
     }),
@@ -196,7 +196,7 @@ export const api = createApi({
       query: () => "/reservations-past/",
       providesTags: ["Reservations"],
     }),
-    
+
     getReservations: build.query({
       query: () => "/list-reservations/",
       providesTags: ["Reservations"],
@@ -229,7 +229,6 @@ export const api = createApi({
       }),
       invalidatesTags: ["Reservations"],
     }),
-
   }),
 });
 

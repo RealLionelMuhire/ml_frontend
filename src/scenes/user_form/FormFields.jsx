@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, MenuItem } from "@mui/material";
-import FinancialForecastTable2 from "./Table2";
+// import FinancialForecastTable2 from "./Table2";
 
 const FormFields = ({
   values,
@@ -11,23 +11,23 @@ const FormFields = ({
   isNonMobile,
   setFieldValue,
 }) => {
-  console.log("Errors: ", errors);
-  const handleFinancialDataChange = (params) => {
-    // console.log({ params });
-    setFieldValue(
-      "financialForecast",
-      values.financialForecast.map((item) => {
-        const currentIndex = Object.keys(params)[0];
-        if (item.id === +currentIndex) {
-          const key = Object.keys(params[currentIndex])[0];
-          const value = Object.values(params[currentIndex])[0].value;
-          item = { ...item, [key]: value };
-          // console.log({ currentIndex, item });
-        }
-        return item;
-      })
-    );
-  };
+  // console.log("Errors: ", errors);
+  // const handleFinancialDataChange = (params) => {
+  //   // console.log({ params });
+  //   setFieldValue(
+  //     "financialForecast",
+  //     values.financialForecast.map((item) => {
+  //       const currentIndex = Object.keys(params)[0];
+  //       if (item.id === +currentIndex) {
+  //         const key = Object.keys(params[currentIndex])[0];
+  //         const value = Object.values(params[currentIndex])[0].value;
+  //         item = { ...item, [key]: value };
+  //         // console.log({ currentIndex, item });
+  //       }
+  //       return item;
+  //     })
+  //   );
+  // };
 
   React.useEffect(() => {
     // console.log({ values });
@@ -35,11 +35,11 @@ const FormFields = ({
 
   return (
     <React.Fragment>
-      <FinancialForecastTable2
+      {/* <FinancialForecastTable2
         financialData={values.financialForecast}
         handleFinancialDataChange={handleFinancialDataChange}
         setFieldValue={setFieldValue}
-      />
+      /> */}
       <TextField
         fullWidth
         variant="filled"
