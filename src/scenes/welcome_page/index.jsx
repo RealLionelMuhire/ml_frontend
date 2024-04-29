@@ -1,6 +1,13 @@
-import { Box, Typography, useTheme, useMediaQuery, IconButton, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  IconButton,
+  Button,
+} from "@mui/material";
 import { useContext } from "react";
-import { ColorModeContext} from "../../theme";
+import { ColorModeContext } from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +20,6 @@ const WelcomePage = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-
   return (
     <Box m="20px">
       <Box
@@ -24,31 +30,27 @@ const WelcomePage = () => {
         ml="15px"
       >
         <img
-        alt="logo"
-        src={
-          theme.palette.mode === 'light'
-            ? `../../assets/white_theme_logo.png`
-            : `../../assets/dark_theme_logo.png`
-        }
-        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+          alt="logo"
+          src={
+            theme.palette.mode === "light"
+              ? `../../assets/white_theme_logo.png`
+              : `../../assets/dark_theme_logo.png`
+          }
+          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         />
-        <IconButton onClick={colorMode.toggleColorMode}
-        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+        <IconButton
+          onClick={colorMode.toggleColorMode}
+          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         >
-            {theme.palette.mode === "dark" ? (
-              <LightModeOutlinedIcon />
-            ) : (
-              <DarkModeOutlinedIcon />
-            )}
+          {theme.palette.mode === "dark" ? (
+            <LightModeOutlinedIcon />
+          ) : (
+            <DarkModeOutlinedIcon />
+          )}
         </IconButton>
       </Box>
 
-      <Box
-        variant="contained"
-        m="20px"
-        width="100%"
-        textAlign="center"
-      >
+      <Box variant="contained" m="20px" width="100%" textAlign="center">
         <Typography fontWeight="bold" fontSize="32px" justifyContent="left">
           ML Corporate Services
         </Typography>
@@ -61,7 +63,12 @@ const WelcomePage = () => {
         borderRadius="1.5rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography  fontWeight="500" variant="h4" sx={{ mb: "1.5rem" }} ml="80px">
+        <Typography
+          fontWeight="500"
+          variant="h4"
+          sx={{ mb: "1.5rem" }}
+          ml="80px"
+        >
           Welcome to MLCS Client & Admin Management Platform
         </Typography>
         <Box
@@ -73,7 +80,7 @@ const WelcomePage = () => {
           borderRadius="1.5rem"
           alignItems="left"
         >
-
+          {/* 
           <Box
           width="90%"
           p="2rem"
@@ -102,14 +109,14 @@ const WelcomePage = () => {
               <Typography variant="h5" fontWeight="100">GO TO CLIENT PORTAL</Typography>
               </>
             </Button>
-          </Box>
+          </Box> */}
           <Box
-          width="100%"
-          p="2rem"
-          m="2rem auto"
-          borderRadius="1.5rem"
-          backgroundColor={theme.palette.background.alt}
-          sx={{ gridColumn: "span 2" }}
+            width="100%"
+            p="2rem"
+            m="2rem auto"
+            borderRadius="1.5rem"
+            backgroundColor={theme.palette.background.alt}
+            sx={{ gridColumn: "span 2" }}
           >
             <Button
               fullWidth
@@ -128,11 +135,13 @@ const WelcomePage = () => {
               }}
             >
               <>
-              <Typography variant="h5" fontWeight="100">LOGIN (FOR ADMIN ONLY)</Typography>
+                <Typography variant="h5" fontWeight="100">
+                  LOGIN (FOR ADMIN ONLY)
+                </Typography>
               </>
             </Button>
+          </Box>
         </Box>
-      </Box>
       </Box>
     </Box>
   );

@@ -8,7 +8,7 @@ import {
   useTheme,
   CircularProgress,
   InputAdornment,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -17,9 +17,8 @@ import { setLogin } from "../../state";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import TokenStorage from "../../utils/TokenStorage";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
@@ -75,22 +74,22 @@ const Form = () => {
 
       onSubmitProps.resetForm();
       if (loggedIn?.token) {
-        localStorage.setItem("user_id", loggedIn.user_id)
-        localStorage.setItem("userType", loggedIn.userType)
+        localStorage.setItem("user_id", loggedIn.user_id);
+        localStorage.setItem("userType", loggedIn.userType);
         TokenStorage.saveToken(loggedIn.token);
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
-          );
-          setLoading(true);
-          setTimeout(() => {
-            navigate("/landing-user");
-            window.location.href = "/landing-user"
-            setLoading(false);
-          }, 100);
-        }
+        );
+        setLoading(true);
+        setTimeout(() => {
+          navigate("/landing-user");
+          window.location.href = "/landing-user";
+          setLoading(false);
+        }, 100);
+      }
     } catch (error) {
       onSubmitProps.resetForm();
       toast.error("Error logging in. Please try again.");
@@ -101,24 +100,24 @@ const Form = () => {
   const forgotPassword = async (values, onSubmitProps) => {
     try {
       setLoading(true);
-      const forgotPasswordResponse = await fetch(
-        `${baseUrl}forgot-password/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        }
-      );
+      const forgotPasswordResponse = await fetch(`${baseUrl}forgot-password/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      // if (forgotPasswordResponse.ok) {
+      //   const forgotPassword = await forgotPasswordResponse.json();
+      //   toast.message(forgotPassword.message);
+      //   navigate("/");
+      // }
 
       if (!forgotPasswordResponse.ok) {
         const errorData = await forgotPasswordResponse.json();
         toast.error(errorData.message);
         navigate("/");
-      }
-
-      if (forgotPasswordResponse.ok) {
-        const forgotPassword = await forgotPasswordResponse.json();
-        toast.message(forgotPassword.message);
+      } else {
+        toast.success("Password reset link sent to your email.");
         navigate("/");
       }
 
@@ -199,13 +198,17 @@ const Form = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowPassword(prev => !prev)}
+                          onClick={() => setShowPassword((prev) => !prev)}
                           size="small"
                         >
-                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
-                    )
+                    ),
                   }}
                   sx={{ gridColumn: "span 4" }}
                 />

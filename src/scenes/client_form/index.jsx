@@ -250,6 +250,7 @@ const ClientForm = () => {
     cdd_documents_file: createFileSchema(),
     bank_statements_file: createFileSchema(),
     bank_statements_proceeds_file: createFileSchema(),
+    
     notarised_documents_file: createFileSchema(),
     letter_from_donor_file: createFileSchema(),
     donor_source_of_wealth_file: createFileSchema(),
