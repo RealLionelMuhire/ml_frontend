@@ -55,6 +55,7 @@
     "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4",
+    "yarn": "^1.22.22",
     "yup": "^0.32.11"
   },
   "scripts": {
@@ -86,14 +87,7 @@
   "author": "RealLionelMuhire <muhirelionel@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@types/node": "^16.0.0",
-    "@types/qs": "",
-  "@types/send": "",
-  "@types/http-errors": "",
-  "@types/express-serve-static-core": "",
-  "@types/range-parser": "",
-  "@types/connect": ""
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "description": "ml frontend app"
 }

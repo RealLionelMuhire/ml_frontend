@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Update Yarn
+yarn self-update
+
+# Clear Yarn cache
+yarn cache clean
+
+# Retry installation
+yarn install
+
