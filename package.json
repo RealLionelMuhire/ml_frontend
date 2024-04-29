@@ -87,7 +87,13 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@types/node": "^16.0.0"
+    "@types/node": "^16.0.0",
+    "@types/qs": "",
+  "@types/send": "",
+  "@types/http-errors": "",
+  "@types/express-serve-static-core": "",
+  "@types/range-parser": "",
+  "@types/connect": ""
   },
   "description": "ml frontend app"
 }
