@@ -106,26 +106,20 @@ const Form = () => {
         body: JSON.stringify(values),
       });
 
-      // if (forgotPasswordResponse.ok) {
-      //   const forgotPassword = await forgotPasswordResponse.json();
-      //   toast.message(forgotPassword.message);
-      //   navigate("/");
-      // }
-
       if (!forgotPasswordResponse.ok) {
         const errorData = await forgotPasswordResponse.json();
         toast.error(errorData.message);
-        navigate("/");
       } else {
         toast.success("Password reset link sent to your email.");
-        navigate("/");
       }
 
       onSubmitProps.resetForm();
       navigate("/");
     } catch (error) {
+      console.error("Error resetting password:", error);
       toast.error("Error resetting password. Please try again.");
-      navigate("/");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -256,8 +250,7 @@ const Form = () => {
                 fontWeight="500"
                 variant="h5"
                 onClick={() => {
-                  setPageType(isLogin ? "forgotPassword" : "login");
-                  resetForm();
+                  window.location.href = `${baseUrl}reset_password/`;
                 }}
                 sx={{
                   mb: "1.5rem",
