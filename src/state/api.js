@@ -186,6 +186,25 @@ export const api = createApi({
       providesTags: (result, error, alertId) =>
         alertId ? [{ type: "Alerts", id: alertId }] : [],
     }),
+    // Reports
+    getReports: build.query({
+      query: () => "/list-reports/",
+      providesTags: ["Reports"],
+    }),
+    createReport: build.mutation({
+      query: ({ reportData }) => ({
+        url: `/report-create/`,
+        method: "POST",
+        body: reportData,
+      }),
+      invalidatesTags: ["Reports"],
+    }),
+    getReportById: build.query({
+      query: (reportId) => `/report-detail/?ids=${reportId}`,
+      providesTags: (result, error, reportId) =>
+        reportId ? [{ type: "Reports", id: reportId }] : [],
+    }),
+
     // Reservations
     getFutureReservations: build.query({
       query: () => "/reservations-future/",
@@ -272,6 +291,11 @@ export const {
   useCreateAlertMutation,
   useCloseAlertMutation,
   useGetAlertByIdQuery,
+
+  // Reports
+  useCreateReportMutation,
+  useGetReportsQuery,
+  useGetReportByIdQuery,
 
   // Reservations
   useGetFutureReservationsQuery,

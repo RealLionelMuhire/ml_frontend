@@ -1,86 +1,58 @@
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
-import { useGetAlertQuery } from "../../state/api";
-import { useCloseAlertMutation } from "../../state/api";
+import { useGetReportsQuery } from "../../state/api";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import FileViewer from "../../utils/FileViewer";
 
 const Reports = () => {
-  const { data, isLoading, refetch } = useGetAlertQuery();
-  const [closeAlert, { isLoading: isClosing }] = useCloseAlertMutation();
-  const [selectedAlertIds, setSelectedAlertIds] = useState([]);
+  const { data, isLoading } = useGetReportsQuery();
+  const [selectedReportIds, setSelectedReportIds] = useState([]);
   const navigate = useNavigate();
 
-  const handleConfirmClose = async () => {
-    try {
-      const promises = selectedAlertIds.map(async (alertId) => {
-        try {
-          const response = await closeAlert({ alertId });
-          if (response?.error) {
-            toast.error(response.error?.data?.message);
-          }
-          if (response?.data) {
-            toast.success(response.data?.message);
-          }
-        } catch (error) {
-          toast.error(error);
-        }
-      });
-
-      await Promise.all(promises);
-      await refetch();
-    } catch (error) {
-      toast.error("Error closing alert:");
-    }
-  };
-
   const handleSelectionModelChange = (selectionModel) => {
-    setSelectedAlertIds(selectionModel);
+    setSelectedReportIds(selectionModel);
   };
 
   const handleViewMoreClick = () => {
-    navigate("/alert-id", {
-      state: { selectedAlertIds },
+    navigate("/report-id", {
+      state: { selectedReportIds },
     });
   };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
-    { field: "id", headerName: "ID" },
+    { field: "id", headerName: "ID", flex: 0.2 },
     {
       field: "title",
-      headerName: "Alert Title",
+      headerName: "Report Title",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "setter_name",
-      headerName: "Setter",
+      field: "reporter_name",
+      headerName: "Reporter",
       flex: 1,
     },
     {
-      field: "client_name",
-      headerName: "Client",
+      field: "client_reportee_name",
+      headerName: "Client Related",
       flex: 1,
     },
     {
-      field: "schedule_date",
-      headerName: "Scheduled On",
+      field: "created_at",
+      headerName: "Reporting Date",
       flex: 1,
-      renderCell: (params) => (
-        <Typography
-          color={params.row.is_active ? colors.redAccent[500] : undefined}
-        >
-          {params.row.is_active
-            ? `Scheduled on ${params.row.schedule_date}`
-            : `Expired on ${params.row.expiration_date}`}
-        </Typography>
-      ),
+    },
+    {
+      field: "report_link",
+      headerName: "Report File",
+      flex: 1,
+      renderCell: (params) => <FileViewer url={params.row.report_link} />,
     },
   ];
 
@@ -94,25 +66,14 @@ const Reports = () => {
             color="secondary"
             variant="contained"
             onClick={handleViewMoreClick}
-            disabled={selectedAlertIds.length === 0}
+            disabled={selectedReportIds.length === 0}
           >
-            Select Alert to view More
-          </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={handleConfirmClose}
-            disabled={selectedAlertIds.length !== 1 || isClosing}
-          >
-            Take Action On selected Alert
+            Select Report to view More
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/alerts-form">Generate an Alert</Link>
+            <Link to="/reports-form">Generate an Report</Link>
           </Button>
         </Box>
       </Box>

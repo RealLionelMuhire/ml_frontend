@@ -40,6 +40,7 @@ import Contracts from "./scenes/client_contracts";
 import ContractByID from "./scenes/client_contracts/contractByID";
 import Reports from "./scenes/reports_summary";
 import ReportByID from "./scenes/reports_summary/reportByID";
+import ReportsForm from "./scenes/report_form";
 
 import ClientLayout from "./layouts/client";
 import ClientDashboard from "./client_scenes/client_dashboard";
@@ -252,7 +253,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/client-contract"
+                  path="/client-contracts"
                   element={
                     <AdminLayout>
                       <Contracts />{" "}
@@ -280,6 +281,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <ReportByID />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="reports-form"
+                  element={
+                    <AdminLayout>
+                      <ReportsForm />{" "}
                     </AdminLayout>
                   }
                 />
