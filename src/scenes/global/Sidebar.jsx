@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme, CircularProgress } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  useTheme,
+  CircularProgress,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -9,9 +15,13 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { NotificationsRounded, } from "@mui/icons-material";
+import {
+  EmailOutlined,
+  HandshakeOutlined,
+  NotificationsActiveOutlined,
+  SummarizeOutlined,
+} from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
-import { EmailRounded } from "@mui/icons-material";
 import { useGetUserProfileQuery } from "../../state/api";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -41,7 +51,11 @@ const Sidebar = () => {
 
   // Check if userProfile is still loading
   if (isLoading) {
-    return <div><CircularProgress size={40} color="inherit" /></div>;
+    return (
+      <div>
+        <CircularProgress size={40} color="inherit" />
+      </div>
+    );
   }
 
   // Check if userProfile is undefined
@@ -108,7 +122,12 @@ const Sidebar = () => {
                   />
                 </Box>
 
-                <Typography variant="h4" color={colors.grey[100]} ml="20px" mr="10px">
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  ml="20px"
+                  mr="10px"
+                >
                   MLCS
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -174,18 +193,18 @@ const Sidebar = () => {
             >
               Data
             </Typography>
-            
+
             <Item
-              title="Clients"
+              title="Clients Data"
               to="/clients"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Schedules"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
+              title="Clients Contracts"
+              to="/client-contracts"
+              icon={<HandshakeOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -197,19 +216,27 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Alerts"
+              title="Alerts Data"
               to="/alerts"
-              icon={<NotificationsRounded />}
+              icon={<NotificationsActiveOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Reservations"
-              to="/client-reservations"
-              icon={<EmailRounded />}
+              title="Schedules"
+              to="/calendar"
+              icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Appointments"
+              to="/client-reservations"
+              icon={<EmailOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             {userProfile.accessLevel === "user" ? null : (
               <>
                 <Typography
@@ -228,6 +255,20 @@ const Sidebar = () => {
                 />
               </>
             )}
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Reports
+            </Typography>
+            <Item
+              title="Reports & Summary"
+              to="/reports"
+              icon={<SummarizeOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </Box>
         </Menu>
       </ProSidebar>

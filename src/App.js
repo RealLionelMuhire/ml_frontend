@@ -36,6 +36,10 @@ import ReservationDisplay from "./scenes/reservation_display";
 import WelcomePage from "./scenes/welcome_page";
 import AuthLandingUser from "./scenes/logged_in_welcome";
 import UserProfileDisplay from "./scenes/team/profile_data";
+import Contracts from "./scenes/client_contracts";
+import ContractByID from "./scenes/client_contracts/contractByID";
+import Reports from "./scenes/reports_summary";
+import ReportByID from "./scenes/reports_summary/reportByID";
 
 import ClientLayout from "./layouts/client";
 import ClientDashboard from "./client_scenes/client_dashboard";
@@ -244,6 +248,38 @@ function App() {
                   element={
                     <AdminLayout>
                       <ClientsData />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/client-contract"
+                  element={
+                    <AdminLayout>
+                      <Contracts />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/contract-id"
+                  element={
+                    <AdminLayout>
+                      <ContractByID />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/reports"
+                  element={
+                    <AdminLayout>
+                      <Reports />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/report-id"
+                  element={
+                    <AdminLayout>
+                      <ReportByID />{" "}
                     </AdminLayout>
                   }
                 />
