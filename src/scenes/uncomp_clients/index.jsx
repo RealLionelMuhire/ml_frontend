@@ -4,20 +4,13 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useGetClientsQuery } from "../../state/api";
+import { useGetUncompleteClientsQuery } from "../../state/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useActivateClientMutation } from "../../state/api";
-import { useDeactivateClientMutation } from "../../state/api";
-import { toast } from "react-toastify";
 import { Dialog, DialogContent, DialogActions } from "@mui/material";
 
 const Clients = () => {
-  const { data, isLoading, refetch } = useGetClientsQuery();
-  const [activateClient, { isLoading: isActivating }] =
-    useActivateClientMutation();
-  const [deactivateClient, { isLoading: isDeactivating }] =
-    useDeactivateClientMutation();
+  const { data, isLoading } = useGetUncompleteClientsQuery();
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -26,60 +19,9 @@ const Clients = () => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null);
 
-  const handleConfirmationOpen = (action) => {
-    setConfirmationAction(action);
-    setConfirmationDialogOpen(true);
-  };
-
   const handleConfirmationClose = () => {
     setConfirmationAction(null);
     setConfirmationDialogOpen(false);
-  };
-
-  const handleActivateConfirmation = () => {
-    handleConfirmationClose();
-    handleActivateClick(true);
-  };
-
-  const handleDeactivateConfirmation = () => {
-    handleConfirmationClose();
-    handleDeactivateClick();
-  };
-
-  const handleActivateClick = async (activate) => {
-    try {
-      const promises = selectedClientIds.map(async (clientId) => {
-        const response = await activateClient(clientId);
-        if (response.error) {
-          toast.error(response.error?.data?.message);
-        } else {
-          toast.success(response.data?.message);
-        }
-      });
-      await Promise.all(promises);
-
-      await refetch();
-    } catch (error) {
-      // console.error("Error activating/deactivating clients:", error);
-    }
-  };
-
-  const handleDeactivateClick = async () => {
-    try {
-      const promises = selectedClientIds.map(async (clientId) => {
-        const response = await deactivateClient(clientId);
-        if (response.error) {
-          toast.error(response.error?.data?.message);
-        } else {
-          toast.success(response.data?.message);
-        }
-      });
-      await Promise.all(promises);
-
-      refetch();
-    } catch (error) {
-      // console.error("Error deactivating clients:", error);
-    }
   };
 
   const handleViewMoreClick = () => {
@@ -145,28 +87,6 @@ const Clients = () => {
             disabled={selectedClientIds.length === 0}
           >
             Select Client to view More
-          </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("activate")}
-            disabled={selectedClientIds.length !== 1 || isActivating}
-          >
-            Activate Selected
-          </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("deactivate")}
-            disabled={selectedClientIds.length !== 1 || isDeactivating}
-          >
-            Deactivate Selected
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
@@ -245,17 +165,6 @@ const Clients = () => {
               variant="contained"
             >
               Cancel
-            </Button>
-            <Button
-              onClick={
-                confirmationAction === "activate"
-                  ? handleActivateConfirmation
-                  : handleDeactivateConfirmation
-              }
-              color="secondary"
-              variant="contained"
-            >
-              Confirm
             </Button>
           </Box>
         </DialogActions>

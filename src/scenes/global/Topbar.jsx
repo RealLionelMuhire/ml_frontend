@@ -30,7 +30,7 @@ import Search from "./Search";
 const Topbar = () => {
   const theme = useTheme();
   const { data: userProfile } = useGetUserProfileQuery();
-  const { data: clients} = useGetClientsQuery();
+  const { data: clients } = useGetClientsQuery();
   const colorMode = useContext(ColorModeContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch();
@@ -38,32 +38,28 @@ const Topbar = () => {
   const [clickedClientId, setClickedClientId] = useState(null);
   const searchBoxRef = useRef(null);
   const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] = useState(false);
+  const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] =
+    useState(false);
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
-  
-
 
   const filteredClients = clients?.filter((client) => {
-    const searchTerm = typeof searchQuery === 'string' ? searchQuery.trim().toLowerCase() : null;
-  
+    const searchTerm =
+      typeof searchQuery === "string" ? searchQuery.trim().toLowerCase() : null;
+
     // If there's no search query, include all clients
     if (!searchTerm || searchTerm === "") {
       return true;
     }
-  
+
     // Check if any property contains the search term
     return Object.values(client).some(
       (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchTerm)
+        typeof value === "string" && value.toLowerCase().includes(searchTerm)
     );
   });
 
-
   const choices = ["Profile", "Logout", "Change Password"];
   const navigate = useNavigate();
-
-
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -108,11 +104,10 @@ const Topbar = () => {
         }
         if (loggedOutResponse.ok) {
           toast.success(loggedOut.message);
-          
-          
+
           setTimeout(() => {
             navigate("/login");
-            window.location.href ="/login"
+            window.location.href = "/login";
           }, 2000);
         } else {
           localStorage.clear("token");
@@ -122,8 +117,8 @@ const Topbar = () => {
               token: "null",
             })
           );
-          toast.error(loggedOut.message)
-          navigate("/login")
+          toast.error(loggedOut.message);
+          navigate("/login");
         }
       } catch (error) {
         toast.error("Error in logging out. Please try again.");
@@ -159,13 +154,12 @@ const Topbar = () => {
     }
   };
 
-
   const handleClientClick = (selectedClient) => {
-    console.log('Clicked on user:', selectedClient);
+    console.log("Clicked on user:", selectedClient);
     if (selectedClient) {
       setClickedClientId(selectedClient.id);
       setSearchQuery("");
-      console.log('Updated clickedClientId:', selectedClient.id);
+      console.log("Updated clickedClientId:", selectedClient.id);
     }
   };
 
@@ -189,49 +183,72 @@ const Topbar = () => {
   }, [clickedClientId, debouncedNavigate]);
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2} ml="-12px" mt="-22px">
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      p={2}
+      ml="-12px"
+      mt="-22px"
+    >
       {/* SEARCH BAR */}
-      <Box
-        mt="-5px"
-        p={2}
-        width={300}
-        maxHeight={100}
-      >
+      <Box mt="-5px" p={2} width={300} maxHeight={100}>
         <Search
           filteredClients={filteredClients}
           handleClientClick={handleClientClick}
           searchBoxRef={searchBoxRef}
         />
-
       </Box>
-      <Dialog open={isLogoutDialogOpen} onClose={() => handleLogoutConfirm(false)}>
+      <Dialog
+        open={isLogoutDialogOpen}
+        onClose={() => handleLogoutConfirm(false)}
+      >
         <DialogContent>
           <Typography>Are you sure you want to logout?</Typography>
         </DialogContent>
         <Box display="flex" justifyContent="center" p={2} gap="20px">
-          <Button onClick={() => handleLogoutConfirm(false)} color="secondary"  variant="contained">
+          <Button
+            onClick={() => handleLogoutConfirm(false)}
+            color="secondary"
+            variant="contained"
+          >
             No
           </Button>
-          <Button onClick={() => handleLogoutConfirm(true)} color="secondary" variant="contained">
+          <Button
+            onClick={() => handleLogoutConfirm(true)}
+            color="secondary"
+            variant="contained"
+          >
             Yes
           </Button>
         </Box>
       </Dialog>
 
-      <Dialog open={isChangePasswordDialogOpen} onClose={() => handleChangePasswordConfirm(false)}>
+      <Dialog
+        open={isChangePasswordDialogOpen}
+        onClose={() => handleChangePasswordConfirm(false)}
+      >
         <DialogContent>
-          <Typography>Are you sure you want to change your password?</Typography>
+          <Typography>
+            Are you sure you want to change your password?
+          </Typography>
         </DialogContent>
         <Box display="flex" justifyContent="center" p={2} gap="20px">
-          <Button onClick={() => handleChangePasswordConfirm(false)} color="secondary"  variant="contained">
+          <Button
+            onClick={() => handleChangePasswordConfirm(false)}
+            color="secondary"
+            variant="contained"
+          >
             No
           </Button>
-          <Button onClick={() => handleChangePasswordConfirm(true)} color="secondary" variant="contained">
+          <Button
+            onClick={() => handleChangePasswordConfirm(true)}
+            color="secondary"
+            variant="contained"
+          >
             Yes
           </Button>
         </Box>
       </Dialog>
-      
 
       {/* Display dropdown with search results */}
       {searchQuery && (
@@ -242,7 +259,7 @@ const Topbar = () => {
               <div
                 key={client.id}
                 onClick={() => handleClientClick(client)}
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                style={{ cursor: "pointer", textDecoration: "underline" }}
               >
                 {client.firstName} {client.lastName}
               </div>
@@ -263,8 +280,8 @@ const Topbar = () => {
             <DarkModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton  onClick={() => navigate("/reservations-display")}>
-          <MessageIcon/>
+        <IconButton onClick={() => navigate("/reservations-display")}>
+          <MessageIcon />
         </IconButton>
         <IconButton onClick={() => navigate("/alerts-page")}>
           <NotificationsOutlinedIcon />
@@ -296,7 +313,6 @@ const Topbar = () => {
         </Menu>
       </Box>
     </Box>
-    
   );
 };
 

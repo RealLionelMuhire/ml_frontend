@@ -24,10 +24,11 @@ export const api = createApi({
       }),
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `token ${localStorage.getItem("token")}`,
+        // Authorization: `token ${localStorage.getItem("token")}`,
       },
       invalidatesTags: ["Team"],
     }),
+
     activateUser: build.mutation({
       query: (userId) => ({
         url: `/activate-user/${userId}/`,
@@ -75,6 +76,27 @@ export const api = createApi({
       }),
       invalidatesTags: ["Clients"],
     }),
+    createUncompleteClient: build.mutation({
+      query: (newClient) => ({
+        url: "/uncompleted-client/",
+        method: "POST",
+        body: newClient,
+      }),
+      invalidatesTags: ["Clients"],
+    }),
+    getUncompleteClients: build.query({
+      query: () => "/uncompleted-client/",
+      method: "GET",
+      providesTags: ["Clients"],
+    }),
+    updateUncompletedClient: build.mutation({
+      query: ({ clientId, updatedClient }) => ({
+        url: `/uncompleted-client/${clientId}/`,
+        method: "PUT",
+        body: updatedClient,
+      }),
+      invalidatesTags: ["Clients"],
+    }),
 
     // Services
     getServices: build.query({
@@ -115,6 +137,11 @@ export const api = createApi({
         body: updatedProfile,
       }),
       invalidatesTags: ["UserProfile"],
+    }),
+    getUserSelfData: build.query({
+      query: () => "/user-self-data/",
+      method: "GET",
+      providesTags: ["UserProfile"],
     }),
 
     // Dashboard
@@ -192,11 +219,17 @@ export const api = createApi({
       providesTags: ["Reports"],
     }),
     createReport: build.mutation({
-      query: ({ reportData }) => ({
-        url: `/report-create/`,
-        method: "POST",
-        body: reportData,
-      }),
+      query: ({ formData }) => {
+        // console.log("Report Data api.js:", formData); // Log the reportData
+        return {
+          url: `/create-report/`,
+          method: "POST",
+          body: formData,
+        };
+      },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
       invalidatesTags: ["Reports"],
     }),
     getReportById: build.query({
@@ -257,6 +290,7 @@ export const {
   useCreateUserMutation,
   useActivateUserMutation,
   useDeactivateUserMutation,
+  useGetUserSelfDataQuery,
 
   // Clients
   useGetClientsQuery,
@@ -264,6 +298,9 @@ export const {
   useGetClientsByIdsQuery,
   useActivateClientMutation,
   useDeactivateClientMutation,
+  useCreateUncompleteClientMutation,
+  useGetUncompleteClientsQuery,
+  useUpdateUncompletedClientMutation,
 
   // Services
   useGetServicesQuery,

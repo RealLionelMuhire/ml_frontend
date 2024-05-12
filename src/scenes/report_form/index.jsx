@@ -1,6 +1,8 @@
+import React from "react";
 import {
   Box,
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -20,32 +22,36 @@ import { useTheme } from "@mui/material/styles";
 
 const ReportsForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createReport] = useCreateReportMutation();
+  const [createReport, { isLoading }] = useCreateReportMutation();
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const { data: clientData } = useGetClientsQuery();
+
   const handleFormSubmit = async (values) => {
     try {
-      const selectedClient = clientData.find(
-        (client) => client.firstName === values.clientName
-      );
-
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
-      formData.append("client_id", selectedClient.id);
+      // if (values.clientName) {
+      //   const selectedClient = clientData.find(
+      //     (client) => client.firstName === values.clientName
+      //   );
+      //   formData.append("client_id", selectedClient.id);
+      // }
       formData.append("report_file", values.report_file);
 
-      const result = await createReport(formData);
+      console.log("Form Data:", formData); // Log formData before calling createReport
+
+      const result = await createReport({ reportData: formData });
       if (result?.error) {
         toast.error(result.error?.data?.message);
       }
       if (result?.data) {
         toast.success(result.data?.message);
+        navigate("/reports");
       }
-      navigate("/reports");
     } catch (error) {
       toast.error(error);
     }
@@ -88,7 +94,6 @@ const ReportsForm = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 3" },
               }}
             >
-              {/* Your other form fields */}
               <TextField
                 fullWidth
                 variant="filled"
@@ -107,7 +112,6 @@ const ReportsForm = () => {
                 fullWidth
                 multiline
                 minRows={4}
-                // maxRows={155}
                 variant="filled"
                 type="text"
                 label="Description"
@@ -119,7 +123,7 @@ const ReportsForm = () => {
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 3" }}
               />
-              <FormControl
+              {/* <FormControl
                 fullWidth
                 variant="filled"
                 sx={{ gridColumn: "span 3" }}
@@ -144,7 +148,22 @@ const ReportsForm = () => {
                       </MenuItem>
                     ))}
                 </Select>
-              </FormControl>
+              </FormControl> */}
+              <TextField
+                fullWidth
+                multiline
+                minRows={4}
+                variant="filled"
+                type="text"
+                label="Client Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.clientName}
+                name="clientName"
+                error={!!touched.clientName && !!errors.clientName}
+                helperText={touched.clientName && errors.clientName}
+                sx={{ gridColumn: "span 3" }}
+              />
               <Box
                 variant="outlined"
                 display="flex"
@@ -182,7 +201,11 @@ const ReportsForm = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create a Report
+                {isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Create Report"
+                )}
               </Button>
             </Box>
           </form>
@@ -195,7 +218,6 @@ const ReportsForm = () => {
 const checkoutSchema = yup.object().shape({
   title: yup.string().required("Required"),
   description: yup.string(),
-  clientName: yup.string(),
   report_file: yup.mixed().required("Report file is required"),
 });
 

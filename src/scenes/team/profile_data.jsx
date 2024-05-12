@@ -1,4 +1,13 @@
-import { Box, useTheme, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 import Header from "../../components/Header";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -16,8 +25,14 @@ const UserProfileDisplay = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
+  // console.log("user profile:", userProfile);
+
   if (isLoading) {
-    return <div><CircularProgress size={60} color="inherit"/></div>;
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
   }
 
   if (isError) {
@@ -29,7 +44,7 @@ const UserProfileDisplay = () => {
       <Header title="Update Profile" subtitle="Profile data" />
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Box>
             <Box>
               <Typography color={colors.greenAccent[500]} variant="h5">

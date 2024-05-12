@@ -168,10 +168,10 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "5px 0 0 0" }}
                 >
-                  {userProfile.FirstName}
+                  {userProfile["First Name"]} {userProfile["Last Name"]}
                 </Typography>
                 <Typography variant="h5" color={colors.grey[300]}>
-                  {userProfile.accessLevel}
+                  {userProfile.Email}
                 </Typography>
               </Box>
             </Box>
@@ -237,7 +237,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            {userProfile.accessLevel === "user" ? null : (
+            {userProfile["Access Level"] === "user" ? null : (
               <>
                 <Typography
                   variant="h6"

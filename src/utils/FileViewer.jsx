@@ -1,69 +1,70 @@
-import React from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { Dialog, DialogContent, Button } from "@mui/material";
+import { Document, Page, pdfjs } from "react-pdf";
 
-class FileViewer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      viewing: false,
-      error: null,
-    };
-  }
+// Enable pdfjs worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-  viewFile = async () => {
-    const { url } = this.props;
+const FileViewer = ({ url }) => {
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState(null);
+  const [numPages, setNumPages] = useState(null);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+
+  const handleViewFile = () => {
     try {
       window.open(url, "_blank");
-      this.setState({ viewing: true });
     } catch (error) {
       console.error("Error viewing file:", error);
-      this.setState({
-        viewing: false,
-        error: error.message || "An error occurred",
-      });
+      setError(error.message || "An error occurred");
     }
   };
 
-  downloadFile = async () => {
-    const { url } = this.props;
+  const handleDownloadFile = async () => {
     try {
-      const response = await axios({
-        method: "GET",
-        url: url,
-        responseType: "blob",
-      });
-
-      // Create a temporary link element to trigger the download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const fileUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = url;
+      link.href = fileUrl;
       link.setAttribute("download", "file.pdf");
       document.body.appendChild(link);
       link.click();
-
-      // Clean up
       link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      this.setState({ downloading: false });
+      window.URL.revokeObjectURL(fileUrl);
     } catch (error) {
       console.error("Error downloading file:", error);
-      this.setState({
-        downloading: false,
-        error: error.message || "An error occurred",
-      });
+      setError(error.message || "An error occurred");
     }
   };
 
-  render() {
-    const { viewing, error } = this.state;
-    return (
-      <div>
-        {!viewing && <button onClick={this.viewFile}>View File</button>}
-        {error && <div>Error: {error}</div>}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Button onClick={handleOpen}>View File</Button>
+      <Button onClick={handleDownloadFile}>Download File</Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogContent>
+          <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+            ))}
+          </Document>
+        </DialogContent>
+      </Dialog>
+      {error && <div>Error: {error}</div>}
+    </div>
+  );
+};
 
 export default FileViewer;

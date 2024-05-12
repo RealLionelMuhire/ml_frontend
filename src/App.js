@@ -75,6 +75,7 @@ function App() {
 
   useEffect(() => {
     const token = TokenRetrieval.getToken();
+    // console.log(token);
     const userType = localStorage.getItem("userType");
     setIsLoading(false);
     if (token && token !== "undefined") {

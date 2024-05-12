@@ -19,6 +19,66 @@ const UserForm = () => {
 
   const [step, setStep] = useState(1);
 
+  const findErrorMessageDetail = (errorData) => {
+    let errorMessage = null;
+
+    const traverse = (data) => {
+      console.log("===== findErrorMessageDetail.traverse =====");
+      console.log("data:", data);
+
+      if (data && typeof data === "object") {
+        // Check if the object has a 'detail' property
+        if (data.detail) {
+          console.log("data.detail:", data.detail);
+          errorMessage = data.detail;
+        }
+        // Traverse through the object's keys
+        for (const key in data) {
+          console.log("key:", key);
+          if (Array.isArray(data[key])) {
+            // If the value is an array, traverse each element
+            console.log("data[key]:", data[key]);
+            data[key].forEach(traverse);
+          } else if (typeof data[key] === "object") {
+            // If the value is an object, recursively traverse it
+            console.log("data[key]:", data[key]);
+            traverse(data[key]);
+          }
+        }
+      }
+    };
+
+    traverse(errorData);
+    console.log("errorMessage:", errorMessage);
+    return errorMessage;
+  };
+
+  const findErrorMessageData = (errorData) => {
+    let errorMessage = null;
+
+    const traverse = (data) => {
+      if (data && typeof data === "object") {
+        // Check if the object has a 'message' property
+        if (data.message) {
+          errorMessage = data.message;
+        }
+        // Traverse through the object's keys
+        for (const key in data) {
+          if (Array.isArray(data[key])) {
+            // If the value is an array, get the first element
+            errorMessage = data[key][0];
+          } else {
+            // Recursively traverse through nested objects
+            traverse(data[key]);
+          }
+        }
+      }
+    };
+
+    traverse(errorData);
+    return errorMessage;
+  };
+
   const handleFormSubmit = async (values) => {
     try {
       const formData = new FormData();
@@ -29,15 +89,36 @@ const UserForm = () => {
           formData.append(key, value);
         }
       });
-      console.log("form data:", formData);
 
       const response = await createUser(formData);
 
-      if (response.error && response.error.data.detail) {
-        toast.error(response.error.data.detail);
-        navigate("/dashboard");
-      } else if (response.error) {
-        toast.error(response.error?.data?.message || "An error occurred");
+      if (response.error && response.error.data) {
+        const errorMessage = findErrorMessageData(response.error.data);
+        if (errorMessage) {
+          console.log(errorMessage);
+          toast.error(errorMessage);
+          // navigate("/dashboard");
+          return; // Exit function after displaying error message
+        }
+      }
+
+      if (!response.ok) {
+        // Extract error message from response data
+        // const errorMessage = response.data;
+        console.log("response not ok", response);
+        const errorMessage = findErrorMessageDetail(response.data);
+        if (errorMessage) {
+          console.log("error data when response not ok", errorMessage);
+          toast.error(errorMessage);
+          // navigate("/dashboard");
+          return; // Exit function after displaying error message
+        }
+      }
+
+      // Handle other cases if needed
+      if (response.error) {
+        console.log(response.error);
+        toast.error(response.error?.message || "An error occurred");
       } else if (response.data) {
         toast.success(response.data?.message);
         navigate("/team");
@@ -233,17 +314,7 @@ const UserForm = () => {
               {step === 2 && (
                 <React.Fragment>
                   <Box display="flex" justifyContent="space-between" mt="20px">
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      variant="contained"
-                      disabled={
-                        isLoading ||
-                        !values.cv_file ||
-                        !values.contract_file ||
-                        !values.national_id_file
-                      }
-                    >
+                    <Button type="submit" color="secondary" variant="contained">
                       {isLoading ? (
                         <CircularProgress size={24} color="inherit" />
                       ) : !values.cv_file ||
