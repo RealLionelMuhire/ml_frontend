@@ -40,6 +40,7 @@
     "install": "^0.13.0",
     "moment-timezone": "^0.5.43",
     "notistack": "^3.0.1",
+    "path": "^0.12.7",
     "pdfjs-dist": "^4.2.67",
     "react": "^18.2.0",
     "react-chartjs-2": "^4.3.1",
@@ -93,7 +94,8 @@
   "author": "RealLionelMuhire <muhirelionel@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "webpack-cli": "^5.1.4"
   },
   "description": "ml frontend app"
 }
