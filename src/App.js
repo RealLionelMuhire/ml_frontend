@@ -42,6 +42,9 @@ import Reports from "./scenes/reports_summary";
 import ReportByID from "./scenes/reports_summary/reportByID";
 import ReportsForm from "./scenes/report_form";
 
+import IncompleteClients from "./scenes/uncomp_clients";
+import IncompleteClientForm from "./scenes/uncomp_client_form";
+
 import ClientLayout from "./layouts/client";
 import ClientDashboard from "./client_scenes/client_dashboard";
 import ClientLogin from "./client_scenes/login_client";
@@ -258,6 +261,22 @@ function App() {
                   element={
                     <AdminLayout>
                       <Contracts />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/incomplete-clients"
+                  element={
+                    <AdminLayout>
+                      <IncompleteClients />{" "}
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/incomplete-client-form"
+                  element={
+                    <AdminLayout>
+                      <IncompleteClientForm />{" "}
                     </AdminLayout>
                   }
                 />

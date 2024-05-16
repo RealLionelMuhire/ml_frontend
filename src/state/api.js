@@ -24,7 +24,6 @@ export const api = createApi({
       }),
       headers: {
         "Content-Type": "multipart/form-data",
-        // Authorization: `token ${localStorage.getItem("token")}`,
       },
       invalidatesTags: ["Team"],
     }),
@@ -78,16 +77,24 @@ export const api = createApi({
     }),
     createUncompleteClient: build.mutation({
       query: (newClient) => ({
-        url: "/uncompleted-client/",
+        url: "/incompleted-client/",
         method: "POST",
         body: newClient,
       }),
       invalidatesTags: ["Clients"],
     }),
     getUncompleteClients: build.query({
-      query: () => "/uncompleted-client/",
+      query: () => "/all-incomplete-clients/",
       method: "GET",
       providesTags: ["Clients"],
+    }),
+
+    getUncompleteClientById: build.query({
+      query: (clientId) => ({
+        url: `/incompleted-client-data/${clientId}`,
+        method: "GET",
+        providesTags: ["Clients"],
+      }),
     }),
     updateUncompletedClient: build.mutation({
       query: ({ clientId, updatedClient }) => ({
@@ -137,11 +144,15 @@ export const api = createApi({
         body: updatedProfile,
       }),
       invalidatesTags: ["UserProfile"],
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     }),
     getUserSelfData: build.query({
       query: () => "/user-self-data/",
       method: "GET",
       providesTags: ["UserProfile"],
+      // forceRefetch: true,
     }),
 
     // Dashboard
@@ -301,6 +312,7 @@ export const {
   useCreateUncompleteClientMutation,
   useGetUncompleteClientsQuery,
   useUpdateUncompletedClientMutation,
+  useGetUncompleteClientByIdQuery,
 
   // Services
   useGetServicesQuery,

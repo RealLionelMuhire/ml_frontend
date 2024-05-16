@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogActions } from "@mui/material";
 
-const Clients = () => {
+const IncompleteClients = () => {
   const { data, isLoading } = useGetUncompleteClientsQuery();
 
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Clients = () => {
   };
 
   const handleViewMoreClick = () => {
-    navigate("/clients-id", {
+    navigate("/incomplete-client-form", {
       state: { selectedClientIds },
     });
   };
@@ -77,7 +77,10 @@ const Clients = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="CLIENTS" subtitle="Managing All Clinets" />
+        <Header
+          title="INCOMPLETE REGISTRATION CLIENTS"
+          subtitle="Showing All IncompleteClients yet to complete their registration"
+        />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
@@ -86,12 +89,12 @@ const Clients = () => {
             onClick={handleViewMoreClick}
             disabled={selectedClientIds.length === 0}
           >
-            Select Client to view More
+            Select Client to Complete the registration
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/client-form">Incomplete Registrations</Link>
+            <Link to="/clients">Completed Registrations</Link>
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
@@ -173,4 +176,4 @@ const Clients = () => {
   );
 };
 
-export default Clients;
+export default IncompleteClients;

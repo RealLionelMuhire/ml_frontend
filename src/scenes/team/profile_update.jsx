@@ -17,7 +17,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { tokens } from "../../theme";
-import FileViewer from "../../utils/FileViewer";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const ProfileUpdateForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -27,7 +27,7 @@ const ProfileUpdateForm = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // console.log("user profile data", userProfile);
+  console.log("user profile data", userProfile);
 
   if (isLoading) {
     return (
@@ -39,7 +39,21 @@ const ProfileUpdateForm = () => {
 
   const handleFormSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await updatedProfile(values);
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          if (
+            key === "financialForecast" ||
+            key === "expectedAccountActivity"
+          ) {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
+        }
+      });
+
+      const response = await updatedProfile(formData);
 
       if (response.error) {
         toast.error(
@@ -200,11 +214,8 @@ const ProfileUpdateForm = () => {
                 }}
               >
                 <Typography variant="h5" fontWeight="500">
-                  Passport or National ID File: -
-                  {userProfile?.national_id_link ? (
-                    <FileViewer url={userProfile.national_id_link} />
-                  ) : values.national_id_file ? (
-                    values.national_id_file.name
+                  {userProfile?.national_id_file ? (
+                    <PdfViewerDialog file={userProfile.national_id_file} />
                   ) : (
                     <label htmlFor="national_id_file">
                       National Id or Passport
@@ -215,15 +226,10 @@ const ProfileUpdateForm = () => {
                   type="file"
                   accept=".pdf"
                   name="national_id_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue("national_id_file", e.currentTarget.files[0]);
-                  }}
-                  sx={{ gridColumn: "span 2" }}
+                  onChange={(e) =>
+                    setFieldValue("national_id_file", e.target.files[0])
+                  }
                 />
-                {touched.national_id_file && errors.national_id_file && (
-                  <div>{errors.national_id_file}</div>
-                )}
               </Box>
               <Box
                 variant="outlined"
@@ -235,14 +241,12 @@ const ProfileUpdateForm = () => {
                   margin: "1px 0px 1px",
                   borderRadius: "4px",
                   padding: "13px 5px",
+                  flex: "4",
                 }}
               >
                 <Typography variant="h5" fontWeight="500">
-                  CV File: -
-                  {userProfile?.cv_link ? (
-                    <FileViewer url={userProfile.cv_link} />
-                  ) : values.cv_file ? (
-                    values.cv_file.name
+                  {userProfile?.cv_file ? (
+                    <PdfViewerDialog file={userProfile.cv_file} />
                   ) : (
                     <label htmlFor="cv_file">Upload CV</label>
                   )}
@@ -251,42 +255,19 @@ const ProfileUpdateForm = () => {
                   type="file"
                   accept=".pdf"
                   name="cv_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue("cv_file", e.currentTarget.files[0]);
-                  }}
+                  onChange={(e) => setFieldValue("cv_file", e.target.files[0])}
                 />
-                {touched.cv_file && errors.cv_file && (
-                  <div>{errors.cv_file}</div>
-                )}
-              </Box>
-              <Box display="flex" justifyContent="end" mt="20px">
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : (
-                    "Change Your Profile"
-                  )}
-                </Button>
               </Box>
             </Box>
-
-            {isError && (
-              <Box mt="20px" color="error.main">
-                Error. Please try again.
-              </Box>
-            )}
-
-            {data && (
-              <Box mt="20px" color="success.main">
-                Updated successfully!
-              </Box>
-            )}
+            <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                {isSubmitting ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Update Profile"
+                )}
+              </Button>
+            </Box>
           </form>
         )}
       </Formik>
@@ -294,20 +275,18 @@ const ProfileUpdateForm = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
 const checkoutSchema = yup.object().shape({
   FirstName: yup.string(),
   LastName: yup.string(),
   email: yup.string().email("invalid email"),
-  contact: yup.string().matches(phoneRegExp, "Phone number is not valid"),
+  contact: yup.string(),
   NationalID: yup.string(),
-  BirthDate: yup.date(),
+  BirthDate: yup.date().nullable(),
   Address: yup.string(),
-  national_id_file: createFileSchema(),
-  cv_file: createFileSchema(),
+  national_id_file: yup.mixed().nullable(),
+  cv_file: yup.mixed().nullable(),
 });
+
 const initialValues = {
   FirstName: "",
   LastName: "",
@@ -319,23 +298,5 @@ const initialValues = {
   national_id_file: null,
   cv_file: null,
 };
-
-function createFileSchema() {
-  return yup
-    .mixed()
-    .test(
-      "fileType",
-      "Invalid file format. Please upload a PDF file.",
-      (value) => {
-        if (!value || value.length === 0 || !value[0]) {
-          return true; // No file provided or empty array, validation passes
-        }
-        if (value[0].type !== "application/pdf") {
-          return false; // File type is not PDF, validation fails
-        }
-        return true; // Validation passes
-      }
-    );
-}
 
 export default ProfileUpdateForm;

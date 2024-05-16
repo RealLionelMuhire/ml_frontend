@@ -171,7 +171,7 @@ const Clients = () => {
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/client-form">Incomplete Registrations</Link>
+            <Link to="/incomplete-clients">Incomplete Registrations</Link>
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">

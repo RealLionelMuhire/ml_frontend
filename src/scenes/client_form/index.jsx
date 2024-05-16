@@ -40,12 +40,15 @@ const ClientForm = () => {
       setIsLoadingSubmit(true);
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        if (key === "financialForecast") {
-          formData.append(key, JSON.stringify(value));
-        } else if (key === "expectedAccountActivity") {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, value);
+        if (value !== null && value !== undefined) {
+          if (
+            key === "financialForecast" ||
+            key === "expectedAccountActivity"
+          ) {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
         }
       });
       // console.log("form data:");
@@ -61,7 +64,7 @@ const ClientForm = () => {
         navigate("/clients");
       }
     } catch (error) {
-      console.error("Error creating user:", error);
+      toast.error("Error creating user:", error);
     } finally {
       setIsLoadingSubmit(false);
     }
@@ -72,12 +75,15 @@ const ClientForm = () => {
       setIsLoadingSaveLater(true);
       const incompleteFormData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        if (key === "financialForecast") {
-          incompleteFormData.append(key, JSON.stringify(value));
-        } else if (key === "expectedAccountActivity") {
-          incompleteFormData.append(key, JSON.stringify(value));
-        } else {
-          incompleteFormData.append(key, value);
+        if (value !== null && value !== undefined) {
+          if (
+            key === "financialForecast" ||
+            key === "expectedAccountActivity"
+          ) {
+            incompleteFormData.append(key, JSON.stringify(value));
+          } else {
+            incompleteFormData.append(key, value);
+          }
         }
       });
 
@@ -86,10 +92,11 @@ const ClientForm = () => {
         toast.error(response.error.message);
       } else if (response.data) {
         toast.success(response.data?.message);
-        navigate("/clients");
+        navigate("/incomplete-clients");
       }
     } catch (error) {
-      console.error("Error saving form for later:", error);
+      // console.error("Error saving form for later:", error);
+      toast.error(error);
     } finally {
       setIsLoadingSaveLater(false);
     }
