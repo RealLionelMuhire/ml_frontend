@@ -7,8 +7,11 @@ import { Link } from "react-router-dom";
 import { useGetClientsQuery } from "../../state/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useActivateClientMutation } from "../../state/api";
-import { useDeactivateClientMutation } from "../../state/api";
+import {
+  useActivateClientMutation,
+  useDeactivateClientMutation,
+  useDeleteClientMutation,
+} from "../../state/api";
 import { toast } from "react-toastify";
 import { Dialog, DialogContent, DialogActions } from "@mui/material";
 
@@ -18,6 +21,7 @@ const Clients = () => {
     useActivateClientMutation();
   const [deactivateClient, { isLoading: isDeactivating }] =
     useDeactivateClientMutation();
+  const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -36,14 +40,19 @@ const Clients = () => {
     setConfirmationDialogOpen(false);
   };
 
-  const handleActivateConfirmation = () => {
+  const handleActivateConfirmation = async () => {
     handleConfirmationClose();
-    handleActivateClick(true);
+    await handleActivateClick(true);
   };
 
-  const handleDeactivateConfirmation = () => {
+  const handleDeactivateConfirmation = async () => {
     handleConfirmationClose();
-    handleDeactivateClick();
+    await handleDeactivateClick();
+  };
+
+  const handleDeleteConfirmation = async () => {
+    handleConfirmationClose();
+    await handleDeleteClick();
   };
 
   const handleActivateClick = async (activate) => {
@@ -57,10 +66,26 @@ const Clients = () => {
         }
       });
       await Promise.all(promises);
-
       await refetch();
     } catch (error) {
-      // console.error("Error activating/deactivating clients:", error);
+      toast.error("Error activating clients");
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    try {
+      const promises = selectedClientIds.map(async (clientId) => {
+        const response = await deleteClient(clientId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
+      });
+      await Promise.all(promises);
+      refetch();
+    } catch (error) {
+      toast.error("Error deleting clients");
     }
   };
 
@@ -75,10 +100,9 @@ const Clients = () => {
         }
       });
       await Promise.all(promises);
-
       refetch();
     } catch (error) {
-      // console.error("Error deactivating clients:", error);
+      toast.error("Error deactivating clients");
     }
   };
 
@@ -135,7 +159,7 @@ const Clients = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="CLIENTS" subtitle="Managing All Clinets" />
+        <Header title="CLIENTS" subtitle="Managing All Clients" />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
@@ -167,6 +191,17 @@ const Clients = () => {
             disabled={selectedClientIds.length !== 1 || isDeactivating}
           >
             Deactivate Selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={() => handleConfirmationOpen("delete")}
+            disabled={selectedClientIds.length === 0 || isDeleting}
+          >
+            Delete Selected
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
@@ -229,12 +264,13 @@ const Clients = () => {
         maxWidth="xs"
         fullWidth
       >
-        {/* <DialogTitle>Confirmation</DialogTitle> */}
         <DialogContent>
           <Typography>
             {confirmationAction === "activate"
               ? "Are you sure you want to activate the selected client?"
-              : "Are you sure you want to deactivate the selected client?"}
+              : confirmationAction === "deactivate"
+              ? "Are you sure you want to deactivate the selected client?"
+              : "Are you sure you want to delete the selected client(s)?"}
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -250,7 +286,9 @@ const Clients = () => {
               onClick={
                 confirmationAction === "activate"
                   ? handleActivateConfirmation
-                  : handleDeactivateConfirmation
+                  : confirmationAction === "deactivate"
+                  ? handleDeactivateConfirmation
+                  : handleDeleteConfirmation
               }
               color="secondary"
               variant="contained"

@@ -23,7 +23,7 @@ const ProfileUpdateForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [updatedProfile, { isError, data }] = useUpdateUserProfileMutation();
   const navigate = useNavigate();
-  const { data: userProfile, isLoading } = useGetUserSelfDataQuery();
+  const { data: userProfile, isLoading, refetch } = useGetUserSelfDataQuery();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -39,18 +39,18 @@ const ProfileUpdateForm = () => {
 
   const handleFormSubmit = async (values, { setSubmitting }) => {
     try {
+      const promises = Object.keys(values).map(async (key) => {
+        if (key === "financialForecast" || key === "expectedAccountActivity") {
+          const value = JSON.stringify(values[key]);
+          await updatedProfile({ [key]: value });
+        } else {
+          await updatedProfile({ [key]: values[key] });
+        }
+      });
+
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          if (
-            key === "financialForecast" ||
-            key === "expectedAccountActivity"
-          ) {
-            formData.append(key, JSON.stringify(value));
-          } else {
-            formData.append(key, value);
-          }
-        }
+        formData.append(key, value);
       });
 
       const response = await updatedProfile(formData);
@@ -63,6 +63,8 @@ const ProfileUpdateForm = () => {
         toast.success(response.data.message || "Updated successfully!");
         navigate("/dashboard");
       }
+      await Promise.all(promises);
+      await refetch();
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Error updating profile. Please try again.");

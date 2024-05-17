@@ -5,7 +5,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import {
-  useCreateUserMutation,
+  useCreateClientMutation,
   useCreateUncompleteClientMutation,
 } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ import SuccessBox from "./SuccessBox";
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createUser, { isError, data }] = useCreateUserMutation();
+  const [createUser, { isError, data }] = useCreateClientMutation();
   const [saveUncompleteData] = useCreateUncompleteClientMutation();
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -107,28 +107,27 @@ const ClientForm = () => {
 
   const checkoutSchema = yup.object().shape({
     // Ultimate Beneficiary Owner / Shareholder (Client)
-    firstName: yup.string().required("required"),
-    lastName: yup.string().required("required"),
-    clientEmail: yup.string().email("Invalid email").required("required"),
+    firstName: yup.string(),
+    lastName: yup.string(),
+    clientEmail: yup.string().email("Invalid email"),
     clientContact: yup
       .string()
-      .matches(phoneRegExp, "Phone number is not valid")
-      .required("required"),
-    passportIdNumber: yup.string().required("required"),
-    birthDate: yup.date().required("required"),
-    citizenship: yup.string().required("required"),
+      .matches(phoneRegExp, "Phone number is not valid"),
+    passportIdNumber: yup.string(),
+    birthDate: yup.date(),
+    citizenship: yup.string(),
     countryOfResidence: yup.string(),
     passportExpiryDate: yup.date(),
     countryOfIssue: yup.string(),
-    preferredLanguage: yup.string().required("required"),
+    preferredLanguage: yup.string(),
     NameOfEntity: yup.string(),
     PrevNameOfEntity: yup.string(),
     TypeOfEntity: yup.string(),
     TypeOfLicense: yup.string(),
     sharePercent: yup.string(),
-    currentAddress: yup.string().required("required"),
+    currentAddress: yup.string(),
     taxResidency: yup.string(),
-    tinNumber: yup.string().required("required"),
+    tinNumber: yup.string(),
     designation: yup.string(),
     introducerName: yup.string(),
     introducerEmail: yup.string().email("Invalid email"),
@@ -148,7 +147,7 @@ const ClientForm = () => {
     authorisedRelationship: yup.string(),
     signature_file: createFileSchema(),
 
-    isPep: yup.string().required("required"),
+    isPep: yup.string(),
     bankStatement_file: createFileSchema(),
     professionalReference_file: createFileSchema(),
 

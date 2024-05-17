@@ -75,6 +75,12 @@ export const api = createApi({
       }),
       invalidatesTags: ["Clients"],
     }),
+    deleteClient: build.mutation({
+      query: (clientId) => ({
+        url: `/register-client/${clientId}/`,
+        method: "DELETE",
+      }),
+    }),
     createUncompleteClient: build.mutation({
       query: (newClient) => ({
         url: "/incompleted-client/",
@@ -87,6 +93,13 @@ export const api = createApi({
       query: () => "/all-incomplete-clients/",
       method: "GET",
       providesTags: ["Clients"],
+    }),
+    deleteUncompleteClient: build.mutation({
+      query: (clientId) => ({
+        url: `/incompleted-client/${clientId}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Clients"],
     }),
 
     getUncompleteClientById: build.query({
@@ -309,10 +322,12 @@ export const {
   useGetClientsByIdsQuery,
   useActivateClientMutation,
   useDeactivateClientMutation,
+  useDeleteClientMutation,
   useCreateUncompleteClientMutation,
   useGetUncompleteClientsQuery,
   useUpdateUncompletedClientMutation,
   useGetUncompleteClientByIdQuery,
+  useDeleteUncompleteClientMutation,
 
   // Services
   useGetServicesQuery,
