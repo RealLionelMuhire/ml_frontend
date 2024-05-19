@@ -1,8 +1,16 @@
-import React from "react";
-import { TextField, MenuItem, Box, Typography } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  MenuItem,
+  Box,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
 const FormFields1 = ({
   values,
@@ -15,6 +23,23 @@ const FormFields1 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
 
   return (
     <React.Fragment>
@@ -38,7 +63,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="First Name"
+        label={`First Name: ${client.firstName || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.firstName}
@@ -51,7 +76,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Last Name"
+        label={`Last Name: ${client.lastName || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.lastName}
@@ -64,7 +89,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Email"
+        label={`Email: ${client.clientEmail || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.clientEmail}
@@ -77,7 +102,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Contact Phone"
+        label={`Contact Phone: ${client.clientContact || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.clientContact}
@@ -86,12 +111,11 @@ const FormFields1 = ({
         helperText={touched.clientContact && errors.clientContact}
         sx={{ gridColumn: "span 1" }}
       />
-
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Citizenship"
+        label={`Citizenship: ${client.citizenship || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.citizenship}
@@ -104,7 +128,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="TIN Number"
+        label={`TIN Number: ${client.tinNumber || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.tinNumber}
@@ -117,7 +141,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Country of Residence"
+        label={`Country of Residence: ${client.countryOfResidence || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         name="countryOfResidence"
@@ -139,7 +163,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Current Address"
+        label={`Current Address: ${client.currentAddress || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.currentAddress}
@@ -152,7 +176,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="date"
-        label="Birth Date"
+        label={`Birth Date: ${client.birthDate || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.birthDate}
@@ -165,7 +189,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="National ID or Passport"
+        label={`National ID or Passport: ${client.passportIdNumber || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.passportIdNumber}
@@ -174,12 +198,11 @@ const FormFields1 = ({
         helperText={touched.passportIdNumber && errors.passportIdNumber}
         sx={{ gridColumn: "span 1" }}
       />
-
       <TextField
         fullWidth
         variant="filled"
         type="date"
-        label="Passport Expiry Date"
+        label={`Passport Expiry Date: ${client.passportExpiryDate || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.passportExpiryDate}
@@ -192,7 +215,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Country of Issue"
+        label={`Country of Issue: ${client.countryOfIssue || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.countryOfIssue}
@@ -205,7 +228,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         select
-        label="Preferred Language"
+        label={`Preferred Language: ${client.preferredLanguage || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.preferredLanguage}
@@ -222,7 +245,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         select
-        label="Designation"
+        label={`Designation: ${client.designation || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.designation}
@@ -231,14 +254,16 @@ const FormFields1 = ({
         helperText={touched.designation && errors.designation}
         sx={{ gridColumn: "span 1" }}
       >
-        <MenuItem value="english">Ultimate Beneficiary Owner</MenuItem>
-        <MenuItem value="french">Shareholder</MenuItem>
+        <MenuItem value="Ultimate Beneficiary Owner">
+          Ultimate Beneficiary Owner
+        </MenuItem>
+        <MenuItem value="Shareholder">Shareholder</MenuItem>
       </TextField>
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Percentage Shareholding (%)"
+        label={`Percentage Shareholding (%): ${client.sharePercent || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.sharePercent}
@@ -251,7 +276,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Introduer Name(If any)"
+        label={`Introducer Name(If any): ${client.introducerName || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.introducerName}
@@ -264,7 +289,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Introducer Email"
+        label={`Introducer Email: ${client.introducerEmail || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.introducerEmail}
@@ -277,7 +302,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Contact Person Name(If any)"
+        label={`Contact Person Name(If any): ${client.contactPersonName || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.contactPersonName}
@@ -290,7 +315,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Contact Person Email"
+        label={`Contact Person Email: ${client.contactPersonEmail || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.contactPersonEmail}
@@ -303,7 +328,7 @@ const FormFields1 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Contact Person Phone"
+        label={`Contact Person Phone: ${client.contactPersonPhone || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.contactPersonPhone}

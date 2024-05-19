@@ -104,7 +104,7 @@ export const api = createApi({
 
     getUncompleteClientById: build.query({
       query: (clientId) => ({
-        url: `/incompleted-client-data/${clientId}`,
+        url: `/incomplete-clients-list-by-id/${clientId}`,
         method: "GET",
         providesTags: ["Clients"],
       }),

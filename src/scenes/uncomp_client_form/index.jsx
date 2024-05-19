@@ -660,8 +660,8 @@ const IncompleteClientForm = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="REGISTER A CLIENT"
-          subtitle="Please fill in the blank fields in the form below. This information will help us to serve Client better."
+          title="COMPLETE A CLIENT REGISTRATION"
+          subtitle="Please resume the registration process by completing the blank fields in the form below. This information will help us to serve Client better."
         />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
