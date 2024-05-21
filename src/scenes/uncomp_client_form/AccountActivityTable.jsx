@@ -6,7 +6,7 @@ import { tokens } from "../../theme";
 
 const AccountAtivityTable = ({
   accountActivityData,
-  handleFinancialDataChange,
+  handleExpectedAccDataChange,
   setFieldValue,
 }) => {
   const columns = [
@@ -75,7 +75,7 @@ const AccountAtivityTable = ({
         rows={rows}
         columns={columns}
         disableColumnMenu
-        onEditRowsModelChange={handleFinancialDataChange}
+        onEditRowsModelChange={handleExpectedAccDataChange}
       />
     </Box>
   );

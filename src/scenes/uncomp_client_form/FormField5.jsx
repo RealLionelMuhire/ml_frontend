@@ -1,11 +1,37 @@
-import React from "react";
-import { Box, Typography, MenuItem, TextField } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Box,
+  Typography,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
+import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
 const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
   return (
     <React.Fragment>
       <Box
@@ -34,6 +60,9 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.bankruptcyApplication}
           onChange={handleChange}
           name="bankruptcyApplication"
+          label={`Bankruptcy Application: ${
+            client.bankruptcyApplication || ""
+          }`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
@@ -63,7 +92,9 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Bankruptcy Application: ${
+              client.similarApplicationDetailsForfeit || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsForfeit}
@@ -80,6 +111,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           />
         </>
       )}
+
       <Box
         variant="outlined"
         display="inline-flex"
@@ -105,6 +137,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.receiverAppointed}
           onChange={handleChange}
           name="receiverAppointed"
+          label={`Receiver Appointed: ${client.receiverAppointed || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
@@ -134,7 +167,9 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Receiver Appointment: ${
+              client.similarApplicationDetailsReceiver || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsReceiver}
@@ -177,6 +212,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.civilProceedings}
           onChange={handleChange}
           name="civilProceedings"
+          label={`Civil Proceedings: ${client.civilProceedings || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
@@ -206,7 +242,9 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Civil Proceedings: ${
+              client.similarApplicationDetailsFinancial || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsFinancial}
@@ -250,6 +288,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.convicted}
           onChange={handleChange}
           name="convicted"
+          label={`Convicted: ${client.convicted || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
@@ -279,7 +318,9 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Offence: ${
+              client.similarApplicationDetailsOffence || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsOffence}
@@ -296,6 +337,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           />
         </>
       )}
+
       <Box
         variant="outlined"
         display="inline-flex"
@@ -321,6 +363,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.directorConvicted}
           onChange={handleChange}
           name="directorConvicted"
+          label={`Director Convicted: ${client.directorConvicted || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
@@ -350,7 +393,9 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Director Conviction: ${
+              client.similarApplicationDetailsDirector || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsDirector}

@@ -1,12 +1,17 @@
-import React from "react";
-import { TextField, MenuItem, Box, Typography } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Box,
+  Typography,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-
-// Type of Product(s) / Service(s)
-// Secretary
-// Business Address
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const FormFields7 = ({
   values,
@@ -19,6 +24,23 @@ const FormFields7 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
 
   return (
     <React.Fragment>
@@ -58,7 +80,7 @@ const FormFields7 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Proposed activity"
+        label={`Proposed activity: ${client.proposedActivity || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.proposedActivity}
@@ -73,7 +95,7 @@ const FormFields7 = ({
         fullWidth
         variant="filled"
         select
-        label="Target sectors"
+        label={`Target sectors: ${client.targetSectors || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.targetSectors}
@@ -165,7 +187,7 @@ const FormFields7 = ({
           fullWidth
           variant="filled"
           type="text"
-          label="Specify a target sector"
+          label={`Specify a target sector: ${client.otherTargetSectors || ""}`}
           onBlur={handleBlur}
           onChange={handleChange}
           value={values.otherTargetSectors}
@@ -180,7 +202,9 @@ const FormFields7 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Proposed targeted countries/geographical location"
+        label={`Proposed targeted countries/geographical location: ${
+          client.targetedCountries || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.targetedCountries}
@@ -241,7 +265,7 @@ const FormFields7 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Secretary"
+            label={`Secretary: ${client.secretary || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.secretary}
@@ -254,7 +278,9 @@ const FormFields7 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Type of Product(s) / Service(s)"
+            label={`Type of Product(s) / Service(s): ${
+              client.productService || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.productService}
@@ -267,7 +293,7 @@ const FormFields7 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Business Address"
+            label={`Business Address: ${client.businessAddress || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.businessAddress}
@@ -278,47 +304,6 @@ const FormFields7 = ({
           />
         </>
       )}
-      {/* <TextField
-        fullWidth
-        variant="filled"
-        type="text"
-        label="Type of Product(s) Or Service(s)"
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={values.productService}
-        name="productService"
-        error={errors.productService && !!errors.productService}
-        helperText={touched.productService && errors.productService}
-        sx={{ gridColumn: "span 1" }}
-      />
-
-      <TextField
-        fullWidth
-        variant="filled"
-        type="text"
-        label="Business Address"
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={values.businessAddress}
-        name="businessAddress"
-        error={errors.businessAddress && !!errors.businessAddress}
-        helperText={touched.businessAddress && errors.businessAddress}
-        sx={{ gridColumn: "span 1" }}
-      />
-
-      <TextField
-        fullWidth
-        variant="filled"
-        type="text"
-        label="Secretary"
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={values.secretaryService}
-        name="secretaryService"
-        error={errors.secretaryService && !!errors.secretaryService}
-        helperText={touched.secretaryService && errors.secretaryService}
-        sx={{ gridColumn: "span 1" }}
-      /> */}
       <Box
         variant="outlined"
         display="flex"
@@ -339,7 +324,7 @@ const FormFields7 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Type of shares"
+        label={`Type of shares: ${client.sharesType || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.sharesType}
@@ -352,7 +337,7 @@ const FormFields7 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="No. of shares incorporation"
+        label={`No. of shares incorporation: ${client.sharesNumber || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.sharesNumber}
@@ -365,7 +350,9 @@ const FormFields7 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Value of Stated Capital at incorporation"
+        label={`Value of Stated Capital at incorporation: ${
+          client.statedCapital || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.statedCapital}

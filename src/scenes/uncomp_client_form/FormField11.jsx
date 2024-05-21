@@ -177,12 +177,6 @@ Currency */}
           Group B
         </Typography>
       </Box>
-      {/* 
-        group B 1st signatory
-        group B 2nd signatory
-        group B 3rd signatory
-        group B 4th signatory
-         */}
       <TextField
         fullWidth
         variant="filled"
@@ -450,27 +444,3 @@ Currency */}
 };
 
 export default FormFields9;
-
-const initialValues = {
-  bankName: "",
-  Currency: "",
-  groupASignatory1: "",
-  groupASignatory2: "",
-  groupASignatory3: "",
-  groupASignatory4: "",
-  groupBSignatory1: "",
-  groupBSignatory2: "",
-  groupBSignatory3: "",
-  groupBSignatory4: "",
-  authorizedUser1: "",
-  authorizedUser1AccessRights: "",
-  authorizedUser2: "",
-  authorizedUser2AccessRights: "",
-  authorizedUser3: "",
-  authorizedUser3AccessRights: "",
-  authorizedUser4: "",
-  authorizedUser4AccessRights: "",
-  modeOfOperation: "",
-  callBackProcessContact: "",
-  nameOfProposedOfficer: "",
-};

@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import {
   TextField,
   Box,
   Typography,
+  MenuItem,
+  CircularProgress,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-// import FinancialForecastTable2 from "./Table2";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
 const sourceOfWealthOptions = [
   "Savings",
@@ -40,6 +43,23 @@ const FormFields9 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
 
   const handleSourceOfWealthChange = (e) => {
     handleChange(e);
@@ -95,7 +115,6 @@ const FormFields9 = ({
         </Box>
         <Box
           variant="outlined"
-          //   display="flex"
           justifyContent="space-between"
           sx={{
             backgroundColor: colors.primary[400],
@@ -145,7 +164,7 @@ const FormFields9 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Specify Other Source"
+            label={`Specify Other Source: ${client.otherSourceOfWealth || ""}`}
             value={values.otherSourceOfWealth || ""}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -179,7 +198,9 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="From which country does the source of wealth come from?"
+        label={`From which country does the source of wealth come from?: ${
+          client.countrySourceWealth || ""
+        }`}
         value={values.countrySourceWealth || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -191,7 +212,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Name of bank involved?"
+        label={`Name of bank involved?: ${client.bankInvolvedWealth || ""}`}
         value={values.bankInvolvedWealth || ""}
         onChange={handleChange}
         onBlur={handleBlur}

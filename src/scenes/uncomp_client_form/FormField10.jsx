@@ -1,7 +1,16 @@
-import React from "react";
-import { TextField, Box, Typography, MenuItem } from "@mui/material";
-import { tokens } from "../../theme";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Box,
+  Typography,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
+import { tokens } from "../../theme";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const FormFields10 = ({
   values,
@@ -9,10 +18,28 @@ const FormFields10 = ({
   touched,
   handleBlur,
   handleChange,
+  isNonMobile,
   setFieldValue,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
   return (
     <React.Fragment>
       {/* DIRECTORSHIP */}
@@ -37,7 +64,9 @@ const FormFields10 = ({
         fullWidth
         variant="filled"
         select
-        label="Will officers of ML Corporate Services act as Director"
+        label={`Will officers of ML Corporate Services act as Director: ${
+          client.isMlDirectors || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.isMlDirectors}
@@ -49,13 +78,14 @@ const FormFields10 = ({
         <MenuItem value="yes">Yes</MenuItem>
         <MenuItem value="no">No</MenuItem>
       </TextField>
+
       {/* how many directors */}
       {values.isMlDirectors === "yes" && (
         <TextField
           fullWidth
           variant="filled"
           select
-          label="How many directors"
+          label={`How many directors: ${client.DirectorCount || ""}`}
           onBlur={handleBlur}
           onChange={handleChange}
           value={values.DirectorCount}
@@ -94,7 +124,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="First Name"
+            label={`First Name: ${client.Director1FirstName || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1FirstName}
@@ -110,7 +140,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Last Name"
+            label={`Last Name: ${client.Director1LastName || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1LastName}
@@ -126,7 +156,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Email"
+            label={`Email: ${client.Director1email || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1email}
@@ -141,7 +171,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Contact"
+            label={`Contact: ${client.Director1contact || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1contact}
@@ -156,7 +186,7 @@ const FormFields10 = ({
           <TextField
             fullWidth
             variant="filled"
-            label="Date of Birth"
+            label={`Date of Birth: ${client.Director1BirthDate || ""}`}
             type="date"
             onBlur={handleBlur}
             onChange={handleChange}
@@ -173,7 +203,9 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Country of Residence"
+            label={`Country of Residence: ${
+              client.Director1countryOfResidence || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1countryOfResidence}
@@ -192,7 +224,9 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             select
-            label="Preferred Language"
+            label={`Preferred Language: ${
+              client.Director1preferredLanguage || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1preferredLanguage}
@@ -215,7 +249,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Name of Entity"
+            label={`Name of Entity: ${client.Director1NameOfEntity || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1NameOfEntity}
@@ -233,7 +267,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="TIN Number"
+            label={`TIN Number: ${client.Director1tinNumber || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1tinNumber}
@@ -250,7 +284,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Tax Residency"
+            label={`Tax Residency: ${client.Director1taxResidency || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1taxResidency}
@@ -267,9 +301,8 @@ const FormFields10 = ({
           <TextField
             fullWidth
             variant="filled"
-            type="text"
             select
-            label="Citizenship"
+            label={`Citizenship: ${client.Director1citizenship || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1citizenship}
@@ -291,7 +324,9 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             select
-            label="PEP(Politically Exposed Person) Status"
+            label={`PEP(Politically Exposed Person) Status: ${
+              client.Director1isPep || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director1isPep}
@@ -320,8 +355,10 @@ const FormFields10 = ({
                 }}
               >
                 <Typography variant="h6">
-                  {values.Director1bankStatement_file ? (
-                    values.Director1bankStatement_file.name
+                  {client?.Director1bankStatement_file ? (
+                    <PdfViewerDialog
+                      files={client.Director1bankStatement_file}
+                    />
                   ) : (
                     <label htmlFor="Director1bankStatement_file">
                       Upload last six months bank statements
@@ -360,8 +397,10 @@ const FormFields10 = ({
                 }}
               >
                 <Typography variant="h6">
-                  {values.Director1professionalReference_file ? (
-                    values.Director1professionalReference_file.name
+                  {client?.Director1professionalReference_file ? (
+                    <PdfViewerDialog
+                      files={client.Director1professionalReference_file}
+                    />
                   ) : (
                     <label htmlFor="Director1professionalReference_file">
                       Upload professional reference
@@ -396,7 +435,7 @@ const FormFields10 = ({
                 fullWidth
                 variant="filled"
                 type="text"
-                label="National ID"
+                label={`National ID: ${client.Director1NationalID || ""}`}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.Director1NationalID}
@@ -423,8 +462,10 @@ const FormFields10 = ({
                 }}
               >
                 <Typography variant="h6">
-                  {values.Director1_national_id_file ? (
-                    values.Director1_national_id_file.name
+                  {client?.Director1_national_id_file ? (
+                    <PdfViewerDialog
+                      files={client.Director1_national_id_file}
+                    />
                   ) : (
                     <label htmlFor="Director1_national_id_file">
                       Upload National ID
@@ -457,7 +498,9 @@ const FormFields10 = ({
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Specify Citizenship"
+                label={`Specify Citizenship: ${
+                  client.Director1specifiedCitizenship || ""
+                }`}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.Director1specifiedCitizenship}
@@ -542,8 +585,8 @@ const FormFields10 = ({
                 }}
               >
                 <Typography variant="h6">
-                  {values.Director1_passport_file ? (
-                    values.Director1_passport_file.name
+                  {client?.Director1_passport_file ? (
+                    <PdfViewerDialog files={client.Director1_passport_file} />
                   ) : (
                     <label htmlFor="Director1_passport_file">
                       Upload Passport

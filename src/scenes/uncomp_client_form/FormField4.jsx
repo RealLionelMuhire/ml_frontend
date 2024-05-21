@@ -1,11 +1,38 @@
-import React from "react";
-import { Box, Typography, MenuItem, TextField } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Box,
+  Typography,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
+import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
 const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
+
   return (
     <React.Fragment>
       <Box
@@ -30,11 +57,13 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.changedName}
           onChange={handleChange}
           name="changedName"
+          label={`Changed Name: ${client.changedName || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
+
       {values.changedName === "yes" && (
         <>
           <Box
@@ -61,7 +90,9 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Similar Application: ${
+              client.similarApplicationDetailsName || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsName}
@@ -102,11 +133,15 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.financialServicesBusiness}
           onChange={handleChange}
           name="financialServicesBusiness"
+          label={`Financial Services Business: ${
+            client.financialServicesBusiness || ""
+          }`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
+
       {values.financialServicesBusiness === "yes" && (
         <>
           <Box
@@ -131,7 +166,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Name of Jurisdiction"
+            label={`Name of Jurisdiction: ${client.jurisdictionName || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.jurisdictionName}
@@ -164,7 +199,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Address"
+            label={`Address: ${client.jurisdictionAddress || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.jurisdictionAddress}
@@ -203,11 +238,13 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.similarApplication}
           onChange={handleChange}
           name="similarApplication"
+          label={`Similar Application: ${client.similarApplication || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
+
       {values.similarApplication === "yes" && (
         <>
           <Box
@@ -232,7 +269,9 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Similar Application: ${
+              client.similarApplicationDetailsPartner || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsPartner}
@@ -249,6 +288,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
           />
         </>
       )}
+
       <Box
         variant="outlined"
         display="inline-flex"
@@ -274,11 +314,13 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
           value={values.criticised}
           onChange={handleChange}
           name="criticised"
+          label={`Criticised: ${client.criticised || ""}`}
         >
           <MenuItem value="yes">Yes</MenuItem>
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
+
       {values.criticised === "yes" && (
         <>
           <Box
@@ -303,7 +345,9 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label={`Details of Similar Application: ${
+              client.similarApplicationDetailsJurisdictions || ""
+            }`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsJurisdictions}

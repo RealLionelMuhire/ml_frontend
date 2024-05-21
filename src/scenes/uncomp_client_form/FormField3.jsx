@@ -1,7 +1,16 @@
-import React from "react";
-import { TextField, Box, Typography, MenuItem } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Box,
+  Typography,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const FormFields3 = ({
   values,
@@ -13,6 +22,25 @@ const FormFields3 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
+
   return (
     <React.Fragment>
       <Box
@@ -35,7 +63,7 @@ const FormFields3 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Authorised Person Names"
+        label={`Authorised Person Name: ${client.authorisedName || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.authorisedName}
@@ -48,7 +76,7 @@ const FormFields3 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Authorised Person Email"
+        label={`Authorised Person Email: ${client.authorisedEmail || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.authorisedEmail}
@@ -61,7 +89,9 @@ const FormFields3 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Authorised Person Contact Phone"
+        label={`Authorised Person Contact Phone: ${
+          client.authorisedPersonContact || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.authorisedPersonContact}
@@ -78,7 +108,9 @@ const FormFields3 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Authorised Person Current Address"
+        label={`Authorised Person Current Address: ${
+          client.authorisedCurrentAddress || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.authorisedCurrentAddress}
@@ -96,7 +128,9 @@ const FormFields3 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Relationship of Authorised Person with Client"
+        label={`Relationship of Authorised Person with Client: ${
+          client.authorisedRelationship || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.authorisedRelationship}
@@ -122,8 +156,8 @@ const FormFields3 = ({
         }}
       >
         <Typography variant="h6">
-          {values.signature_file ? (
-            values.signature_file.name
+          {client?.signature_file ? (
+            <PdfViewerDialog file={client.signature_file} />
           ) : (
             <label htmlFor="signature_file">Upload Signature file</label>
           )}
@@ -167,7 +201,7 @@ const FormFields3 = ({
         fullWidth
         variant="filled"
         select
-        label="PEP Status"
+        label={`PEP Status: ${client.isPep || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.isPep}
@@ -196,10 +230,10 @@ const FormFields3 = ({
             }}
           >
             <Typography variant="h6">
-              {values.bankStatement_file ? (
-                values.bankStatement_file.name
+              {client?.bankStatement_file ? (
+                <PdfViewerDialog file={client.bankStatement_file} />
               ) : (
-                <label htmlFor="signature_file">
+                <label htmlFor="bankStatement_file">
                   Upload last six months bank statements
                 </label>
               )}
@@ -232,10 +266,10 @@ const FormFields3 = ({
             }}
           >
             <Typography variant="h6">
-              {values.professionalReference_file ? (
-                values.professionalReference_file.name
+              {client?.professionalReference_file ? (
+                <PdfViewerDialog file={client.professionalReference_file} />
               ) : (
-                <label htmlFor="signature_file">
+                <label htmlFor="professionalReference_file">
                   Upload professional reference
                 </label>
               )}

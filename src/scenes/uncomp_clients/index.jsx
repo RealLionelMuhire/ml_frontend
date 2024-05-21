@@ -4,13 +4,19 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useGetUncompleteClientsQuery } from "../../state/api";
+import {
+  useGetUncompleteClientsQuery,
+  useDeleteUncompleteClientMutation,
+} from "../../state/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogActions } from "@mui/material";
+import { toast } from "react-toastify";
 
 const IncompleteClients = () => {
-  const { data, isLoading } = useGetUncompleteClientsQuery();
+  const { data, isLoading, refetch } = useGetUncompleteClientsQuery();
+  const [deleteClient, { isLoading: isDeleting }] =
+    useDeleteUncompleteClientMutation();
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -19,15 +25,42 @@ const IncompleteClients = () => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null);
 
+  const handleConfirmationOpen = (action) => {
+    setConfirmationAction(action);
+    setConfirmationDialogOpen(true);
+  };
+
   const handleConfirmationClose = () => {
     setConfirmationAction(null);
     setConfirmationDialogOpen(false);
+  };
+
+  const handleDeleteConfirmation = async () => {
+    handleConfirmationClose();
+    await handleDeleteClick();
   };
 
   const handleViewMoreClick = () => {
     navigate("/incomplete-client-form", {
       state: { selectedClientIds },
     });
+  };
+
+  const handleDeleteClick = async () => {
+    try {
+      const promises = selectedClientIds.map(async (clientId) => {
+        const response = await deleteClient(clientId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
+      });
+      await Promise.all(promises);
+      refetch();
+    } catch (error) {
+      toast.error("Error deleting clients");
+    }
   };
 
   const handleSelectionModelChange = (selectionModel) => {
@@ -81,6 +114,17 @@ const IncompleteClients = () => {
           title="INCOMPLETE REGISTRATION CLIENTS"
           subtitle="Showing All IncompleteClients yet to complete their registration"
         />
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={() => handleConfirmationOpen("delete")}
+            disabled={selectedClientIds.length === 0 || isDeleting}
+          >
+            Delete Selected
+          </Button>
+        </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
             type="button"
@@ -168,6 +212,14 @@ const IncompleteClients = () => {
               variant="contained"
             >
               Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteConfirmation}
+              color="secondary"
+              variant="contained"
+              disabled={isDeleting}
+            >
+              Confirm
             </Button>
           </Box>
         </DialogActions>

@@ -33,6 +33,23 @@ const FormFields12 = ({
     );
   };
 
+  const handleExpectedAccDataChange = (params) => {
+    // console.log({ params });
+    setFieldValue(
+      "expectedAccountActivity",
+      values.expectedAccountActivity.map((item) => {
+        const currentIndex = Object.keys(params)[0];
+        if (item.id === +currentIndex) {
+          const key = Object.keys(params[currentIndex])[0];
+          const value = Object.values(params[currentIndex])[0].value;
+          item = { ...item, [key]: value };
+          // console.log({ currentIndex, item });
+        }
+        return item;
+      })
+    );
+  };
+
   React.useEffect(() => {
     // console.log({ values });
   }, [values]);
@@ -78,7 +95,7 @@ const FormFields12 = ({
       </Box>
       <AccountAtivityTable
         accountActivityData={values.expectedAccountActivity}
-        handleFinancialDataChange={handleFinancialDataChange}
+        handleExpectedAccDataChange={handleExpectedAccDataChange}
         setFieldValue={setFieldValue}
       />
       <Box

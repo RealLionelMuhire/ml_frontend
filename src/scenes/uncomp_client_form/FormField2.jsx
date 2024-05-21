@@ -1,8 +1,10 @@
-import React from "react";
-import { TextField, Box, Typography } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import { TextField, Box, Typography, CircularProgress } from "@mui/material";
 import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
 const FormFields2 = ({
   values,
@@ -15,6 +17,24 @@ const FormFields2 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
+
   return (
     <React.Fragment>
       <Box
@@ -38,7 +58,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Name of Entity"
+        label={`Name of Entity: ${client.NameOfEntity || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.NameOfEntity}
@@ -51,7 +71,9 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Any Name of Entity(If any)"
+        label={`Previous Name of Entity(If any): ${
+          client.PrevNameOfEntity || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.PrevNameOfEntity}
@@ -64,7 +86,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Type of Entity"
+        label={`Type of Entity: ${client.TypeOfEntity || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.TypeOfEntity}
@@ -77,7 +99,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Type of licence (if any)"
+        label={`Type of licence (if any): ${client.TypeOfLicense}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.TypeOfLicense}
@@ -90,7 +112,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Tax Residency (ies)"
+        label={`Tax Residency (ies): ${client.taxResidency}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.taxResidency}
@@ -103,7 +125,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="date"
-        label="Date of Incorporation/registration"
+        label={`Date of Incorporation/registration: ${client.incorporationDate}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.incorporationDate}
@@ -116,7 +138,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Country of Iconporation"
+        label={`Country of Iconporation: ${client.countryOfIncorporation}`}
         onBlur={handleBlur}
         onChange={handleChange}
         name="countryOfIncorporation"
@@ -142,7 +164,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Registered office address"
+        label={`Registered office address: ${client.registeredOfficeAddress}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.registeredOfficeAddress}
@@ -159,7 +181,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Business activity"
+        label={`Business activity: ${client.businessActivity}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.businessActivity}
@@ -172,7 +194,7 @@ const FormFields2 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Country of operation"
+        label={`Country of Operation: ${client.countryOfOperation}`}
         onBlur={handleBlur}
         onChange={handleChange}
         name="countryOfOperation"

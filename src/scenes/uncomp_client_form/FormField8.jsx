@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import {
   TextField,
   Box,
   Typography,
+  MenuItem,
+  CircularProgress,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const sourceOfFundsOptions = [
   "Savings",
@@ -41,6 +47,23 @@ const FormFields8 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
 
   const handleSourceOfFundsChange = (e) => {
     handleChange(e);
@@ -147,7 +170,8 @@ const FormFields8 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Selected Source(s)"
+            // label="Selected Source(s)"
+            label={`Selected Source(s) - ${client.sourceOfFunds.join(", ")}`}
             value={values.sourceOfFunds.join(", ")}
             disabled
           />
@@ -184,10 +208,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.bank_statement_file ? (
-              values.bank_statement_file.name
+              {client?.bank_statement_file ? (
+                <PdfViewerDialog file={client.bank_statement_file} />
               ) : (
-              <label htmlFor="bank_statement_file">Upload Bank Statement for the past 3 months</label>
+                <label htmlFor="bank_statement_file">
+                  Upload Bank Statement for the past 3 months
+                </label>
               )}
             </Typography>
             <input
@@ -217,10 +243,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.custody_accounts_file ? (
-              values.custody_accounts_file.name
+              {client?.custody_accounts_file ? (
+                <PdfViewerDialog file={client.custody_accounts_file} />
               ) : (
-              <label htmlFor="custody_accounts_file">Upload Custody accounts file for the past 3 months</label>
+                <label htmlFor="custody_accounts_file">
+                  Upload Custody accounts file for the past 3 months
+                </label>
               )}
             </Typography>
             <input
@@ -253,10 +281,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.source_of_funds_file ? (
-              values.source_of_funds_file.name
+              {client?.source_of_funds_file ? (
+                <PdfViewerDialog file={client.source_of_funds_file} />
               ) : (
-              <label htmlFor="source_of_funds_file">Upload Source of funds for the past 3 months</label>
+                <label htmlFor="source_of_funds_file">
+                  Upload Source of funds for the past 3 months
+                </label>
               )}
             </Typography>
             <input
@@ -291,13 +321,14 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.confirmationLetter_file ? (
-              values.confirmationLetter_file.name
-              ) : (
-              <label htmlFor="confirmationLetter_file">
-                Letter of confirmation from employer of income detailing the
-                amount of monthly salary</label>
-              )}
+                {client?.confirmationLetter_file ? (
+                  <PdfViewerDialog file={client.confirmationLetter_file} />
+                ) : (
+                  <label htmlFor="confirmationLetter_file">
+                    Letter of confirmation from employer of income detailing the
+                    amount of monthly salary
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -330,11 +361,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.payslips_file ? (
-              values.payslips_file.name
-              ) : (
-              <label htmlFor="payslips_file">Upload 3 months' recent payslips</label>
-              )}
+                {client.payslips_file ? (
+                  <PdfViewerDialog file={client.payslips_file} />
+                ) : (
+                  <label htmlFor="payslips_file">
+                    Upload 3 months' recent payslips
+                  </label>
+                )}
               </Typography>
               <input
                 type="file"
@@ -363,10 +396,12 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statement_file ? (
-                  values.bank_statement_file.name
+                {client.bank_statement_file ? (
+                  <PdfViewerDialog file={client.bank_statement_file} />
                 ) : (
-                  <label htmlFor="bank_statement_file">Upload Bank Statement for the past 3 months</label>
+                  <label htmlFor="bank_statement_file">
+                    Upload Bank Statement for the past 3 months
+                  </label>
                 )}
               </Typography>
               <input
@@ -405,8 +440,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.due_diligence_file ? (
-                  values.due_diligence_file.name
+                {client?.due_diligence_file ? (
+                  <PdfViewerDialog file={client.due_diligence_file} />
                 ) : (
                   <label htmlFor="due_diligence_file">
                     Upload Due diligence documents on the entity from which the
@@ -441,12 +476,13 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.financial_statements_file ? (
-                  values.financial_statements_file.name
+                {client?.financial_statements_file ? (
+                  <PdfViewerDialog file={client.financial_statements_file} />
                 ) : (
                   <label htmlFor="financial_statements_file">
-                    Upload Annual financial statements of the business that declared
-                    the dividend or any such proof of dividend pay-outs.
+                    Upload Annual financial statements of the business that
+                    declared the dividend or any such proof of dividend
+                    pay-outs.
                   </label>
                 )}
               </Typography>
@@ -487,11 +523,12 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.proof_of_ownership_file ? (
-                  values.proof_of_ownership_file.name
+                {client?.proof_of_ownership_file ? (
+                  <PdfViewerDialog file={client.proof_of_ownership_file} />
                 ) : (
                   <label htmlFor="proof_of_ownership_file">
-                    Upload Proof of ownership of the asset being rented / leased;
+                    Upload Proof of ownership of the asset being rented /
+                    leased;
                   </label>
                 )}
               </Typography>
@@ -526,10 +563,12 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.lease_agreement_file ? (
-                  values.lease_agreement_file.name
+                {client?.lease_agreement_file ? (
+                  <PdfViewerDialog file={client.lease_agreement_file} />
                 ) : (
-                  <label htmlFor="lease_agreement_file">Upload Lease agreement;</label>
+                  <label htmlFor="lease_agreement_file">
+                    Upload Lease agreement;
+                  </label>
                 )}
               </Typography>
               <input
@@ -562,8 +601,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statements_file ? (
-                  values.bank_statements_file.name
+                {client?.bank_statements_file ? (
+                  <PdfViewerDialog file={client.bank_statement_file} />
                 ) : (
                   <label htmlFor="bank_statements_file">
                     Upload Bank statements (over the recent 3 months) showing
@@ -608,12 +647,12 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.cdd_documents_file ? (
-                  values.cdd_documents_file.name
+                {client?.cdd_documents_file ? (
+                  <PdfViewerDialog file={client.cdd_documents_file} />
                 ) : (
                   <label htmlFor="cdd_documents_file">
-                    Upload CDD Documents on the legal entity from which profit is
-                    being derived;
+                    Upload CDD Documents on the legal entity from which profit
+                    is being derived;
                   </label>
                 )}
               </Typography>
@@ -644,12 +683,12 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.documentary_evidence_file ? (
-                  values.documentary_evidence_file.name
+                {client?.documentary_evidence_file ? (
+                  <PdfViewerDialog file={client.documentary_evidence_file} />
                 ) : (
                   <label htmlFor="documentary_evidence_file">
-                    Upload Documentary evidence of link between legal entity and the
-                    client;
+                    Upload Documentary evidence of link between legal entity and
+                    the client;
                   </label>
                 )}
               </Typography>
@@ -684,8 +723,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statement_file ? (
-                  values.bank_statement_file.name
+                {client?.bank_statement_file ? (
+                  <PdfViewerDialog file={client.bank_statement_file} />
                 ) : (
                   <label htmlFor="bank_statement_file">
                     Upload Bank statement showing receipt of funds provided from
@@ -724,8 +763,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-               {values.financial_statements_file ? (
-                  values.financial_statements_file.name
+                {client?.financial_statements_file ? (
+                  <PdfViewerDialog file={client.financial_statements_file} />
                 ) : (
                   <label htmlFor="financial_statements_file">
                     Upload Latest Audited financial statements of the entity.
@@ -769,8 +808,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.notarised_documents_file ? (
-                  values.notarised_documents_file.name
+                {client?.notarised_documents_file ? (
+                  <PdfViewerDialog file={client.notarised_documents_file} />
                 ) : (
                   <label htmlFor="notarised_documents_file">
                     Upload Notarised documents proving sale of property
@@ -808,8 +847,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statement_proceeds_file ? (
-                  values.bank_statement_proceeds_file.name
+                {client?.bank_statement_proceeds_file ? (
+                  <PdfViewerDialog file={client.bank_statement_proceeds_file} />
                 ) : (
                   <label htmlFor="bank_statement_proceeds_file">
                     Upload Bank statement showing receipt of funds following
@@ -853,8 +892,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.donor_confirmation_file ? (
-                values.donor_confirmation_file.name
+              {client?.donor_confirmation_file ? (
+                <PdfViewerDialog file={client.donor_confirmation_file} />
               ) : (
                 <label htmlFor="donor_confirmation_file">
                   Letter from donor confirming details of gift
@@ -892,12 +931,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.donor_wealth_file ? (
-                values.donor_wealth_file.name
+              {client?.donor_wealth_file ? (
+                <PdfViewerDialog file={client.donor_wealth_file} />
               ) : (
                 <label htmlFor="donor_wealth_file">
-                  Upload Details and documentary evidence of the donor’s source of
-                  wealth
+                  Upload Details and documentary evidence of the donor’s source
+                  of wealth
                 </label>
               )}
             </Typography>
@@ -933,8 +972,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.donor_confirmation_file ? (
-                values.donor_confirmation_file.name
+              {client?.donor_confirmation_file ? (
+                <PdfViewerDialog file={client.donor_confirmation_file} />
               ) : (
                 <label htmlFor="donor_confirmation_file">
                   Letter from donor confirming details of gift
@@ -972,12 +1011,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.donor_wealth_file ? (
-                values.donor_wealth_file.name
+              {client?.donor_wealth_file ? (
+                <PdfViewerDialog file={client.donor_wealth_file} />
               ) : (
                 <label htmlFor="donor_wealth_file">
-                  Upload Details and documentary evidence of the donor’s source of
-                  wealth
+                  Upload Details and documentary evidence of the donor’s source
+                  of wealth
                 </label>
               )}
             </Typography>
@@ -1008,8 +1047,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.bank_statement_gift_file ? (
-                values.bank_statement_gift_file.name
+              {client?.bank_statement_gift_file ? (
+                <PdfViewerDialog file={client.bank_statement_gift_file} />
               ) : (
                 <label htmlFor="bank_statement_gift_file">
                   Upload Bank statement showing receipt of funds
@@ -1052,12 +1091,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.lottery_letter_file ? (
-                values.lottery_letter_file.name
+              {client?.lottery_letter_file ? (
+                <PdfViewerDialog file={client.lottery_letter_file} />
               ) : (
                 <label htmlFor="lottery_letter_file">
-                  Upload Letter from relevant organisation (Lottery headquarters /
-                  betting shop / casino)
+                  Upload Letter from relevant organisation (Lottery headquarters
+                  / betting shop / casino)
                 </label>
               )}
             </Typography>
@@ -1088,12 +1127,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.bank_statement_lottery_file ? (
-                values.bank_statement_lottery_file.name
+              {client?.bank_statement_lottery_file ? (
+                <PdfViewerDialog file={client.bank_statement_lottery_file} />
               ) : (
                 <label htmlFor="bank_statement_lottery_file">
-                  Upload Bank statement showing funds deposited including name of
-                  the paying organisation
+                  Upload Bank statement showing funds deposited including name
+                  of the paying organisation
                 </label>
               )}
             </Typography>
@@ -1133,8 +1172,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.agreement_file ? (
-                values.agreement_file.name
+              {client?.agreement_file ? (
+                <PdfViewerDialog file={client.agreement_file} />
               ) : (
                 <label htmlFor="agreement_file">
                   Agreement with regards to the arrangement in place
@@ -1168,8 +1207,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.cdd_creditor_file ? (
-                values.cdd_creditor_file.name
+              {client?.cdd_creditor_file ? (
+                <PdfViewerDialog file={client.cdd_creditor_file} />
               ) : (
                 <label htmlFor="cdd_creditor_file">
                   Upload CDD on creditor (applicable to non-regulated parties)
@@ -1203,8 +1242,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.bank_statement_creditor_file ? (
-                values.bank_statement_creditor_file.name
+              {client?.bank_statement_creditor_file ? (
+                <PdfViewerDialog file={client.bank_statement_creditor_file} />
               ) : (
                 <label htmlFor="bank_statement_creditor_file">
                   Upload Bank statement showing receipt of funds
@@ -1247,8 +1286,10 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.legal_document_inheritance_file ? (
-                values.legal_document_inheritance_file.name
+              {client?.legal_document_inheritance_file ? (
+                <PdfViewerDialog
+                  file={client.legal_document_inheritance_file}
+                />
               ) : (
                 <label htmlFor="legal_document_inheritance_file">
                   Upload Legal document which must include the value of the
@@ -1287,8 +1328,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.notary_letter_inheritance_file ? (
-                values.notary_letter_inheritance_file.name
+              {client?.notary_letter_inheritance_file ? (
+                <PdfViewerDialog file={client.notary_letter_inheritance_file} />
               ) : (
                 <label htmlFor="notary_letter_inheritance_file">
                   Upload Notary’s letter confirming inheritance details
@@ -1326,8 +1367,10 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.executer_letter_inheritance_file ? (
-                values.executer_letter_inheritance_file.name
+              {client?.executer_letter_inheritance_file ? (
+                <PdfViewerDialog
+                  file={client.executer_letter_inheritance_file}
+                />
               ) : (
                 <label htmlFor="executer_letter_inheritance_file">
                   Upload Executer’s letter confirming inheritance details
@@ -1373,8 +1416,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.loan_agreement_file ? (
-                  values.loan_agreement_file.name
+                {client?.loan_agreement_file ? (
+                  <PdfViewerDialog file={client.loan_agreement_file} />
                 ) : (
                   <label htmlFor="loan_agreement_file">
                     Upload Loan / Facility Agreement
@@ -1411,8 +1454,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statement_loan_file ? (
-                  values.bank_statement_loan_file.name
+                {client?.bank_statement_loan_file ? (
+                  <PdfViewerDialog file={client.bank_statement_loan_file} />
                 ) : (
                   <label htmlFor="bank_statement_loan_file">
                     Upload Bank statement showing receipt of funds
@@ -1458,8 +1501,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.loan_agreement_related_file ? (
-                  values.loan_agreement_related_file.name
+                {client?.loan_agreement_related_file ? (
+                  <PdfViewerDialog file={client.loan_agreement_related_file} />
                 ) : (
                   <label htmlFor="loan_agreement_related_file">
                     Upload Loan Agreement
@@ -1497,8 +1540,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.cdd_third_party_related_file ? (
-                  values.cdd_third_party_related_file.name
+                {client?.cdd_third_party_related_file ? (
+                  <PdfViewerDialog file={client.cdd_third_party_related_file} />
                 ) : (
                   <label htmlFor="cdd_third_party_related_file">
                     Upload CDD on third party
@@ -1536,8 +1579,10 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statement_loan_related_file ? (
-                  values.bank_statement_loan_related_file.name
+                {client?.bank_statement_loan_related_file ? (
+                  <PdfViewerDialog
+                    file={client.bank_statement_loan_related_file}
+                  />
                 ) : (
                   <label htmlFor="bank_statement_loan_related_file">
                     Upload Bank statement showing receipt of funds
@@ -1581,8 +1626,10 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.loan_agreement_unrelated_file ? (
-                  values.loan_agreement_unrelated_file.name
+                {client?.loan_agreement_unrelated_file ? (
+                  <PdfViewerDialog
+                    file={client.loan_agreement_unrelated_file}
+                  />
                 ) : (
                   <label htmlFor="loan_agreement_unrelated_file">
                     Upload Loan Agreement
@@ -1620,8 +1667,10 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.cdd_third_party_unrelated_file ? (
-                  values.cdd_third_party_unrelated_file.name
+                {client?.cdd_third_party_unrelated_file ? (
+                  <PdfViewerDialog
+                    file={client.cdd_third_party_unrelated_file}
+                  />
                 ) : (
                   <label htmlFor="cdd_third_party_unrelated_file">
                     Upload CDD on third party
@@ -1659,8 +1708,10 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.bank_statement_loan_unrelated_file ? (
-                  values.bank_statement_loan_unrelated_file.name
+                {client?.bank_statement_loan_unrelated_file ? (
+                  <PdfViewerDialog
+                    file={client.bank_statement_loan_unrelated_file}
+                  />
                 ) : (
                   <label htmlFor="bank_statement_loan_unrelated_file">
                     Upload Bank statement showing receipt of funds
@@ -1703,8 +1754,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.notary_letter_real_estate_file ? (
-                values.notary_letter_real_estate_file.name
+              {client?.notary_letter_real_estate_file ? (
+                <PdfViewerDialog file={client.notary_letter_real_estate_file} />
               ) : (
                 <label htmlFor="notary_letter_real_estate_file">
                   Upload Signed letter from Notary
@@ -1742,8 +1793,8 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.sample_file ? (
-                values.sample_file.name
+              {client?.sample_file ? (
+                <PdfViewerDialog file={client.sample_file} />
               ) : (
                 <label htmlFor="sample_file">
                   Upload Property Contract or any equivalent document
@@ -1787,8 +1838,8 @@ const FormFields8 = ({
               }}
             >
               <Typography variant="h5" gutterBottom>
-                {values.insurance_payout_file ? (
-                  values.insurance_payout_file.name
+                {client?.insurance_payout_file ? (
+                  <PdfViewerDialog file={client.insurance_payout_file} />
                 ) : (
                   <label htmlFor="insurance_payout_file">
                     Upload Proof of remittance from the Insurance Policy pay-out
@@ -1832,12 +1883,12 @@ const FormFields8 = ({
             }}
           >
             <Typography variant="h5" gutterBottom>
-              {values.retirement_annuity_file ? (
-                values.retirement_annuity_file.name
+              {client?.retirement_annuity_file ? (
+                <PdfViewerDialog file={client.retirement_annuity_file} />
               ) : (
                 <label htmlFor="retirement_annuity_file">
-                  Upload Retirement Annuity Fund Statement recent valuation (from an
-                  approved licensed financial services provider)
+                  Upload Retirement Annuity Fund Statement recent valuation
+                  (from an approved licensed financial services provider)
                 </label>
               )}
             </Typography>
@@ -1883,7 +1934,10 @@ const FormFields8 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="From which country does the source of funds come from?"
+        // label="From which country does the source of funds come from?"
+        label={`From which country does the source of funds come from?: ${
+          client.countrySourceFunds || ""
+        }`}
         value={values.countrySourceFunds || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -1895,7 +1949,10 @@ const FormFields8 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="What is the net annual income?"
+        // label="What is the net annual income?"
+        label={`What is the net annual income?: ${
+          client.netAnnualIncome || ""
+        }`}
         value={values.netAnnualIncome || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -1907,7 +1964,10 @@ const FormFields8 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="What is the estimated Net Worth?"
+        // label="What is the estimated Net Worth?"
+        label={`What is the estimated Net Worth?: ${
+          client.estimatedNetWorth || ""
+        }`}
         value={values.estimatedNetWorth || ""}
         onChange={handleChange}
         onBlur={handleBlur}

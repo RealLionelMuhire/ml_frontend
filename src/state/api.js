@@ -96,7 +96,7 @@ export const api = createApi({
     }),
     deleteUncompleteClient: build.mutation({
       query: (clientId) => ({
-        url: `/incompleted-client/${clientId}/`,
+        url: `/delete-incomplete-client/${clientId}/`,
         method: "DELETE",
       }),
       invalidatesTags: ["Clients"],
@@ -111,7 +111,7 @@ export const api = createApi({
     }),
     updateUncompletedClient: build.mutation({
       query: ({ clientId, updatedClient }) => ({
-        url: `/uncompleted-client/${clientId}/`,
+        url: `/update-incompleted-client/${clientId}/`,
         method: "PUT",
         body: updatedClient,
       }),

@@ -1,8 +1,17 @@
-import React from "react";
-import { TextField, MenuItem, Box, Typography } from "@mui/material";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Box,
+  Typography,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useGetUncompleteClientByIdQuery } from "../../state/api";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const FormFields6 = ({
   values,
@@ -15,6 +24,23 @@ const FormFields6 = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
 
   return (
     <React.Fragment>
@@ -55,7 +81,7 @@ const FormFields6 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Remitting Party"
+        label={`Remitting Party: ${client.RemittingParty || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.RemittingParty}
@@ -68,7 +94,7 @@ const FormFields6 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Mode of Payment"
+        label={`Mode of Payment: ${client.ModeOfPayment || ""}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.ModeOfPayment}
@@ -81,7 +107,9 @@ const FormFields6 = ({
         fullWidth
         variant="filled"
         select
-        label="Relationship with the applicant"
+        label={`Relationship with the applicant: ${
+          client.RelationshipWithApplicant || ""
+        }`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.RelationshipWithApplicant}
@@ -115,8 +143,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.passport_file ? (
-                values.passport_file.name
+              {client?.passport_file ? (
+                <PdfViewerDialog file={client.passport_file} />
               ) : (
                 <label htmlFor="passport_file">
                   Current Valid Passport or National Identity Card
@@ -150,8 +178,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.utility_file ? (
-                values.utility_file.name
+              {client?.utility_file ? (
+                <PdfViewerDialog file={client.utility_file} />
               ) : (
                 <label htmlFor="utility_file">
                   Utility bill dated less than 3 months confirming the permanent
@@ -186,8 +214,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.bank_file ? (
-                values.bank_file.name
+              {client?.bank_file ? (
+                <PdfViewerDialog file={client.bank_file} />
               ) : (
                 <label htmlFor="bank_file">
                   Bank reference on the client from a reputable
@@ -223,8 +251,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.cv_file ? (
-                values.cv_file.name
+              {client?.cv_file ? (
+                <PdfViewerDialog file={client.cv_file} />
               ) : (
                 <label htmlFor="cv_file">Updated Curriculum Vitae</label>
               )}
@@ -254,8 +282,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.funds_file ? (
-                values.funds_file.name
+              {client.employment_file ? (
+                <PdfViewerDialog file={client.employment_file} />
               ) : (
                 <label htmlFor="funds_file">
                   Proof of source of funds (please refer to Part B below)
@@ -289,8 +317,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.wealth_file ? (
-                values.wealth_file.name
+              {client?.wealth_file ? (
+                <PdfViewerDialog file={client.wealth_file} />
               ) : (
                 <label htmlFor="wealth_file">
                   Proof of source of wealth (if applicable in case of high risk
@@ -327,8 +355,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.professionalReference_file ? (
-                values.professionalReference_file.name
+              {client?.professionalReference_file ? (
+                <PdfViewerDialog file={client.professionalReference_file} />
               ) : (
                 <label htmlFor="professionalReference_file">
                   Recent professional reference in case the person is a
@@ -372,8 +400,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.incorporation_file ? (
-                values.incorporation_file.name
+              {client?.incorporation_file ? (
+                <PdfViewerDialog file={client.incorporation_file} />
               ) : (
                 <label htmlFor="incorporation_file">
                   Certificate of incorporation
@@ -407,8 +435,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.goodStanding_file ? (
-                values.goodStanding_file.name
+              {client?.goodStanding_file ? (
+                <PdfViewerDialog file={client.goodStanding_file} />
               ) : (
                 <label htmlFor="goodStanding_file">
                   Certificate of good standing or incumbency (if hit has been
@@ -443,8 +471,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.constitution_file ? (
-                values.constitution_file.name
+              {client?.constitution_file ? (
+                <PdfViewerDialog file={client.constitution_file} />
               ) : (
                 <label htmlFor="constitution_file">
                   Constitution or memorandum and articles of association
@@ -478,8 +506,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.businessPlan_file ? (
-                values.businessPlan_file.name
+              {client?.businessPlan_file ? (
+                <PdfViewerDialog file={client.businessPlan_file} />
               ) : (
                 <label htmlFor="businessPlan_file">
                   Business plan with details of the group structure, the nature
@@ -514,8 +542,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.registeredOffice_file ? (
-                values.registeredOffice_file.name
+              {client?.registeredOffice_file ? (
+                <PdfViewerDialog file={client.registeredOffice_file} />
               ) : (
                 <label htmlFor="registeredOffice_file">
                   Details of registered office and place of business
@@ -552,8 +580,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.shareholders_file ? (
-                values.shareholders_file.name
+              {client?.shareholders_file ? (
+                <PdfViewerDialog file={client.shareholders_file} />
               ) : (
                 <label htmlFor="shareholders_file">
                   Register of shareholders and directors
@@ -587,8 +615,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.financialStatements_file ? (
-                values.financialStatements_file.name
+              {client?.financialStatements_file ? (
+                <PdfViewerDialog file={client.financialStatements_file} />
               ) : (
                 <label htmlFor="financialStatements_file">
                   Latest audited financial accounts
@@ -627,8 +655,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.principals_identification_file ? (
-                values.principals_identification_file.name
+              {client?.principalsIdentification_file ? (
+                <PdfViewerDialog file={client.principalsIdentification_file} />
               ) : (
                 <label htmlFor="principals_identification_file">
                   Identification documents of the principals of the company
@@ -668,8 +696,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.source_of_funds_file ? (
-                values.source_of_funds_file.name
+              {client?.sourceOfFunds_file ? (
+                <PdfViewerDialog file={client.sourceOfFunds_file} />
               ) : (
                 <label htmlFor="source_of_funds_file">
                   Proof of source of funds (please refer to Part B below)
@@ -703,8 +731,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.source_of_wealth_file ? (
-                values.source_of_wealth_file.name
+              {client?.source_of_wealth_file ? (
+                <PdfViewerDialog file={client.source_of_wealth_file} />
               ) : (
                 <label htmlFor="source_of_wealth_file">
                   Proof of source of wealth (if applicable in case of high risk
@@ -747,8 +775,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.declaration_of_trust_file ? (
-                values.declaration_of_trust_file.name
+              {client?.trust_deed_file ? (
+                <PdfViewerDialog file={client.trust_deed_file} />
               ) : (
                 <label htmlFor="declaration_of_trust_file">
                   Declaration of Trust or Trust Deed
@@ -786,8 +814,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.deed_of_retirement_file ? (
-                values.deed_of_retirement_file.name
+              {client?.deed_of_retirement_file ? (
+                <PdfViewerDialog file={client.deed_of_retirement_file} />
               ) : (
                 <label htmlFor="deed_of_retirement_file">
                   Deed of Retirement and Appointment of Trustee, beneficiary,
@@ -826,8 +854,10 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.certificate_of_registration_file ? (
-                values.certificate_of_registration_file.name
+              {client?.certificate_of_registration_file ? (
+                <PdfViewerDialog
+                  file={client.certificate_of_registration_file}
+                />
               ) : (
                 <label htmlFor="certificate_of_registration_file">
                   Certificate of Registration (if available)
@@ -865,8 +895,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.business_plan_file ? (
-                values.business_plan_file.name
+              {client?.business_plan_file ? (
+                <PdfViewerDialog file={client.business_plan_file} />
               ) : (
                 <label htmlFor="business_plan_file">
                   Business plan with details of the group structure, the nature
@@ -901,8 +931,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.registered_office_file ? (
-                values.registered_office_file.name
+              {client?.registered_office_file ? (
+                <PdfViewerDialog file={client.registered_office_file} />
               ) : (
                 <label htmlFor="registered_office_file">
                   Details of registered office and place of business
@@ -940,8 +970,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.register_of_trustee_file ? (
-                values.register_of_trustee_file.name
+              {client?.register_of_trustee_file ? (
+                <PdfViewerDialog file={client.register_of_trustee_file} />
               ) : (
                 <label htmlFor="register_of_trustee_file">
                   Register of trustee, settlor, protector, enforcer,
@@ -980,8 +1010,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.proof_of_source_of_funds_file ? (
-                values.proof_of_source_of_funds_file.name
+              {client?.proof_of_source_of_funds_file ? (
+                <PdfViewerDialog file={client.proof_of_source_of_funds_file} />
               ) : (
                 <label htmlFor="proof_of_source_of_funds_file">
                   Proof of source of funds (please refer to Part B below)
@@ -1019,8 +1049,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.proof_of_source_of_wealth_file ? (
-                values.proof_of_source_of_wealth_file.name
+              {client?.proof_of_source_of_wealth_file ? (
+                <PdfViewerDialog file={client.proof_of_source_of_wealth_file} />
               ) : (
                 <label htmlFor="proof_of_source_of_wealth_file">
                   Proof of source of wealth (if applicable)
@@ -1058,8 +1088,10 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.latest_accounts_or_bank_statements_file ? (
-                values.latest_accounts_or_bank_statements_file.name
+              {client?.latest_accounts_or_bank_statements_file ? (
+                <PdfViewerDialog
+                  file={client.latest_accounts_or_bank_statements_file}
+                />
               ) : (
                 <label htmlFor="latest_accounts_or_bank_statements_file">
                   Latest accounts or bank statements
@@ -1102,8 +1134,10 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.certificate_of_registration_file ? (
-                values.certificate_of_registration_file.name
+              {client?.certificate_of_registration_file ? (
+                <PdfViewerDialog
+                  file={client.certificate_of_registration_file}
+                />
               ) : (
                 <label htmlFor="certificate_of_registration_file">
                   Certificate of Registration
@@ -1141,8 +1175,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.licence_file ? (
-                values.licence_file.name
+              {client?.licence_file ? (
+                <PdfViewerDialog file={client.licence_file} />
               ) : (
                 <label htmlFor="licence_file">Licence (if any)</label>
               )}
@@ -1174,8 +1208,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.certificate_of_incumbency_file ? (
-                values.certificate_of_incumbency_file.name
+              {client?.certificate_of_incumbency_file ? (
+                <PdfViewerDialog file={client.certificate_of_incumbency_file} />
               ) : (
                 <label htmlFor="certificate_of_incumbency_file">
                   Certificate of incumbency (if hit has been recorded on the
@@ -1214,8 +1248,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.charter_file ? (
-                values.charter_file.name
+              {client?.charter_file ? (
+                <PdfViewerDialog file={client.charter_file} />
               ) : (
                 <label htmlFor="charter_file">Charter</label>
               )}
@@ -1248,8 +1282,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.business_plan_file ? (
-                values.business_plan_file.name
+              {client?.business_plan_file ? (
+                <PdfViewerDialog file={client.business_plan_file} />
               ) : (
                 <label htmlFor="business_plan_file">
                   Business plan with details of the group structure, the nature
@@ -1284,8 +1318,10 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.registered_office_and_place_of_business_file ? (
-                values.registered_office_and_place_of_business_file.name
+              {client?.registered_office_and_place_of_business_file ? (
+                <PdfViewerDialog
+                  file={client.registered_office_and_place_of_business_file}
+                />
               ) : (
                 <label htmlFor="registered_office_and_place_of_business_file">
                   Details of registered office and place of business
@@ -1323,8 +1359,10 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.register_of_council_members_file ? (
-                values.register_of_council_members_file.name
+              {client?.register_of_council_members_file ? (
+                <PdfViewerDialog
+                  file={client.register_of_council_members_file}
+                />
               ) : (
                 <label htmlFor="register_of_council_members_file">
                   Register of Council members
@@ -1363,8 +1401,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.latest_accounts_file ? (
-                values.latest_accounts_file.name
+              {client?.latest_accounts_file ? (
+                <PdfViewerDialog file={client.latest_accounts_file} />
               ) : (
                 <label htmlFor="latest_accounts_file">
                   Latest accounts Bank statements
@@ -1398,10 +1436,12 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.identification_documents_of_the_principals_of_the_foundation_file ? (
-                values
-                  .identification_documents_of_the_principals_of_the_foundation_file
-                  .name
+              {client?.identification_documents_of_the_principals_of_the_foundation_file ? (
+                <PdfViewerDialog
+                  file={
+                    client.identification_documents_of_the_principals_of_the_foundation_file
+                  }
+                />
               ) : (
                 <label htmlFor="identification_documents_of_the_principals_of_the_foundation_file">
                   Identification documents of the principals of the Foundation
@@ -1445,8 +1485,8 @@ const FormFields6 = ({
             }}
           >
             <Typography variant="h6">
-              {values.proof_of_source_of_funds_file ? (
-                values.proof_of_source_of_funds_file.name
+              {client?.proof_of_source_of_funds_file ? (
+                <PdfViewerDialog file={client.proof_of_source_of_funds_file} />
               ) : (
                 <label htmlFor="proof_of_source_of_funds_file">
                   Proof of source of funds
@@ -1510,7 +1550,7 @@ const FormFields6 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Option 1"
+        label={`Option 1: ${client?.ProposedNameOption1}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.ProposedNameOption1}
@@ -1523,7 +1563,7 @@ const FormFields6 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Option 2"
+        label={`Option 2: ${client?.ProposedNameOption2}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.ProposedNameOption2}
@@ -1536,7 +1576,7 @@ const FormFields6 = ({
         fullWidth
         variant="filled"
         type="text"
-        label="Option 3"
+        label={`Option 3: ${client?.ProposedNameOption3}`}
         onBlur={handleBlur}
         onChange={handleChange}
         value={values.ProposedNameOption3}

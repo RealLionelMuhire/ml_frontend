@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -6,7 +7,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import {
   useCreateUserMutation,
-  useCreateUncompleteClientMutation,
+  useUpdateUncompletedClientMutation,
 } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -28,10 +29,18 @@ import SuccessBox from "./SuccessBox";
 const IncompleteClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isError, data }] = useCreateUserMutation();
-  const [saveUncompleteData] = useCreateUncompleteClientMutation();
+
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const selectedClientIds = useMemo(
+    () => location.state?.selectedClientIds || [],
+    [location.state?.selectedClientIds]
+  );
+
+  const [updateUncompleteData] = useUpdateUncompletedClientMutation();
 
   const [step, setStep] = useState(1);
 
@@ -70,26 +79,47 @@ const IncompleteClientForm = () => {
   const handleSaveAndContinueLater = async (values) => {
     try {
       setIsLoadingSaveLater(true);
+
+      // Prepare the updated client data
       const incompleteFormData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
-        if (key === "financialForecast") {
-          incompleteFormData.append(key, JSON.stringify(value));
-        } else if (key === "expectedAccountActivity") {
-          incompleteFormData.append(key, JSON.stringify(value));
-        } else {
-          incompleteFormData.append(key, value);
+        if (value !== null && value !== undefined) {
+          if (
+            key === "financialForecast" ||
+            key === "expectedAccountActivity"
+          ) {
+            incompleteFormData.append(key, JSON.stringify(value));
+          } else {
+            incompleteFormData.append(key, value);
+          }
         }
       });
 
-      const response = await saveUncompleteData(incompleteFormData);
-      if (response.error) {
-        toast.error(response.error.message);
-      } else if (response.data) {
-        toast.success(response.data?.message);
-        navigate("/clients");
+      console.log("incompleteFormData:", incompleteFormData);
+
+      // Loop through each selected client ID and make an API call
+      for (const clientId of selectedClientIds) {
+        const response = await updateUncompleteData({
+          clientId,
+          updatedClient: incompleteFormData,
+        }).unwrap();
+
+        if (response.error) {
+          toast.error(
+            `Error updating client ${clientId}: ${response.error.message}`
+          );
+        } else if (response.data) {
+          toast.success(
+            `Client ${clientId} updated successfully: ${response.data.message}`
+          );
+        }
       }
+
+      // Navigate to incomplete clients page after all updates
+      navigate("/incomplete-clients");
     } catch (error) {
       console.error("Error saving form for later:", error);
+      toast.error("An error occurred while saving the form.");
     } finally {
       setIsLoadingSaveLater(false);
     }
@@ -102,11 +132,11 @@ const IncompleteClientForm = () => {
     // Ultimate Beneficiary Owner / Shareholder (Client)
     firstName: yup.string(),
     lastName: yup.string(),
-    clientEmail: yup.string().email("Invalid email").required("required"),
+    clientEmail: yup.string().email("Invalid email"),
     clientContact: yup
       .string()
       .matches(phoneRegExp, "Phone number is not valid"),
-    passportIdNumber: yup.string().required("required"),
+    passportIdNumber: yup.string(),
     birthDate: yup.date(),
     citizenship: yup.string(),
     countryOfResidence: yup.string(),
@@ -140,7 +170,7 @@ const IncompleteClientForm = () => {
     authorisedRelationship: yup.string(),
     signature_file: createFileSchema(),
 
-    isPep: yup.string().required,
+    isPep: yup.string(),
     bankStatement_file: createFileSchema(),
     professionalReference_file: createFileSchema(),
 
@@ -665,7 +695,7 @@ const IncompleteClientForm = () => {
         />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/clients">Back to Client List</Link>
+            <Link to="/incomplete-clients">Back to Incomplete Client List</Link>
           </Button>
         </Box>
       </Box>

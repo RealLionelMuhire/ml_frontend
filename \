@@ -1,8 +1,0 @@
-// webpack.config.js
-module.exports = {
-    // Other webpack configuration options...
-    node: {
-        module: "empty"
-    }
-};
-
