@@ -1,15 +1,7 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  TextField,
-  Box,
-  Typography,
-  MenuItem,
-  CircularProgress,
-} from "@mui/material";
+import React from "react";
+import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const FormFields3 = ({
@@ -19,27 +11,10 @@ const FormFields3 = ({
   handleBlur,
   handleChange,
   setFieldValue,
+  client,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
-
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
 
   return (
     <React.Fragment>
@@ -215,7 +190,7 @@ const FormFields3 = ({
       </TextField>
 
       {/* Conditional rendering for certificate upload */}
-      {values.isPep === "yes" && (
+      {client.isPep === "yes" && (
         <>
           <Box
             variant="outlined"

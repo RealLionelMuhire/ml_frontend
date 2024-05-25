@@ -1,16 +1,8 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  TextField,
-  MenuItem,
-  Box,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import React from "react";
+import { TextField, MenuItem, Box, Typography } from "@mui/material";
 import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
 const FormFields1 = ({
   values,
@@ -18,28 +10,13 @@ const FormFields1 = ({
   touched,
   handleBlur,
   handleChange,
+  client,
   isNonMobile,
   setFieldValue,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
-
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
+  // console.log(client);
 
   return (
     <React.Fragment>

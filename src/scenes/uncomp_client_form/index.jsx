@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import {
   useCreateUserMutation,
   useUpdateUncompletedClientMutation,
+  useGetUncompleteClientByIdQuery,
 } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -43,6 +44,19 @@ const IncompleteClientForm = () => {
   const [updateUncompleteData] = useUpdateUncompletedClientMutation();
 
   const [step, setStep] = useState(1);
+
+  const { data: clientData, isLoading } =
+    useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress size={60} color="inherit" />
+      </div>
+    );
+  }
+
+  const client = clientData ? clientData[0] : {};
 
   const handleFormSubmit = async (values) => {
     try {
@@ -732,6 +746,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 2 && (
@@ -743,6 +758,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 3 && (
@@ -754,6 +770,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 4 && (
@@ -765,6 +782,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 5 && (
@@ -776,6 +794,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 6 && (
@@ -787,6 +806,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 7 && (
@@ -798,6 +818,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 8 && (

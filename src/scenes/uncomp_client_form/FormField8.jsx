@@ -171,7 +171,7 @@ const FormFields8 = ({
             variant="filled"
             type="text"
             // label="Selected Source(s)"
-            label={`Selected Source(s) - ${client.sourceOfFunds.join(", ")}`}
+            label={`Selected Source(s) - ${client.sourceOfFunds || ""}`}
             value={values.sourceOfFunds.join(", ")}
             disabled
           />

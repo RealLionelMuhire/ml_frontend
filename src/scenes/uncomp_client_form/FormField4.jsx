@@ -1,37 +1,18 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  TextField,
-  Box,
-  Typography,
-  MenuItem,
-  CircularProgress,
-} from "@mui/material";
-import { CountryDropdown } from "react-country-region-selector";
+import React from "react";
+import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
-const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
+const FormFields4 = ({
+  values,
+  errors,
+  touched,
+  handleBlur,
+  handleChange,
+  client,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
-
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
 
   return (
     <React.Fragment>
@@ -64,7 +45,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         </TextField>
       </Box>
 
-      {values.changedName === "yes" && (
+      {client.changedName === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -142,7 +123,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         </TextField>
       </Box>
 
-      {values.financialServicesBusiness === "yes" && (
+      {client.financialServicesBusiness === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -245,7 +226,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         </TextField>
       </Box>
 
-      {values.similarApplication === "yes" && (
+      {client.similarApplication === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -321,7 +302,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
         </TextField>
       </Box>
 
-      {values.criticised === "yes" && (
+      {client.criticised === "yes" && (
         <>
           <Box
             variant="outlined"
