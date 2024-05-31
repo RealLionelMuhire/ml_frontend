@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext } from "../../theme";
@@ -38,6 +39,7 @@ const Topbar = () => {
   const [clickedClientId, setClickedClientId] = useState(null);
   const searchBoxRef = useRef(null);
   const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [isChangePasswordDialogOpen, seChangePasswordDialogOpen] =
     useState(false);
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -80,19 +82,22 @@ const Topbar = () => {
       seChangePasswordDialogOpen(true);
     }
   };
+
   const handleLogoutConfirm = async (confirmed) => {
     setLogoutDialogOpen(false);
 
     if (confirmed) {
+      setLoading(true);
       try {
         const loggedOutResponse = await fetch(`${baseUrl}logout/`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json,",
+            "Content-Type": "application/json",
             Authorization: `token ${TokenRetrieval.getToken()}`,
           },
         });
         const loggedOut = await loggedOutResponse.json();
+        setLoading(false);
         if (loggedOut) {
           localStorage.clear("token");
           dispatch(
@@ -121,6 +126,7 @@ const Topbar = () => {
           navigate("/login");
         }
       } catch (error) {
+        setLoading(false);
         toast.error("Error in logging out. Please try again.");
       }
     }
@@ -221,6 +227,12 @@ const Topbar = () => {
             Yes
           </Button>
         </Box>
+      </Dialog>
+
+      <Dialog open={isLoading}>
+        <DialogContent>
+          <CircularProgress size={60} />
+        </DialogContent>
       </Dialog>
 
       <Dialog

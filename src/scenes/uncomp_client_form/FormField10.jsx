@@ -519,7 +519,7 @@ const FormFields10 = ({
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Passport ID Number"
+                label={`Passport ID Number: ${client.Director1NationalID}`}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.Director1passportIdNumber}
@@ -538,7 +538,7 @@ const FormFields10 = ({
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Country of Issue"
+                label={`Country of Issue: ${client.Director1countryOfIssue}`}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.Director1countryOfIssue}
@@ -556,7 +556,8 @@ const FormFields10 = ({
               <TextField
                 fullWidth
                 variant="filled"
-                label="Passport Expiry Date"
+                // label="Passport Expiry Date"
+                label={`Passport Expiry Date: ${client.Director1passportExpiryDate}`}
                 type="date"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -637,7 +638,8 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="First Name"
+            // label="First Name"
+            label={`First Name: ${client.Director2FirstName || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director2FirstName}
@@ -653,7 +655,8 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Last Name"
+            // label="Last Name"
+            label={`Last Name: ${client.Director2LastName}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director2LastName}
@@ -669,7 +672,8 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Email"
+            // label="Email"
+            label={`Email: ${client.Director2email}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director2email}
@@ -684,7 +688,7 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            label="Contact"
+            label={`Contact: ${client.Director2contact}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director2contact}
@@ -699,7 +703,8 @@ const FormFields10 = ({
           <TextField
             fullWidth
             variant="filled"
-            label="Date of Birth"
+            // label="Date of Birth"
+            label={`Date of Birth: ${client.Director2BirthDate}`}
             type="date"
             onBlur={handleBlur}
             onChange={handleChange}
@@ -735,7 +740,8 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             select
-            label="Preferred Language"
+            // label="Preferred Language"
+            label={`Preferred Language:  ${client.Director2preferredLanguage}`}
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.Director2preferredLanguage}

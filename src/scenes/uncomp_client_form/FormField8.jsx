@@ -1,18 +1,13 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
 import {
   TextField,
   Box,
   Typography,
-  MenuItem,
-  CircularProgress,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const sourceOfFundsOptions = [
@@ -44,27 +39,10 @@ const FormFields8 = ({
   handleChange,
   isNonMobile,
   setFieldValue,
+  client,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
-
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
-
   const handleSourceOfFundsChange = (e) => {
     handleChange(e);
 
@@ -177,7 +155,7 @@ const FormFields8 = ({
           />
         </Box>
       )}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Others") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Others") && (
         <Box sx={{ marginBottom: 2 }}>
           <TextField
             fullWidth
@@ -193,7 +171,7 @@ const FormFields8 = ({
           />
         </Box>
       )}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Savings") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Savings") && (
         <>
           <Box
             variant="outlined"
@@ -305,8 +283,8 @@ const FormFields8 = ({
           </Box>
         </>
       )}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Salary Earnings") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Salary Earnings") && (
           <>
             <Box
               variant="outlined"
@@ -424,8 +402,8 @@ const FormFields8 = ({
           </>
         )}
       {/* Dividend Income */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Dividend Income") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Dividend Income") && (
           <>
             <Box
               variant="outlined"
@@ -507,8 +485,8 @@ const FormFields8 = ({
           </>
         )}
       {/* Rental Income */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Rental Income") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Rental Income") && (
           <>
             <Box
               variant="outlined"
@@ -631,8 +609,8 @@ const FormFields8 = ({
         )}
       {/* Business Income */}
 
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Business Income") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Business Income") && (
           <>
             <Box
               variant="outlined"
@@ -792,8 +770,8 @@ const FormFields8 = ({
           </>
         )}
       {/* Proceeds from sale of property */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Proceeds from sale of property") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Proceeds from sale of property") && (
           <>
             <Box
               variant="outlined"
@@ -877,7 +855,7 @@ const FormFields8 = ({
           </>
         )}
       {/* donation */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Donation") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Donation") && (
         <>
           <Box
             variant="outlined"
@@ -957,7 +935,7 @@ const FormFields8 = ({
         </>
       )}
       {/* gift */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Gift") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Gift") && (
         <>
           <Box
             variant="outlined"
@@ -1076,7 +1054,7 @@ const FormFields8 = ({
         </>
       )}
       {/* lottery */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Lottery") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Lottery") && (
         <>
           <Box
             variant="outlined"
@@ -1157,7 +1135,7 @@ const FormFields8 = ({
         </>
       )}
       {/* creditor */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Creditor") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Creditor") && (
         <>
           <Box
             variant="outlined"
@@ -1271,7 +1249,7 @@ const FormFields8 = ({
         </>
       )}
       {/* inheritance */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Inheritance") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Inheritance") && (
         <>
           <Box
             variant="outlined"
@@ -1398,8 +1376,8 @@ const FormFields8 = ({
         </>
       )}
       {/* loans from banks or any other financial institutions */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes(
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes(
           "Loans from Banks or other Financial Institution"
         ) && (
           <>
@@ -1483,8 +1461,8 @@ const FormFields8 = ({
           </>
         )}
       {/* Loan from related third parties (e.g., sister companies) */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes(
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes(
           "Loan from related third parties (e.g., sister companies)"
         ) && (
           <>
@@ -1610,8 +1588,8 @@ const FormFields8 = ({
           </>
         )}
       {/* Loan from unrelated third parties */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Loan from unrelated third parties") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Loan from unrelated third parties") && (
           <>
             <Box
               variant="outlined"
@@ -1739,7 +1717,7 @@ const FormFields8 = ({
           </>
         )}
       {/* Real Estate */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Real Estate") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Real Estate") && (
         <>
           <Box
             variant="outlined"
@@ -1822,8 +1800,8 @@ const FormFields8 = ({
         </>
       )}
       {/* Insurance */}
-      {values.sourceOfFunds &&
-        values.sourceOfFunds.includes("Insurance Pay-out") && (
+      {client.sourceOfFunds &&
+        client.sourceOfFunds.includes("Insurance Pay-out") && (
           <>
             <Box
               variant="outlined"
@@ -1868,7 +1846,7 @@ const FormFields8 = ({
           </>
         )}
       {/* Retirement */}
-      {values.sourceOfFunds && values.sourceOfFunds.includes("Retirement") && (
+      {client.sourceOfFunds && client.sourceOfFunds.includes("Retirement") && (
         <>
           <Box
             variant="outlined"

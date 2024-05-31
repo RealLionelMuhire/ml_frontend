@@ -9,7 +9,7 @@ const FormFields9 = ({
   touched,
   handleBlur,
   handleChange,
-  isNonMobile,
+  client,
   setFieldValue,
 }) => {
   const theme = useTheme();
@@ -33,13 +33,11 @@ const FormFields9 = ({
           H. Bank Account
         </Typography>
       </Box>
-      {/* Bank
-Currency */}
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Bank Name"
+        label={`Bank Name: ${client.bankName}`}
         value={values.bankName || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -52,7 +50,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Currency"
+        label={`Currency: ${client.currency}`}
         value={values.currency || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -61,7 +59,6 @@ Currency */}
         helperText={touched.currency && errors.currency}
         sx={{ gridColumn: "span 2" }}
       />
-      {/* <Box sx={{ marginBottom: 2, gridColumn: "span 2" }}> */}
       <Box
         variant="outlined"
         display="flex"
@@ -103,17 +100,11 @@ Currency */}
           Group A
         </Typography>
       </Box>
-      {/* 
-        group A 1st signatory
-        group A 2nd signatory
-        group A 3rd signatory
-        group A 4th signatory
-         */}
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Group A 1st Signatory"
+        label={`Group A 1st Signatory: ${client.groupASignatory1}`}
         value={values.groupASignatory1 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -126,7 +117,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group A 2nd Signatory"
+        label={`Group A 2nd Signatory: ${client.groupASignatory2}`}
         value={values.groupASignatory2 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -139,7 +130,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group A 3rd Signatory"
+        label={`Group A 3rd Signatory: ${client.groupASignatory3}`}
         value={values.groupASignatory3 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -152,7 +143,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group A 4th Signatory"
+        label={`Group A 4th Signatory: ${client.groupASignatory4}`}
         value={values.groupASignatory4 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -181,7 +172,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group B 1st Signatory"
+        label={`Group B 1st Signatory: ${client.groupBSignatory1}`}
         value={values.groupBSignatory1 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -194,7 +185,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group B 2nd Signatory"
+        label={`Group B 2nd Signatory: ${client.groupBSignatory2}`}
         value={values.groupBSignatory2 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -207,7 +198,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group B 3rd Signatory"
+        label={`Group B 3rd Signatory: ${client.groupBSignatory3}`}
         value={values.groupBSignatory3 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -220,7 +211,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Group B 4th Signatory"
+        label={`Group B 4th Signatory: ${client.groupBSignatory4}`}
         value={values.groupBSignatory4 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -229,12 +220,11 @@ Currency */}
         helperText={touched.groupBSignatory4 && errors.groupBSignatory4}
         sx={{ gridColumn: "span 1" }}
       />
-      {/* Mode of Operation */}
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Mode of Operation"
+        label={`Mode of Operation: ${client.modeOfOperation}`}
         value={values.modeOfOperation || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -259,17 +249,11 @@ Currency */}
           Users & Access Rights (Signatory User, View Access)
         </Typography>
       </Box>
-      {/* 
-      authorized user 1
-      authorized user 2
-      authorized user 3
-      authorized user 4
-       */}
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Authorized User 1"
+        label={`Authorized User 1: ${client.authorizedUser1}`}
         value={values.authorizedUser1 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -278,13 +262,12 @@ Currency */}
         helperText={touched.authorizedUser1 && errors.authorizedUser1}
         sx={{ gridColumn: "span 1" }}
       />
-      {/* Access Rights for user 1 if he is available */}
-      {values.authorizedUser1 && (
+      {(values.authorizedUser1 || client.authorizedUser1) && (
         <TextField
           fullWidth
           variant="filled"
           type="text"
-          label="Access Rights for user 1 if he is available"
+          label={`Access Rights for user 1 if available: ${client.authorizedUser1AccessRights}`}
           value={values.authorizedUser1AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -300,12 +283,11 @@ Currency */}
           sx={{ gridColumn: "span 1" }}
         />
       )}
-
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Authorized User 2"
+        label={`Authorized User 2: ${client.authorizedUser2}`}
         value={values.authorizedUser2 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -314,13 +296,12 @@ Currency */}
         helperText={touched.authorizedUser2 && errors.authorizedUser2}
         sx={{ gridColumn: "span 1" }}
       />
-      {/* Access Rights for user 2 if he is available */}
-      {values.authorizedUser2 && (
+      {(values.authorizedUser2 || client.authorizedUser2) && (
         <TextField
           fullWidth
           variant="filled"
           type="text"
-          label="Access Rights for user 2 if he is available"
+          label={`Access Rights for user 2 if available: ${client.authorizedUser2AccessRights}`}
           value={values.authorizedUser2AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -340,7 +321,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Authorized User 3"
+        label={`Authorized User 3: ${client.authorizedUser3}`}
         value={values.authorizedUser3 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -349,13 +330,12 @@ Currency */}
         helperText={touched.authorizedUser3 && errors.authorizedUser3}
         sx={{ gridColumn: "span 1" }}
       />
-      {/* Access Rights for user 3 if he is available */}
-      {values.authorizedUser3 && (
+      {(values.authorizedUser3 || client.authorizedUser3) && (
         <TextField
           fullWidth
           variant="filled"
           type="text"
-          label="Access Rights for user 3 if he is available"
+          label={`Access Rights for user 3 if available: ${client.authorizedUser3AccessRights}`}
           value={values.authorizedUser3AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -375,7 +355,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Authorized User 4"
+        label={`Authorized User 4: ${client.authorizedUser4}`}
         value={values.authorizedUser4 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -384,13 +364,12 @@ Currency */}
         helperText={touched.authorizedUser4 && errors.authorizedUser4}
         sx={{ gridColumn: "span 1" }}
       />
-      {/* Access Rights for user 4 if he is available */}
-      {values.authorizedUser4 && (
+      {(values.authorizedUser4 || client.authorizedUser4) && (
         <TextField
           fullWidth
           variant="filled"
           type="text"
-          label="Access Rights for user 4 if he is available"
+          label={`Access Rights for user 4 if available: ${client.authorizedUser4AccessRights}`}
           value={values.authorizedUser4AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -406,14 +385,11 @@ Currency */}
           sx={{ gridColumn: "span 1" }}
         />
       )}
-      {/* Call back Process Contact:
-      Name of proposed officer/s, if any
-       */}
       <TextField
         fullWidth
         variant="filled"
         type="text"
-        label="Call back Process Contact"
+        label={`Call back Process Contact: ${client.callBackProcessContact}`}
         value={values.callBackProcessContact || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -428,7 +404,7 @@ Currency */}
         fullWidth
         variant="filled"
         type="text"
-        label="Name of proposed officer/s, if any"
+        label={`Name of proposed officer/s, if any: ${client.nameOfProposedOfficer}`}
         value={values.nameOfProposedOfficer || ""}
         onChange={handleChange}
         onBlur={handleBlur}

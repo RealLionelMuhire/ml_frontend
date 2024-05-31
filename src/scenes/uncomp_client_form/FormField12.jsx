@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, MenuItem, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import FinancialForecastTable2 from "./FinancialForecastTable";
 import AccountAtivityTable from "./AccountActivityTable";
 import { tokens } from "../../theme";
@@ -13,6 +13,7 @@ const FormFields12 = ({
   handleChange,
   isNonMobile,
   setFieldValue,
+  client,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -74,6 +75,7 @@ const FormFields12 = ({
       </Box>
       <FinancialForecastTable2
         financialData={values.financialForecast}
+        clientFinancialData={client.financialForecast}
         handleFinancialDataChange={handleFinancialDataChange}
         setFieldValue={setFieldValue}
       />
@@ -95,6 +97,7 @@ const FormFields12 = ({
       </Box>
       <AccountAtivityTable
         accountActivityData={values.expectedAccountActivity}
+        clientAccountActivityData={client.expectedAccountActivity}
         handleExpectedAccDataChange={handleExpectedAccDataChange}
         setFieldValue={setFieldValue}
       />

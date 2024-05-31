@@ -1,16 +1,7 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  TextField,
-  Box,
-  Typography,
-  MenuItem,
-  CircularProgress,
-} from "@mui/material";
-import { CountryDropdown } from "react-country-region-selector";
+import React from "react";
+import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
 const FormFields6 = ({
@@ -19,28 +10,11 @@ const FormFields6 = ({
   touched,
   handleBlur,
   handleChange,
-  isNonMobile,
   setFieldValue,
+  client,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
-
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
 
   return (
     <React.Fragment>
@@ -128,7 +102,7 @@ const FormFields6 = ({
         <MenuItem value="Trust">Trust</MenuItem>
         <MenuItem value="Foundation">Foundation</MenuItem>
       </TextField>
-      {values.RelationshipWithApplicant === "individual" && (
+      {client.RelationshipWithApplicant === "individual" && (
         <>
           <Box
             variant="outlined"
@@ -385,7 +359,7 @@ const FormFields6 = ({
         </>
       )}
 
-      {values.RelationshipWithApplicant === "legal entity" && (
+      {client.RelationshipWithApplicant === "legal entity" && (
         <>
           <Box
             variant="outlined"
@@ -760,7 +734,7 @@ const FormFields6 = ({
           </Box>
         </>
       )}
-      {values.RelationshipWithApplicant === "Trust" && (
+      {client.RelationshipWithApplicant === "Trust" && (
         <>
           <Box
             variant="outlined"
@@ -1119,7 +1093,7 @@ const FormFields6 = ({
         </>
       )}
 
-      {values.RelationshipWithApplicant === "Foundation" && (
+      {client.RelationshipWithApplicant === "Foundation" && (
         <>
           <Box
             variant="outlined"

@@ -6,6 +6,7 @@ import { tokens } from "../../theme";
 
 const AccountAtivityTable = ({
   accountActivityData,
+  clientAccountActivityData,
   handleExpectedAccDataChange,
   setFieldValue,
 }) => {
@@ -20,7 +21,20 @@ const AccountAtivityTable = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const rows = accountActivityData.map((item, index) => ({
+  // Combine accountActivityData and clientAccountActivityData
+  const combinedData = accountActivityData.map((item, index) => {
+    const clientItem = clientAccountActivityData[index] || {};
+    return {
+      ...item,
+      year1: item.year1 || clientItem.year1,
+      year2: item.year2 || clientItem.year2,
+      year3: item.year3 || clientItem.year3,
+    };
+  });
+
+  // console.log("In expected account table, combined data to show", combinedData);
+
+  const rows = combinedData.map((item, index) => ({
     ...item,
     id: index, // Add ID field
   }));

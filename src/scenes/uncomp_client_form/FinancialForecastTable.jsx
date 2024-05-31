@@ -6,6 +6,7 @@ import { tokens } from "../../theme";
 
 const FinancialForecastTable2 = ({
   financialData,
+  clientFinancialData,
   handleFinancialDataChange,
 }) => {
   const columns = [
@@ -19,7 +20,18 @@ const FinancialForecastTable2 = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const rows = financialData.map((item, index) => ({
+  // Combine financialData and clientFinancialData
+  const combinedData = financialData.map((item, index) => {
+    const clientItem = clientFinancialData[index] || {};
+    return {
+      ...item,
+      year1: item.year1 || clientItem.year1,
+      year2: item.year2 || clientItem.year2,
+      year3: item.year3 || clientItem.year3,
+    };
+  });
+
+  const rows = combinedData.map((item, index) => ({
     ...item,
     id: index, // Add ID field
   }));

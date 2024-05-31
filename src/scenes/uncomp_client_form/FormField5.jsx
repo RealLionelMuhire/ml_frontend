@@ -1,37 +1,19 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  TextField,
-  Box,
-  Typography,
-  MenuItem,
-  CircularProgress,
-} from "@mui/material";
-import { CountryDropdown } from "react-country-region-selector";
+import React from "react";
+import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 
-const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
+const FormFields5 = ({
+  values,
+  errors,
+  touched,
+  handleBlur,
+  handleChange,
+  client,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
 
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
   return (
     <React.Fragment>
       <Box
@@ -68,7 +50,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.bankruptcyApplication === "yes" && (
+      {client.bankruptcyApplication === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -143,7 +125,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.receiverAppointed === "yes" && (
+      {client.receiverAppointed === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -218,7 +200,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.civilProceedings === "yes" && (
+      {client.civilProceedings === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -294,7 +276,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.convicted === "yes" && (
+      {client.convicted === "yes" && (
         <>
           <Box
             variant="outlined"
@@ -369,7 +351,7 @@ const FormFields5 = ({ values, errors, touched, handleBlur, handleChange }) => {
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {values.directorConvicted === "yes" && (
+      {client.directorConvicted === "yes" && (
         <>
           <Box
             variant="outlined"

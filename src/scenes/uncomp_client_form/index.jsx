@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
@@ -45,8 +45,15 @@ const IncompleteClientForm = () => {
 
   const [step, setStep] = useState(1);
 
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
+  const {
+    data: clientData,
+    isLoading,
+    refetch,
+  } = useGetUncompleteClientByIdQuery(selectedClientIds);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (isLoading) {
     return (
@@ -109,7 +116,7 @@ const IncompleteClientForm = () => {
         }
       });
 
-      console.log("incompleteFormData:", incompleteFormData);
+      // console.log("incompleteFormData:", incompleteFormData);
 
       // Loop through each selected client ID and make an API call
       for (const clientId of selectedClientIds) {
@@ -830,6 +837,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 9 && (
@@ -841,6 +849,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 10 && (
@@ -863,6 +872,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 12 && (
@@ -874,6 +884,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
             </Box>
