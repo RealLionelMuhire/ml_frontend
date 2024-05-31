@@ -156,7 +156,9 @@ const FormFields7 = ({
         <MenuItem value="Virtual Currencies">Virtual Currencies</MenuItem>
         <MenuItem value="Other">Other</MenuItem>
       </TextField>
-      {values.targetSectors === "Other" && (
+      {/* {values.targetSectors === "Other" && ( */}
+      {(values.targetSectors === "Other" ||
+        (!values.targetSectors && client.targetSectors === "Other")) && (
         <TextField
           fullWidth
           variant="filled"
@@ -214,7 +216,9 @@ const FormFields7 = ({
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {client.specialLicense === "yes" && (
+      {/* {client.specialLicense === "yes" && ( */}
+      {(values.specialLicense === "yes" ||
+        (!values.specialLicense && client.specialLicense === "yes")) && (
         <>
           <Box
             variant="outlined"

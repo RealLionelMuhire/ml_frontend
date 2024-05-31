@@ -37,7 +37,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Bank Name: ${client.bankName}`}
+        label={`Bank Name: ${client.bankName || ""}`}
         value={values.bankName || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -50,7 +50,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Currency: ${client.currency}`}
+        label={`Currency: ${client.currency || ""}`}
         value={values.currency || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -104,7 +104,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group A 1st Signatory: ${client.groupASignatory1}`}
+        label={`Group A 1st Signatory: ${client.groupASignatory1 || ""}`}
         value={values.groupASignatory1 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -117,7 +117,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group A 2nd Signatory: ${client.groupASignatory2}`}
+        label={`Group A 2nd Signatory: ${client.groupASignatory2 || ""}`}
         value={values.groupASignatory2 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -130,7 +130,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group A 3rd Signatory: ${client.groupASignatory3}`}
+        label={`Group A 3rd Signatory: ${client.groupASignatory3 || ""}`}
         value={values.groupASignatory3 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -143,7 +143,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group A 4th Signatory: ${client.groupASignatory4}`}
+        label={`Group A 4th Signatory: ${client.groupASignatory4 || ""}`}
         value={values.groupASignatory4 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -172,7 +172,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group B 1st Signatory: ${client.groupBSignatory1}`}
+        label={`Group B 1st Signatory: ${client.groupBSignatory1 || ""}`}
         value={values.groupBSignatory1 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -185,7 +185,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group B 2nd Signatory: ${client.groupBSignatory2}`}
+        label={`Group B 2nd Signatory: ${client.groupBSignatory2 || ""}`}
         value={values.groupBSignatory2 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -198,7 +198,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group B 3rd Signatory: ${client.groupBSignatory3}`}
+        label={`Group B 3rd Signatory: ${client.groupBSignatory3 || ""}`}
         value={values.groupBSignatory3 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -211,7 +211,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Group B 4th Signatory: ${client.groupBSignatory4}`}
+        label={`Group B 4th Signatory: ${client.groupBSignatory4 || ""}`}
         value={values.groupBSignatory4 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -224,7 +224,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Mode of Operation: ${client.modeOfOperation}`}
+        label={`Mode of Operation: ${client.modeOfOperation || ""}`}
         value={values.modeOfOperation || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -253,7 +253,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Authorized User 1: ${client.authorizedUser1}`}
+        label={`Authorized User 1: ${client.authorizedUser1 || ""}`}
         value={values.authorizedUser1 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -267,7 +267,9 @@ const FormFields9 = ({
           fullWidth
           variant="filled"
           type="text"
-          label={`Access Rights for user 1 if available: ${client.authorizedUser1AccessRights}`}
+          label={`Access Rights for user 1 if available: ${
+            client.authorizedUser1AccessRights || ""
+          }`}
           value={values.authorizedUser1AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -287,7 +289,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Authorized User 2: ${client.authorizedUser2}`}
+        label={`Authorized User 2: ${client.authorizedUser2 || ""}`}
         value={values.authorizedUser2 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -301,7 +303,9 @@ const FormFields9 = ({
           fullWidth
           variant="filled"
           type="text"
-          label={`Access Rights for user 2 if available: ${client.authorizedUser2AccessRights}`}
+          label={`Access Rights for user 2 if available: ${
+            client.authorizedUser2AccessRights || ""
+          }`}
           value={values.authorizedUser2AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -321,7 +325,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Authorized User 3: ${client.authorizedUser3}`}
+        label={`Authorized User 3: ${client.authorizedUser3 || ""}`}
         value={values.authorizedUser3 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -335,7 +339,9 @@ const FormFields9 = ({
           fullWidth
           variant="filled"
           type="text"
-          label={`Access Rights for user 3 if available: ${client.authorizedUser3AccessRights}`}
+          label={`Access Rights for user 3 if available: ${
+            client.authorizedUser3AccessRights || ""
+          }`}
           value={values.authorizedUser3AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -355,7 +361,7 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Authorized User 4: ${client.authorizedUser4}`}
+        label={`Authorized User 4: ${client.authorizedUser4 || ""}`}
         value={values.authorizedUser4 || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -369,7 +375,9 @@ const FormFields9 = ({
           fullWidth
           variant="filled"
           type="text"
-          label={`Access Rights for user 4 if available: ${client.authorizedUser4AccessRights}`}
+          label={`Access Rights for user 4 if available: ${
+            client.authorizedUser4AccessRights || ""
+          }`}
           value={values.authorizedUser4AccessRights || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -389,7 +397,9 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Call back Process Contact: ${client.callBackProcessContact}`}
+        label={`Call back Process Contact: ${
+          client.callBackProcessContact || ""
+        }`}
         value={values.callBackProcessContact || ""}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -404,7 +414,9 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Name of proposed officer/s, if any: ${client.nameOfProposedOfficer}`}
+        label={`Name of proposed officer/s, if any: ${
+          client.nameOfProposedOfficer || ""
+        }`}
         value={values.nameOfProposedOfficer || ""}
         onChange={handleChange}
         onBlur={handleBlur}

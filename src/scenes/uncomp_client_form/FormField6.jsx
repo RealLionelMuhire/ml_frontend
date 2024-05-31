@@ -102,7 +102,10 @@ const FormFields6 = ({
         <MenuItem value="Trust">Trust</MenuItem>
         <MenuItem value="Foundation">Foundation</MenuItem>
       </TextField>
-      {client.RelationshipWithApplicant === "individual" && (
+      {/* {client.RelationshipWithApplicant === "individual" && ( */}
+      {(values.RelationshipWithApplicant === "individual" ||
+        (!values.RelationshipWithApplicant &&
+          client.RelationshipWithApplicant === "individual")) && (
         <>
           <Box
             variant="outlined"
@@ -359,7 +362,10 @@ const FormFields6 = ({
         </>
       )}
 
-      {client.RelationshipWithApplicant === "legal entity" && (
+      {/* {client.RelationshipWithApplicant === "legal entity" && ( */}
+      {(values.RelationshipWithApplicant === "legal entity" ||
+        (!values.RelationshipWithApplicant &&
+          client.RelationshipWithApplicant === "legal entity")) && (
         <>
           <Box
             variant="outlined"
@@ -734,7 +740,10 @@ const FormFields6 = ({
           </Box>
         </>
       )}
-      {client.RelationshipWithApplicant === "Trust" && (
+      {/* {client.RelationshipWithApplicant === "Trust" && ( */}
+      {(values.RelationshipWithApplicant === "Trust" ||
+        (!values.RelationshipWithApplicant &&
+          client.RelationshipWithApplicant === "Trust")) && (
         <>
           <Box
             variant="outlined"
@@ -1093,7 +1102,10 @@ const FormFields6 = ({
         </>
       )}
 
-      {client.RelationshipWithApplicant === "Foundation" && (
+      {/* {client.RelationshipWithApplicant === "Foundation" && ( */}
+      {(values.RelationshipWithApplicant === "Foundation" ||
+        (!values.RelationshipWithApplicant &&
+          client.RelationshipWithApplicant === "Foundation")) && (
         <>
           <Box
             variant="outlined"

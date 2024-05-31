@@ -45,7 +45,8 @@ const FormFields4 = ({
         </TextField>
       </Box>
 
-      {client.changedName === "yes" && (
+      {(values.changedName === "yes" ||
+        (!values.changedName && client.changedName === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -123,7 +124,10 @@ const FormFields4 = ({
         </TextField>
       </Box>
 
-      {client.financialServicesBusiness === "yes" && (
+      {/* {client.financialServicesBusiness === "yes" && ( */}
+      {(values.financialServicesBusiness === "yes" ||
+        (!values.financialServicesBusiness &&
+          client.financialServicesBusiness === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -226,7 +230,9 @@ const FormFields4 = ({
         </TextField>
       </Box>
 
-      {client.similarApplication === "yes" && (
+      {(values.similarApplication === "yes" ||
+        (!values.similarApplication &&
+          client.similarApplication === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -302,7 +308,9 @@ const FormFields4 = ({
         </TextField>
       </Box>
 
-      {client.criticised === "yes" && (
+      {/* {client.criticised === "yes" && ( */}
+      {(values.criticised === "yes" ||
+        (!values.criticised && client.criticised === "yes")) && (
         <>
           <Box
             variant="outlined"

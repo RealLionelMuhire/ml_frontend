@@ -190,7 +190,8 @@ const FormFields3 = ({
       </TextField>
 
       {/* Conditional rendering for certificate upload */}
-      {client.isPep === "yes" && (
+      {(values.isPep === "yes" ||
+        (!values.isPep && client.isPep === "yes")) && (
         <>
           <Box
             variant="outlined"

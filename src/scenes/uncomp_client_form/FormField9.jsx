@@ -4,7 +4,6 @@ import {
   TextField,
   Box,
   Typography,
-  MenuItem,
   CircularProgress,
   Checkbox,
   FormControlLabel,
@@ -130,8 +129,9 @@ const FormFields9 = ({
                 control={
                   <Checkbox
                     checked={
-                      values.sourceOfWealth &&
-                      values.sourceOfWealth.includes(option)
+                      values.sourceOfWealth
+                        ? values.sourceOfWealth.includes(option)
+                        : client.sourceOfWealth?.includes(option) || false
                     }
                     color="secondary"
                     onChange={handleSourceOfWealthChange}
@@ -146,25 +146,41 @@ const FormFields9 = ({
           ))}
         </Box>
       </Box>
-      {values.sourceOfWealth && (
+
+      {(Array.isArray(values.sourceOfWealth) &&
+        values.sourceOfWealth.length > 0) ||
+      (client.sourceOfWealth && client.sourceOfWealth.length > 0) ? (
         <Box sx={{ marginBottom: 2 }}>
           <TextField
             fullWidth
             variant="filled"
             type="text"
-            label="Selected Source(s)"
-            value={values.sourceOfWealth.join(", ")}
+            // label="Selected Source(s)"
+            label={`Selected Source(s) - ${
+              values.sourceOfWealth || client.sourceOfWealth || ""
+            }`}
+            value={
+              Array.isArray(values.sourceOfWealth) &&
+              values.sourceOfWealth.length > 0
+                ? values.sourceOfWealth.join(", ")
+                : client.sourceOfWealth
+            }
             disabled
           />
         </Box>
-      )}
-      {values.sourceOfWealth && values.sourceOfWealth.includes("Others") && (
+      ) : null}
+
+      {(values.sourceOfWealth?.includes("Others") ||
+        (!values.sourceOfWealth &&
+          client.sourceOfWealth?.includes("Others"))) && (
         <Box sx={{ marginBottom: 2 }}>
           <TextField
             fullWidth
             variant="filled"
             type="text"
-            label={`Specify Other Source: ${client.otherSourceOfWealth || ""}`}
+            label={`Specify Other Source: ${
+              values.otherSourceOfWealth || client.otherSourceOfWealth || ""
+            }`}
             value={values.otherSourceOfWealth || ""}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -176,6 +192,7 @@ const FormFields9 = ({
           />
         </Box>
       )}
+
       <Box
         variant="outlined"
         display="flex"
@@ -199,7 +216,7 @@ const FormFields9 = ({
         variant="filled"
         type="text"
         label={`From which country does the source of wealth come from?: ${
-          client.countrySourceWealth || ""
+          values.countrySourceWealth || client.countrySourceWealth || ""
         }`}
         value={values.countrySourceWealth || ""}
         onChange={handleChange}
@@ -212,7 +229,9 @@ const FormFields9 = ({
         fullWidth
         variant="filled"
         type="text"
-        label={`Name of bank involved?: ${client.bankInvolvedWealth || ""}`}
+        label={`Name of bank involved?: ${
+          values.bankInvolvedWealth || client.bankInvolvedWealth || ""
+        }`}
         value={values.bankInvolvedWealth || ""}
         onChange={handleChange}
         onBlur={handleBlur}

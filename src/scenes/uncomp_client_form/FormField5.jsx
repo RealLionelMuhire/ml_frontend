@@ -50,7 +50,10 @@ const FormFields5 = ({
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {client.bankruptcyApplication === "yes" && (
+      {/* {client.bankruptcyApplication === "yes" && ( */}
+      {(values.bankruptcyApplication === "yes" ||
+        (!values.bankruptcyApplication &&
+          client.bankruptcyApplication === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -125,7 +128,9 @@ const FormFields5 = ({
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {client.receiverAppointed === "yes" && (
+      {/* {client.receiverAppointed === "yes" && ( */}
+      {(values.receiverAppointed === "yes" ||
+        (!values.receiverAppointed && client.receiverAppointed === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -200,7 +205,9 @@ const FormFields5 = ({
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {client.civilProceedings === "yes" && (
+      {/* {client.civilProceedings === "yes" && ( */}
+      {(values.civilProceedings === "yes" ||
+        (!values.civilProceedings && client.civilProceedings === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -276,7 +283,9 @@ const FormFields5 = ({
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {client.convicted === "yes" && (
+      {/* {client.convicted === "yes" && ( */}
+      {(values.convicted === "yes" ||
+        (!values.convicted && client.convicted === "yes")) && (
         <>
           <Box
             variant="outlined"
@@ -351,7 +360,9 @@ const FormFields5 = ({
           <MenuItem value="no">No</MenuItem>
         </TextField>
       </Box>
-      {client.directorConvicted === "yes" && (
+      {/* {client.directorConvicted === "yes" && ( */}
+      {(values.directorConvicted === "yes" ||
+        (!values.directorConvicted && client.directorConvicted === "yes")) && (
         <>
           <Box
             variant="outlined"
