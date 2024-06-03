@@ -118,18 +118,44 @@ const Clients = () => {
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "NameOfEntity", headerName: "Entity Name", flex: 1 },
     {
       field: "firstName",
-      headerName: "First Name",
+      headerName: "Representative First Name",
       flex: 1,
       cellClassName: "name-column--cell",
     },
-    { field: "lastName", headerName: "Last Name", flex: 1 },
-    { field: "passportIdNumber", headerName: "Passport ID Number", flex: 1 },
-    { field: "countryOfIssue", headerName: "Country of Issue", flex: 1 },
-    { field: "clientContact", headerName: "Client Contact Phone", flex: 1 },
-    { field: "clientEmail", headerName: "Client Email", flex: 1 },
-    { field: "preferredLanguage", headerName: "Language", flex: 1 },
+    {
+      field: "lastName",
+      headerName: "Representative Last Name",
+      flex: 1,
+      hide: true,
+    },
+    { field: "email", headerName: "Representitive Email", flex: 1 },
+    { field: "SectorOfEntity", headerName: "Sector of Entity", flex: 1 },
+    { field: "CathegoryOfEntity", headerName: "Cathegory of Entity", flex: 1 },
+    { field: "SPVType", headerName: "SPV Type", flex: 1, hide: true },
+    {
+      field: "passportIdNumber",
+      headerName: "Passport ID Number",
+      flex: 1,
+      hide: true,
+    },
+    {
+      field: "countryOfIssue",
+      headerName: "Country of Issue",
+      flex: 1,
+      hide: true,
+    },
+    {
+      field: "clientContact",
+      headerName: "Client Contact Phone",
+      flex: 1,
+      hide: true,
+    },
+    { field: "clientEmail", headerName: "Client Email", flex: 1, hide: true },
+    { field: "preferredLanguage", headerName: "Language", flex: 1, hide: true },
+
     {
       field: "isActive",
       headerName: "Is Active",

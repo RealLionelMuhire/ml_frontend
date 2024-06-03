@@ -116,7 +116,9 @@ const FormFields4 = ({
           onChange={handleChange}
           name="financialServicesBusiness"
           label={`Financial Services Business: ${
-            client.financialServicesBusiness || ""
+            values.financialServicesBusiness ||
+            (!values.financialServicesBusiness &&
+              client.financialServicesBusiness)
           }`}
         >
           <MenuItem value="yes">Yes</MenuItem>

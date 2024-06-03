@@ -157,6 +157,11 @@ const ClientForm = () => {
     businessActivity: yup.string(),
     countryOfOperation: yup.string(),
 
+    CathegoryOfEntity: yup.string(),
+    SPVType: yup.string(),
+    SectorOfEntity: yup.string(),
+    OtherSectorOfEntity: yup.string(),
+
     // Similar Application
     changedName: yup.string(),
     similarApplicationDetailsName: yup.string(),
@@ -394,6 +399,11 @@ const ClientForm = () => {
     contactPersonName: "",
     contactPersonEmail: "",
     contactPersonPhone: "",
+
+    CathegoryOfEntity: "",
+    SPVType: "",
+    SectorOfEntity: "",
+    OtherSectorOfEntity: "",
 
     authorisedName: "",
     authorisedEmail: "",

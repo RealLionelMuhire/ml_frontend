@@ -201,6 +201,11 @@ const IncompleteClientForm = () => {
     businessActivity: yup.string(),
     countryOfOperation: yup.string(),
 
+    CathegoryOfEntity: yup.string(),
+    SPVType: yup.string(),
+    SectorOfEntity: yup.string(),
+    OtherSectorOfEntity: yup.string(),
+
     // Similar Application
     changedName: yup.string(),
     similarApplicationDetailsName: yup.string(),
@@ -453,6 +458,11 @@ const IncompleteClientForm = () => {
     registeredOfficeAddress: "",
     businessActivity: "",
     countryOfOperation: "",
+
+    CathegoryOfEntity: "",
+    SPVType: "",
+    SectorOfEntity: "",
+    OtherSectorOfEntity: "",
 
     changedName: "",
     similarApplicationDetailsName: "",

@@ -1,12 +1,7 @@
 import React from "react";
 import { TextField, MenuItem, Box, Typography } from "@mui/material";
-import { CountryDropdown } from "react-country-region-selector";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-
-// Type of Product(s) / Service(s)
-// Secretary
-// Business Address
 
 const FormFields7 = ({
   values,
