@@ -20,13 +20,16 @@ const AlertsForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createAlert] = useCreateAlertMutation();
   const navigate = useNavigate();
+  console.log("Handle form reaching..................")
 
   const { data: clientData } = useGetClientsQuery();
   const handleFormSubmit = async (values) => {
+    console.log("Handle form reaching..................")
     try {
       const selectedClient = clientData.find(
         (client) => client.firstName === values.clientName
       );
+      console.log("After selecting ID")
 
       const result = await createAlert({
         clientId: selectedClient.id,
@@ -175,7 +178,7 @@ const AlertsForm = () => {
 };
 
 const checkoutSchema = yup.object().shape({
-  clientName: yup.string().required("Required"),
+  clientName: yup.string(),
   title: yup.string().required("Required"),
   description: yup.string(),
   schedule_date: yup.date().required("Required").min(new Date(), "Must be in the future"),

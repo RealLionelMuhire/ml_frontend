@@ -27,7 +27,7 @@ import SuccessBox from "./SuccessBox";
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createUser, { isError, data }] = useCreateClientMutation();
+  const [createClient, { isError, data }] = useCreateClientMutation();
   const [saveUncompleteData] = useCreateUncompleteClientMutation();
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -41,10 +41,7 @@ const ClientForm = () => {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (
-            key === "financialForecast" ||
-            key === "expectedAccountActivity"
-          ) {
+          if (key === "financialForecast" || key === "expectedAccountActivity") {
             formData.append(key, JSON.stringify(value));
           } else {
             formData.append(key, value);
@@ -53,7 +50,7 @@ const ClientForm = () => {
       });
       // console.log("form data:");
 
-      const response = await createUser(formData);
+      const response = await createClient(formData);
 
       if (response.error && response.error.data.detail) {
         toast.error(response.error.data.detail);
@@ -999,6 +996,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
+                    onClick={() => handleFormSubmit(values)}
                     type="submit"
                     color="secondary"
                     disabled={isLoadingSubmit}

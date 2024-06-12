@@ -26,7 +26,10 @@ const appointmentSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Phone number is not valid")
     .required("Required"),
-  servicesToDiscuss: yup.string().required("Required").notOneOf(["Choose a service"], "Required"),
+  servicesToDiscuss: yup
+    .string()
+    .required("Required")
+    .notOneOf(["Choose a service"], "Required"),
   otherServices: yup.string().when("servicesToDiscuss", {
     is: "Other",
     then: yup.string().required("Please specify other services."),
@@ -61,52 +64,31 @@ const servicesOptions = [
 ];
 
 const Form = () => {
-  const formik = useFormik({
-    // ... other Formik configuration
-  });
-
-  const { palette } = useTheme();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
-  
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleTimeSelect = (selectInfo) => {
-  
-    if (!selectInfo.start || !selectInfo.end) {
-      console.error("Invalid time selection. Please try again.");
-      return;
+  const validate = async (values) => {
+    console.log("Validating values:", values);
+    try {
+      await appointmentSchema.validate(values, { abortEarly: false });
+      return {};
+    } catch (error) {
+      console.log("Validation errors:", error);
+      return error.inner.reduce((acc, err) => {
+        return { ...acc, [err.path]: err.message };
+      }, {});
     }
-  
-    const startTime = selectInfo.start.toISOString();
-    const endTime = selectInfo.end.toISOString();
-
-  
-    formik.setValues((prevValues) => ({
-      ...prevValues,
-      startTime,
-      endTime,
-    }));
-  
-    setShowCalendar(false);
   };
 
-
-  const { startTime, endTime } = formik.values || {};
-
-
   const handleFormSubmit = async (values, onSubmitProps) => {
+    console.log("Submitting form with values:", values);
     try {
       setIsLoading(true);
-      // Check if startTime and endTime are empty
       if (!values.startTime || !values.endTime) {
         toast.error("Please choose a time for the appointment.");
+        setIsLoading(false);
         return;
       }
-  
+
+      // Build the newReservation object based on the API structure
+
       // Build the newReservation object based on the API structure
       const newReservation = {
         email: values.email,
@@ -118,7 +100,9 @@ const Form = () => {
         endTime: values.endTime,
       };
       const baseUrl = process.env.REACT_APP_API_BASE_URL;
-  
+
+      // Call the createReservation mutation with the newReservation object
+
       // Call the createReservation mutation with the newReservation object
       const response = await fetch(`${baseUrl}register-reservation/`, {
         method: "POST",
@@ -130,29 +114,67 @@ const Form = () => {
 
       if (!response.ok) {
         const errorMessage = await response.text();
+        console.error(`Failed to register reservation: ${errorMessage}`);
         toast.error(`Failed to register reservation: ${errorMessage}`);
+        setIsLoading(false);
         return;
       }
 
-      // Successful response
       toast.success("Appointment booked successfully.");
-
-      // Reload the tab after a successful submission
       onSubmitProps.resetForm();
       setTimeout(() => {
         window.location.href = "http://mlcorporateservices.com/";
       }, 6000);
-  
-
     } catch (error) {
       console.error("Error booking appointment:", error);
       toast.error("Error booking appointment. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const { palette } = useTheme();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleTimeSelect = (selectInfo) => {
+    console.log("Time selected:", selectInfo);
+    if (!selectInfo.start || !selectInfo.end) {
+      console.error("Invalid time selection. Please try again.");
+      return;
+    }
+
+    const startTime = selectInfo.start.toISOString();
+    const endTime = selectInfo.end.toISOString();
+
+    formik.setValues((prevValues) => ({
+      ...prevValues,
+      startTime,
+      endTime,
+    }));
+
+    setShowCalendar(false);
+  };
+
+  const formik = useFormik({
+    initialValues: initialValuesAppointment,
+    validationSchema: appointmentSchema,
+    onSubmit: handleFormSubmit,
+    validate: validate,
+  });
+
+  console.log("Formik initialized with values:", formik.values);
+
+  const { startTime, endTime } = formik.values || {};
 
   return (
     <Formik
       onSubmit={handleFormSubmit}
+      validate={validate}
       initialValues={initialValuesAppointment}
       validationSchema={appointmentSchema}
     >
@@ -224,7 +246,10 @@ const Form = () => {
               onChange={handleChange}
               value={values.servicesToDiscuss}
               name="servicesToDiscuss"
-              error={Boolean(touched.servicesToDiscuss) && Boolean(errors.servicesToDiscuss)}
+              error={
+                Boolean(touched.servicesToDiscuss) &&
+                Boolean(errors.servicesToDiscuss)
+              }
               helperText={touched.servicesToDiscuss && errors.servicesToDiscuss}
               sx={{ gridColumn: "span 4" }}
             >
@@ -244,7 +269,10 @@ const Form = () => {
                 onChange={handleChange}
                 value={values.otherServices}
                 name="otherServices"
-                error={Boolean(touched.otherServices) && Boolean(errors.otherServices)}
+                error={
+                  Boolean(touched.otherServices) &&
+                  Boolean(errors.otherServices)
+                }
                 helperText={touched.otherServices && errors.otherServices}
                 sx={{ gridColumn: "span 4" }}
               />
@@ -266,21 +294,25 @@ const Form = () => {
             >
               {startTime && endTime ? (
                 <div>
-                  <Typography variant="h5" color={colors.greenAccent[500]} fontWeight="500">
+                  <Typography
+                    variant="h5"
+                    color={colors.greenAccent[500]}
+                    fontWeight="500"
+                  >
                     Booked period:
                   </Typography>
                   <Typography variant="body1">
-                    Start time: {format(startTime, "h:mm a")}
+                    Start time: {format(new Date(startTime), "h:mm a")}
                   </Typography>
                   <Typography variant="body1">
-                    End time: {format(endTime, "h:mm a")}
+                    End time: {format(new Date(endTime), "h:mm a")}
                   </Typography>
                   <Typography variant="body1">
-                    Date: {format(new Date(), "EEE d MMM yyyy")}
+                    Date: {format(new Date(startTime), "EEE d MMM yyyy")}
                   </Typography>
                 </div>
               ) : (
-                <Typography variant="h5"  fontWeight="500">
+                <Typography variant="h5" fontWeight="500">
                   Choose the time and date for the appointment
                 </Typography>
               )}
@@ -296,21 +328,19 @@ const Form = () => {
               )}
             </Box>
 
-
             {showCalendar && (
-            <TestCalendar
-              onTimeSelect={(selectInfo) => {
-                handleTimeSelect(selectInfo);
-                setValues((prevValues) => ({
-                  ...prevValues,
-                  startTime: selectInfo.start.toISOString(),
-                  endTime: selectInfo.end.toISOString(),
-                }));
-              }}
-              style={{ maxWidth: "10%" }}
-            />
-          )}
-
+              <TestCalendar
+                onTimeSelect={(selectInfo) => {
+                  handleTimeSelect(selectInfo);
+                  setValues((prevValues) => ({
+                    ...prevValues,
+                    startTime: selectInfo.start.toISOString(),
+                    endTime: selectInfo.end.toISOString(),
+                  }));
+                }}
+                style={{ maxWidth: "10%" }}
+              />
+            )}
           </Box>
 
           <Box>

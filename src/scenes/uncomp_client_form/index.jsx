@@ -6,7 +6,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import {
-  useCreateUserMutation,
+  useCreateClientMutation,
   useUpdateUncompletedClientMutation,
   useGetUncompleteClientByIdQuery,
 } from "../../state/api";
@@ -29,7 +29,7 @@ import SuccessBox from "./SuccessBox";
 
 const IncompleteClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createUser, { isError, data }] = useCreateUserMutation();
+  const [createClient, { isError, data }] = useCreateClientMutation();
 
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -64,24 +64,65 @@ const IncompleteClientForm = () => {
   }
 
   const client = clientData ? clientData[0] : {};
+  // console.log("client:", client);
 
+  const mergeForecastData = (valuesData, clientData) => {
+    if (!valuesData || !clientData) return valuesData || clientData;
+  
+    return valuesData.map((row, index) => {
+      const clientRow = clientData[index] || {};
+      return {
+        ...row,
+        year1: row.year1 || clientRow.year1,
+        year2: row.year2 || clientRow.year2,
+        year3: row.year3 || clientRow.year3,
+      };
+    });
+  };
+  
   const handleFormSubmit = async (values) => {
+    // console.log("Form submitting  ... \n");
+    // console.log("values:", values);
+  
+    // Create a new object to hold the final form values
+    const finalValues = { ...values };
+  
+    // Merge financialForecast data
+    if (values.financialForecast && client.financialForecast) {
+      finalValues.financialForecast = mergeForecastData(values.financialForecast, client.financialForecast);
+    }
+  
+    // Merge expectedAccountActivity data
+    if (values.expectedAccountActivity && client.expectedAccountActivity) {
+      finalValues.expectedAccountActivity = mergeForecastData(values.expectedAccountActivity, client.expectedAccountActivity);
+    }
+  
+    // Iterate through each field in the values object
+    Object.keys(values).forEach((key) => {
+      if (!values[key] && client[key]) {
+        finalValues[key] = client[key];
+      }
+    });
+  
+    // console.log("Final values:", finalValues);
+  
     try {
       setIsLoadingSubmit(true);
       const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === "financialForecast") {
-          formData.append(key, JSON.stringify(value));
-        } else if (key === "expectedAccountActivity") {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, value);
+      Object.entries(finalValues).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          if (key === "financialForecast" || key === "expectedAccountActivity") {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
         }
       });
       // console.log("form data:");
-
-      const response = await createUser(formData);
-
+  
+      const response = await createClient(formData);
+      // console.log("response:", response);
+  
       if (response.error && response.error.data.detail) {
         toast.error(response.error.data.detail);
       } else if (response.error) {
@@ -96,6 +137,7 @@ const IncompleteClientForm = () => {
       setIsLoadingSubmit(false);
     }
   };
+  
 
   const handleSaveAndContinueLater = async (values) => {
     try {
@@ -1054,6 +1096,7 @@ const IncompleteClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
+                    onClick={() => handleFormSubmit(values)}
                     type="submit"
                     color="secondary"
                     disabled={isLoadingSubmit}
