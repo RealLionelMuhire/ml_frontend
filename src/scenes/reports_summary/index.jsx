@@ -1,17 +1,71 @@
-import { Box, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button, Dialog, DialogContent, DialogActions, Typography, CircularProgress } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
-import { useGetReportsQuery } from "../../state/api";
-import { useState } from "react";
+import { useGetReportsQuery, useDeleteReportMutation } from "../../state/api";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import FileViewer from "../../utils/FileViewer";
+import PdfViewerDialog from "../../utils/PdfViewerDialog";
+import { toast } from "react-toastify";
 
 const Reports = () => {
-  const { data, isLoading } = useGetReportsQuery();
+  const { data, isLoading, refetch } = useGetReportsQuery();
+  const [deleteReport, { isLoading: isDeleting }] = useDeleteReportMutation();
   const [selectedReportIds, setSelectedReportIds] = useState([]);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [confirmationAction, setConfirmationAction] = useState(null);
+  const [loadingDialogOpen, setLoadingDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoading || isDeleting) {
+      setLoadingDialogOpen(true);
+    } else {
+      setLoadingDialogOpen(false);
+    }
+  }, [isLoading, isDeleting]);
+
+  const handleConfirmationOpen = (action) => {
+    setConfirmationAction(action);
+    setConfirmationDialogOpen(true);
+  };
+
+  const handleConfirmationClose = () => {
+    setConfirmationAction(null);
+    setConfirmationDialogOpen(false);
+  };
+
+  const handleDeleteConfirmation = async () => {
+    handleConfirmationClose();
+    setLoadingDialogOpen(true);
+    await handleDeleteClick();
+    setLoadingDialogOpen(false);
+  };
+
+  const handleDeleteClick = async () => {
+    try {
+      const promises = selectedReportIds.map(async (reportId) => {
+        const response = await deleteReport(reportId);
+        if (response.error) {
+          toast.error(response.error?.data?.message);
+        } else {
+          toast.success(response.data?.message);
+        }
+      });
+      await Promise.all(promises);
+      refetch();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleUpdateConfirmation = async () => {
+    handleConfirmationClose();
+    navigate("/update-report", {
+      state: { selectedReportIds },
+    });
+  };
 
   const handleSelectionModelChange = (selectionModel) => {
     setSelectedReportIds(selectionModel);
@@ -49,10 +103,15 @@ const Reports = () => {
       flex: 1,
     },
     {
-      field: "report_link",
+      field: "report_file",
       headerName: "Report File",
       flex: 1,
-      renderCell: (params) => <FileViewer url={params.row.report_link} />,
+      renderCell: (params) =>
+        params.row.report_file ? (
+          <PdfViewerDialog file={params.row.report_file} />
+        ) : (
+          <Box variant="contained">No File</Box>
+        ),
     },
   ];
 
@@ -72,8 +131,30 @@ const Reports = () => {
           </Button>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={() => handleConfirmationOpen("delete")}
+            disabled={selectedReportIds.length === 0 || isDeleting}
+          >
+            Delete Selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button
+            type="button"
+            color="secondary"
+            variant="contained"
+            onClick={() => handleConfirmationOpen("update")}
+            disabled={selectedReportIds.length === 0}
+          >
+            Update Selected
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/reports-form">Generate an Report</Link>
+            <Link to="/reports-form">Create a Report</Link>
           </Button>
         </Box>
       </Box>
@@ -119,6 +200,51 @@ const Reports = () => {
           onSelectionModelChange={handleSelectionModelChange}
         />
       </Box>
+      <Dialog
+        open={confirmationDialogOpen}
+        onClose={handleConfirmationClose}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogContent>
+          <Typography>
+            {confirmationAction === "delete"
+              ? "Are you sure you want to delete the selected report(s)?"
+              : confirmationAction === "update"
+              ? "Are you sure you want to update the selected report(s)?"
+              : null}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Box display="flex" justifyContent="center" p={2} gap="20px">
+            <Button
+              onClick={handleConfirmationClose}
+              color="secondary"
+              variant="contained"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={
+                confirmationAction === "delete"
+                  ? handleDeleteConfirmation
+                  : confirmationAction === "update"
+                  ? handleUpdateConfirmation
+                  : null
+              }
+              color="secondary"
+              variant="contained"
+            >
+              Confirm
+            </Button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={loadingDialogOpen}>
+        <DialogContent>
+          <CircularProgress size={60} />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

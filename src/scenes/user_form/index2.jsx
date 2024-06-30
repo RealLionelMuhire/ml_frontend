@@ -23,8 +23,8 @@ const UserForm = () => {
     let errorMessage = null;
 
     const traverse = (data) => {
-      console.log("===== findErrorMessageDetail.traverse =====");
-      console.log("data:", data);
+      // console.log("===== findErrorMessageDetail.traverse =====");
+      // console.log("data:", data);
 
       if (data && typeof data === "object") {
         // Check if the object has a 'detail' property

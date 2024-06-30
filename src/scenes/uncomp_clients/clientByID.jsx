@@ -16,7 +16,7 @@ const ClientWithID = () => {
     [location.state?.selectedClientIds]
   );
   const { data, isLoading } = useGetClientsByIdsQuery(selectedClientIds);
-  console.log("data", data);
+  // console.log("data", data);
   const theme = useTheme();
 
   const colors = tokens(theme.palette.mode);
