@@ -20,26 +20,26 @@ const AlertsForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createAlert] = useCreateAlertMutation();
   const navigate = useNavigate();
-  console.log("Handle form reaching..................")
 
   const { data: clientData } = useGetClientsQuery();
   const handleFormSubmit = async (values) => {
-    console.log("Handle form reaching..................")
     try {
-      const selectedClient = clientData.find(
+      const selectedClient = clientData?.find(
         (client) => client.firstName === values.clientName
       );
-      console.log("After selecting ID")
 
-      const result = await createAlert({
-        clientId: selectedClient.id,
-        alertData: {
-          title: values.title,
-          description: values.description,
-          schedule_date: values.schedule_date,
-          expiration_date: values.expiration_date,
-        },
-      });
+      const alertData = {
+        title: values.title,
+        description: values.description,
+        schedule_date: values.schedule_date,
+        expiration_date: values.expiration_date,
+      };
+
+      if (selectedClient) {
+        alertData.clientId = selectedClient.id;
+      }
+
+      const result = await createAlert({ alertData });
       if (result?.error) {
         toast.error(result.error?.data?.message);
       }
@@ -56,12 +56,12 @@ const AlertsForm = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="SCHEDULE AN ALERT"
-          subtitle="Schedule an alert for a client and set the expiration date"
+          title="SCHEDULE REMINDER OR AN ALERT"
+          subtitle="Schedule reminder or an alert and set the expiration date"
         />
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/alerts">Back to Alerts</Link>
+            <Link to="/alerts">Back to Reminders and Alerts</Link>
           </Button>
         </Box>
       </Box>
@@ -85,15 +85,67 @@ const AlertsForm = () => {
               gap="30px"
               gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 2" },
               }}
             >
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Alert Title"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.title}
+                name="title"
+                error={!!touched.title && !!errors.title}
+                helperText={touched.title && errors.title}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Description"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.description}
+                name="description"
+                error={!!touched.description && !!errors.description}
+                helperText={touched.description && errors.description}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Schedule Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.schedule_date}
+                name="schedule_date"
+                error={!!touched.schedule_date && !!errors.schedule_date}
+                helperText={touched.schedule_date && errors.schedule_date}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Expiration Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.expiration_date}
+                name="expiration_date"
+                error={!!touched.expiration_date && !!errors.expiration_date}
+                helperText={touched.expiration_date && errors.expiration_date}
+                sx={{ gridColumn: "span 2" }}
+              />
               <FormControl
                 fullWidth
                 variant="filled"
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               >
-                <InputLabel id="clientNameLabel">Client Name</InputLabel>
+                <InputLabel id="clientNameLabel">Select an Active Client Name (Optional)</InputLabel>
                 <Select
                   labelId="clientNameLabel"
                   id="clientName"
@@ -112,62 +164,10 @@ const AlertsForm = () => {
                     ))}
                 </Select>
               </FormControl>
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Alert Title"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
-                name="title"
-                error={!!touched.title && !!errors.title}
-                helperText={touched.title && errors.title}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Description"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.description}
-                name="description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="date"
-                label="Schedule Date"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.schedule_date}
-                name="schedule_date"
-                error={!!touched.schedule_date && !!errors.schedule_date}
-                helperText={touched.schedule_date && errors.schedule_date}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="date"
-                label="Expiration Date"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.expiration_date}
-                name="expiration_date"
-                error={!!touched.expiration_date && !!errors.expiration_date}
-                helperText={touched.expiration_date && errors.expiration_date}
-                sx={{ gridColumn: "span 4" }}
-              />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create an Alert
+                Create Reminder or an Alert
               </Button>
             </Box>
           </form>

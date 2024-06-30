@@ -218,8 +218,8 @@ export const api = createApi({
       providesTags: ["Alerts"],
     }),
     createAlert: build.mutation({
-      query: ({ clientId, alertData }) => ({
-        url: `/alert-initiate/${clientId}/`,
+      query: ({ alertData }) => ({
+        url: `/alert-initiate/`,
         method: "POST",
         body: alertData,
       }),
@@ -243,23 +243,42 @@ export const api = createApi({
       providesTags: ["Reports"],
     }),
     createReport: build.mutation({
-      query: ({ formData }) => {
-        // console.log("Report Data api.js:", formData); // Log the reportData
+      query: ({ reportData }) => {
         return {
           url: `/create-report/`,
           method: "POST",
-          body: formData,
+          body: reportData,
         };
-      },
-      headers: {
-        "Content-Type": "multipart/form-data",
       },
       invalidatesTags: ["Reports"],
     }),
+    updateReprt: build.mutation({
+      query: ({ reportId, updatedReport }) => ({
+        url: `/update-report/${reportId}/`,
+        method: "PUT",
+        body: updatedReport,
+      }),
+      invalidatesTags: ["Reports"],
+    }),
+
     getReportById: build.query({
-      query: (reportId) => `/report-detail/?ids=${reportId}`,
+      query: (reportId) => `/report-detail/${reportId}`,
       providesTags: (result, error, reportId) =>
         reportId ? [{ type: "Reports", id: reportId }] : [],
+    }),
+
+    getReportListByIds: build.query({
+      query: (ids) => `/reports-list-by-id/?ids=${ids.join(",")}`,
+      providesTags: (result, error, ids) =>
+        ids ? [{ type: "Reports", id: "LIST" }] : [],
+    }),
+
+    deleteReport: build.mutation({
+      query: (reportId) => ({
+        url: `/delete-report/${reportId}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Reports"],
     }),
 
     // Reservations
@@ -359,7 +378,10 @@ export const {
   // Reports
   useCreateReportMutation,
   useGetReportsQuery,
+  useUpdateReprtMutation,
   useGetReportByIdQuery,
+  useDeleteReportMutation,
+  useGetReportListByIdsQuery,
 
   // Reservations
   useGetFutureReservationsQuery,

@@ -216,14 +216,14 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Alerts Data"
+              title="Reminders & Alerts"
               to="/alerts"
               icon={<NotificationsActiveOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Schedules"
+              title="Schedules & Calendar"
               to="/calendar"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
@@ -237,7 +237,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            {userProfile["Access Level"] === "user" ? null : (
+            {/* {userProfile["Access Level"] === "user" ? null : (
               <>
                 <Typography
                   variant="h6"
@@ -254,7 +254,7 @@ const Sidebar = () => {
                   setSelected={setSelected}
                 />
               </>
-            )}
+            )} */}
             <Typography
               variant="h6"
               color={colors.grey[300]}

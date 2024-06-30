@@ -39,8 +39,10 @@ import UserProfileDisplay from "./scenes/team/profile_data";
 import Contracts from "./scenes/client_contracts";
 import ContractByID from "./scenes/client_contracts/contractByID";
 import Reports from "./scenes/reports_summary";
-import ReportByID from "./scenes/reports_summary/reportByID";
+import ReportByIDParent from "./scenes/reports_summary/reportByIdParent";
 import ReportsForm from "./scenes/report_form";
+// import ReportByIdPaper from "./scenes/reports_summary/reportByIdParent";
+import ReportsUpdateForm from "./scenes/report_form/update_report";
 
 import IncompleteClients from "./scenes/uncomp_clients";
 import IncompleteClientForm from "./scenes/uncomp_client_form";
@@ -300,10 +302,18 @@ function App() {
                   path="/report-id"
                   element={
                     <AdminLayout>
-                      <ReportByID />{" "}
+                      <ReportByIDParent />{" "}
                     </AdminLayout>
                   }
                 />
+                {/* <Route
+                  path="/report-id-paper"
+                  element={
+                    <AdminLayout>
+                      <ReportByIdPaper />{" "}
+                    </AdminLayout>
+                  }
+                /> */}
                 <Route
                   path="reports-form"
                   element={
@@ -312,6 +322,15 @@ function App() {
                     </AdminLayout>
                   }
                 />
+                <Route
+                  path="update-report"
+                  element={
+                    <AdminLayout>
+                      <ReportsUpdateForm />{" "}
+                    </AdminLayout>
+                  }
+                />
+
                 <Route
                   path="/bar"
                   element={
