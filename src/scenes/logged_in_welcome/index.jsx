@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,17 +14,9 @@ const AuthLandingUser = () => {
     }, [navigate]);
 
     return (
-        <div
-        style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "300px",
-          }}>
-            <h1>Welcome to MLCS admin portal</h1>
-            <CircularProgress size={300} color="inherit" />
-        </div>
+        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+            <CircularProgress size={60} color="inherit" />
+        </Box>
     );
 };
 
