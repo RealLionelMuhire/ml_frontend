@@ -78,15 +78,6 @@ const ClientByIDAccordion = ({ data }) => {
     );
   };
 
-// "Expected Account Activity": Array(3) [ {…}, {…}, {…} ]
-// ​​​
-// 0: Object { id: 0, year1: "77277272", year2: "82772772", … }
-// ​​​
-// 1: Object { id: 1, year1: "72772772", year2: "7373773", … }
-// ​​​
-// 2: Object { id: 2, year1: "737737737", year2: "73773773", … }
-// ​​​
-// length: 3
 
   const renderExpectedAccountActivityTable = (expectedAccountActivityData) => {
     if (!expectedAccountActivityData || expectedAccountActivityData.length === 0) {
@@ -463,6 +454,24 @@ const ClientByIDAccordion = ({ data }) => {
         "Authorized User 3 Access Rights": client["Authorized User 3 Access Rights"],
         "Authorized User 4": client["Authorized User 4"],
         "Authorized User 4 Access Rights": client["Authorized User 4 Access Rights"],
+      }))
+    )
+
+    const mlStorageAdminDetail = groupDataByKeys(
+      data.map((client) => ({
+        "Registrar ID": client["Registrar ID"],
+        "Registrar Email": client["Registrar Email"],
+        "Registrar First Name": client["Registrar First Name"],
+        "Registration Date": client["Registration Date"],
+        "Is Active": client["Is Active"],
+        "Activator ID": client["Activator ID"],
+        "Activator Email": client["Activator Email"],
+        "Activator First Name": client["Activator First Name"],
+        "Activation Date": client["Activation Date"],
+        "Deactivator ID": client["Deactivator ID"],
+        "Deactivator Email": client["Deactivator Email"],
+        "Deactivator First Name": client["Deactivator First Name"],
+        "Deactivation Date": client["Deactivation Date"],
       }))
     )
 
@@ -849,15 +858,9 @@ const ClientByIDAccordion = ({ data }) => {
             </AccordionDetails>
           </Accordion>
 
-          
-
-
-
-          
-
         </AccordionDetails>
       </Accordion>
-      <Accordion defaultExpanded>
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[300]} variant="h5">
             FINANCIAL FORECAST
@@ -867,7 +870,7 @@ const ClientByIDAccordion = ({ data }) => {
           {renderFinancialForecastTable(financialForecast)}
         </AccordionDetails>
       </Accordion>
-      <Accordion defaultExpanded>
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[300]} variant="h5">
             EXPECTED ACCOUNT ACTIVITY
@@ -875,6 +878,23 @@ const ClientByIDAccordion = ({ data }) => {
         </AccordionSummary>
         <AccordionDetails>
           {renderExpectedAccountActivityTable(expectedAccountActivity)}
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography color={colors.greenAccent[300]} variant="h5">
+            ML Storage Administration Details
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <TableContainer>
+            <Table>
+              <TableBody>
+                {createTableRowsFromGroupedData(mlStorageAdminDetail)}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </AccordionDetails>
       </Accordion>
     </Box>

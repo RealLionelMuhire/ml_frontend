@@ -273,47 +273,7 @@ const FormFields7 = ({
           />
         </>
       )}
-      {/* <TextField
-        fullWidth
-        variant="filled"
-        type="text"
-        label="Type of Product(s) Or Service(s)"
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={values.productService}
-        name="productService"
-        error={errors.productService && !!errors.productService}
-        helperText={touched.productService && errors.productService}
-        sx={{ gridColumn: "span 1" }}
-      />
-
-      <TextField
-        fullWidth
-        variant="filled"
-        type="text"
-        label="Business Address"
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={values.businessAddress}
-        name="businessAddress"
-        error={errors.businessAddress && !!errors.businessAddress}
-        helperText={touched.businessAddress && errors.businessAddress}
-        sx={{ gridColumn: "span 1" }}
-      />
-
-      <TextField
-        fullWidth
-        variant="filled"
-        type="text"
-        label="Secretary"
-        onBlur={handleBlur}
-        onChange={handleChange}
-        value={values.secretaryService}
-        name="secretaryService"
-        error={errors.secretaryService && !!errors.secretaryService}
-        helperText={touched.secretaryService && errors.secretaryService}
-        sx={{ gridColumn: "span 1" }}
-      /> */}
+     
       <Box
         variant="outlined"
         display="flex"
