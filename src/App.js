@@ -21,7 +21,7 @@ import ClientsForm from "./scenes/client_form";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import AdminLayout from "./layouts/admin";
-import ClientWithID from "./scenes/clients/clientByID";
+import ClientByIDParent from "./scenes/clients/clientByIdParent";
 import ServiceByID from "./scenes/services/serviceByID";
 import ProfileUpdateForm from "./scenes/team/profile_update";
 import ClientsData from "./scenes/client_data";
@@ -157,7 +157,7 @@ function App() {
                   path="/clients-id"
                   element={
                     <AdminLayout>
-                      <ClientWithID />
+                      <ClientByIDParent />
                     </AdminLayout>
                   }
                 />

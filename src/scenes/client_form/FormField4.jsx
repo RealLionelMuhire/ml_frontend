@@ -52,8 +52,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             }}
           >
             <Typography variant="body1">
-              If yes, please provide us with his former names and the dates of
-              the change of names
+              If yes, please provide us with his former names
             </Typography>
           </Box>
 
@@ -303,7 +302,7 @@ const FormFields4 = ({ values, errors, touched, handleBlur, handleChange }) => {
             fullWidth
             variant="filled"
             type="text"
-            label="Details of Similar Application"
+            label="Details of Criticism"
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.similarApplicationDetailsJurisdictions}
