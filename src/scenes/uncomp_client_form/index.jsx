@@ -81,8 +81,10 @@ const IncompleteClientForm = () => {
   };
   
   const handleFormSubmit = async (values) => {
-    // console.log("Form submitting  ... \n");
-    // console.log("values:", values);
+    console.log("Form submitting  ... \n");
+    console.log("client values:", client);
+    console.log("Form submitting  ... \n");
+    console.log("values:", values);
   
     // Create a new object to hold the final form values
     const finalValues = { ...values };
@@ -104,21 +106,39 @@ const IncompleteClientForm = () => {
       }
     });
   
-    // console.log("Final values:", finalValues);
+    console.log("Final values:", finalValues);
   
     try {
       setIsLoadingSubmit(true);
       const formData = new FormData();
+  
       Object.entries(finalValues).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           if (key === "financialForecast" || key === "expectedAccountActivity") {
             formData.append(key, JSON.stringify(value));
+          } else if (typeof value === 'object' && value.file_name && value.file_content) {
+            // Convert pre-existing file to a File object
+            try {
+              const byteCharacters = atob(value.file_content);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const file = new File([byteArray], value.file_name, { type: "application/pdf" });
+              formData.append(key, file);
+            } catch (error) {
+              console.error(`Error converting file: ${key}`, error);
+            }
+          } else if (value instanceof File) {
+            formData.append(key, value);
           } else {
             formData.append(key, value);
           }
         }
       });
-      // console.log("form data:");
+  
+      console.log("form data:", formData);
   
       const response = await createClient(formData);
       // console.log("response:", response);
@@ -137,6 +157,7 @@ const IncompleteClientForm = () => {
       setIsLoadingSubmit(false);
     }
   };
+  
   
 
   const handleSaveAndContinueLater = async (values) => {

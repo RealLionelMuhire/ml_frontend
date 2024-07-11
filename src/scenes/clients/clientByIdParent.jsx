@@ -35,7 +35,7 @@ const ClientByIDParent = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
             <Button type="submit" color="secondary" variant="contained">
-                <Link to="/clients-form">Create a new client</Link>
+                <Link to="/client-form">Create a new client</Link>
             </Button>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
