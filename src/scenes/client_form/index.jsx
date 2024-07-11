@@ -199,6 +199,9 @@ const ClientForm = () => {
     secretary: yup.string(),
     productService: yup.string(),
     businessAddress: yup.string(),
+    sharesType: yup.string(),
+    sharesNumber: yup.string(),
+    statedCapital: yup.string(),
 
     // Source of Funds
     sourceOfFunds: yup.string(),
@@ -453,6 +456,9 @@ const ClientForm = () => {
     secretary: "",
     productService: "",
     businessAddress: "",
+    sharesType: "",
+    sharesNumber: "",
+    statedCapital: "",
 
     sourceOfFunds: "",
     otherSourceOfFunds: "",
