@@ -13,7 +13,6 @@ const ClientByID = ({ data, selectedClientIds }) => {
     const filteredItem = {};
     Object.keys(item).forEach(key => {
       if (
-        key !== "Estimated Net Worth" &&
         key !== "Expected Account Activity" &&
         key !== "Financial Forecast"
       ) {

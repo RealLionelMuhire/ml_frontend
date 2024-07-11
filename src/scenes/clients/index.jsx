@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -17,10 +17,8 @@ import { Dialog, DialogContent, DialogActions } from "@mui/material";
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();
-  const [activateClient, { isLoading: isActivating }] =
-    useActivateClientMutation();
-  const [deactivateClient, { isLoading: isDeactivating }] =
-    useDeactivateClientMutation();
+  const [activateClient, { isLoading: isActivating }] = useActivateClientMutation();
+  const [deactivateClient, { isLoading: isDeactivating }] = useDeactivateClientMutation();
   const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
 
   const navigate = useNavigate();
@@ -29,6 +27,7 @@ const Clients = () => {
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleConfirmationOpen = (action) => {
     setConfirmationAction(action);
@@ -116,6 +115,14 @@ const Clients = () => {
     setSelectedClientIds(selectionModel);
   };
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "NameOfEntity", headerName: "Entity Name", flex: 1 },
@@ -186,49 +193,61 @@ const Clients = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CLIENTS" subtitle="Managing All Clients" />
+        
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
-            type="button"
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={handleMenuOpen}
             color="secondary"
             variant="contained"
-            onClick={handleViewMoreClick}
-            disabled={selectedClientIds.length === 0}
           >
-            Select Client to view More
+            Select for More Actions
           </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("activate")}
-            disabled={selectedClientIds.length !== 1 || isActivating}
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
           >
-            Activate Selected
-          </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("deactivate")}
-            disabled={selectedClientIds.length !== 1 || isDeactivating}
-          >
-            Deactivate Selected
-          </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("delete")}
-            disabled={selectedClientIds.length === 0 || isDeleting}
-          >
-            Delete Selected
-          </Button>
+            <MenuItem
+              onClick={() => {
+                handleConfirmationOpen("activate");
+                handleMenuClose();
+              }}
+              disabled={selectedClientIds.length !== 1 || isActivating}
+            >
+              Activate Selected(1)
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleConfirmationOpen("deactivate");
+                handleMenuClose();
+              }}
+              disabled={selectedClientIds.length !== 1 || isDeactivating}
+            >
+              Deactivate Selected(1)
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleConfirmationOpen("delete");
+                handleMenuClose();
+              }}
+              disabled={selectedClientIds.length === 0 || isDeleting}
+            >
+              Delete Selected
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleViewMoreClick();
+                handleMenuClose();
+              }}
+              disabled={selectedClientIds.length === 0}
+            >
+              View More On selected
+            </MenuItem>
+          </Menu>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
