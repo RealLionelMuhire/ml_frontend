@@ -1,14 +1,11 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
 import {
   TextField,
   Box,
   Typography,
   MenuItem,
-  CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useGetUncompleteClientByIdQuery } from "../../state/api";
 import { tokens } from "../../theme";
 import PdfViewerDialog from "../../utils/PdfViewerDialog";
 
@@ -20,26 +17,11 @@ const FormFields10 = ({
   handleChange,
   isNonMobile,
   setFieldValue,
+  client,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const location = useLocation();
-  const selectedClientIds = useMemo(
-    () => location.state?.selectedClientIds || [],
-    [location.state?.selectedClientIds]
-  );
-  const { data: clientData, isLoading } =
-    useGetUncompleteClientByIdQuery(selectedClientIds);
 
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress size={60} color="inherit" />
-      </div>
-    );
-  }
-
-  const client = clientData ? clientData[0] : {};
   return (
     <React.Fragment>
       {/* DIRECTORSHIP */}

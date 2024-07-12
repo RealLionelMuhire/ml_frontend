@@ -111,6 +111,12 @@ const Clients = () => {
     });
   };
 
+  const handleUpdateClick = () => {
+    navigate("/update-client", {
+      state: { selectedClientIds },
+    });
+  };
+
   const handleSelectionModelChange = (selectionModel) => {
     setSelectedClientIds(selectionModel);
   };
@@ -247,6 +253,16 @@ const Clients = () => {
             >
               View More On selected
             </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleUpdateClick();
+                handleMenuClose();
+              }}
+              disabled={selectedClientIds.length !== 1}
+            >
+              Modify Data On Selected(1)
+            </MenuItem>
+
           </Menu>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">

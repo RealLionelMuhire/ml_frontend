@@ -105,7 +105,7 @@ export const api = createApi({
         providesTags: ["Clients"],
       }),
     }),
-    
+
     getUncompleteClients: build.query({
       query: () => "/all-incomplete-clients/",
       method: "GET",
@@ -360,6 +360,7 @@ export const {
   useDeactivateClientMutation,
   useDeleteClientMutation,
   useUpdateClientMutation,
+  useGetClientByIdDisplayQuery,
   useCreateUncompleteClientMutation,
   useGetUncompleteClientsQuery,
   useUpdateUncompletedClientMutation,

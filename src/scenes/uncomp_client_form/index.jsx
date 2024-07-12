@@ -940,6 +940,7 @@ const IncompleteClientForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 11 && (

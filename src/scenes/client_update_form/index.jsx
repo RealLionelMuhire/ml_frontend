@@ -6,9 +6,8 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import {
-  useCreateClientMutation,
-  useUpdateUncompletedClientMutation,
-  useGetUncompleteClientByIdQuery,
+  useUpdateClientMutation,
+  useGetClientByIdDisplayQuery,
 } from "../../state/api";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,15 +23,15 @@ import FormFields9 from "./FormField9";
 import FormFields10 from "./FormField10";
 import FormFields11 from "./FormField11";
 import FormFields12 from "./FormField12";
-import ErrorBox from "./ErrorBox";
-import SuccessBox from "./SuccessBox";
+// import ErrorBox from "./ErrorBox";
+// import SuccessBox from "./SuccessBox";
 
 const ClientUpdateForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createClient, { isError, data }] = useCreateClientMutation();
+  // const [createClient, { isError, data }] = useCreateClientMutation();
 
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
-  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+  // const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -41,7 +40,7 @@ const ClientUpdateForm = () => {
     [location.state?.selectedClientIds]
   );
 
-  const [updateUncompleteData] = useUpdateUncompletedClientMutation();
+  const [updateUncompleteData] = useUpdateClientMutation();
 
   const [step, setStep] = useState(1);
 
@@ -49,7 +48,7 @@ const ClientUpdateForm = () => {
     data: clientData,
     isLoading,
     refetch,
-  } = useGetUncompleteClientByIdQuery(selectedClientIds);
+  } = useGetClientByIdDisplayQuery(selectedClientIds);
 
   useEffect(() => {
     refetch();
@@ -66,101 +65,101 @@ const ClientUpdateForm = () => {
   const client = clientData ? clientData[0] : {};
   // console.log("client:", client);
 
-  const mergeForecastData = (valuesData, clientData) => {
-    if (!valuesData || !clientData) return valuesData || clientData;
+  // const mergeForecastData = (valuesData, clientData) => {
+  //   if (!valuesData || !clientData) return valuesData || clientData;
   
-    return valuesData.map((row, index) => {
-      const clientRow = clientData[index] || {};
-      return {
-        ...row,
-        year1: row.year1 || clientRow.year1,
-        year2: row.year2 || clientRow.year2,
-        year3: row.year3 || clientRow.year3,
-      };
-    });
-  };
+  //   return valuesData.map((row, index) => {
+  //     const clientRow = clientData[index] || {};
+  //     return {
+  //       ...row,
+  //       year1: row.year1 || clientRow.year1,
+  //       year2: row.year2 || clientRow.year2,
+  //       year3: row.year3 || clientRow.year3,
+  //     };
+  //   });
+  // };
   
-  const handleFormSubmit = async (values) => {
-    console.log("Form submitting  ... \n");
-    console.log("client values:", client);
-    console.log("Form submitting  ... \n");
-    console.log("values:", values);
+  // const handleFormSubmit = async (values) => {
+  //   // console.log("Form submitting  ... \n");
+  //   // console.log("client values:", client);
+  //   // console.log("Form submitting  ... \n");
+  //   // console.log("values:", values);
   
-    // Create a new object to hold the final form values
-    const finalValues = { ...values };
+  //   // Create a new object to hold the final form values
+  //   const finalValues = { ...values };
   
-    // Merge financialForecast data
-    if (values.financialForecast && client.financialForecast) {
-      finalValues.financialForecast = mergeForecastData(values.financialForecast, client.financialForecast);
-    }
+  //   // Merge financialForecast data
+  //   if (values.financialForecast && client.financialForecast) {
+  //     finalValues.financialForecast = mergeForecastData(values.financialForecast, client.financialForecast);
+  //   }
   
-    // Merge expectedAccountActivity data
-    if (values.expectedAccountActivity && client.expectedAccountActivity) {
-      finalValues.expectedAccountActivity = mergeForecastData(values.expectedAccountActivity, client.expectedAccountActivity);
-    }
+  //   // Merge expectedAccountActivity data
+  //   if (values.expectedAccountActivity && client.expectedAccountActivity) {
+  //     finalValues.expectedAccountActivity = mergeForecastData(values.expectedAccountActivity, client.expectedAccountActivity);
+  //   }
   
-    // Iterate through each field in the values object
-    Object.keys(values).forEach((key) => {
-      if (!values[key] && client[key]) {
-        finalValues[key] = client[key];
-      }
-    });
+  //   // Iterate through each field in the values object
+  //   Object.keys(values).forEach((key) => {
+  //     if (!values[key] && client[key]) {
+  //       finalValues[key] = client[key];
+  //     }
+  //   });
   
-    console.log("Final values:", finalValues);
+  //   console.log("Final values:", finalValues);
   
-    try {
-      setIsLoadingSubmit(true);
-      const formData = new FormData();
+  //   try {
+  //     setIsLoadingSubmit(true);
+  //     const formData = new FormData();
   
-      Object.entries(finalValues).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          if (key === "financialForecast" || key === "expectedAccountActivity") {
-            formData.append(key, JSON.stringify(value));
-          } else if (typeof value === 'object' && value.file_name && value.file_content) {
-            // Convert pre-existing file to a File object
-            try {
-              const byteCharacters = atob(value.file_content);
-              const byteNumbers = new Array(byteCharacters.length);
-              for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-              }
-              const byteArray = new Uint8Array(byteNumbers);
-              const file = new File([byteArray], value.file_name, { type: "application/pdf" });
-              formData.append(key, file);
-            } catch (error) {
-              console.error(`Error converting file: ${key}`, error);
-            }
-          } else if (value instanceof File) {
-            formData.append(key, value);
-          } else {
-            formData.append(key, value);
-          }
-        }
-      });
+  //     Object.entries(finalValues).forEach(([key, value]) => {
+  //       if (value !== null && value !== undefined) {
+  //         if (key === "financialForecast" || key === "expectedAccountActivity") {
+  //           formData.append(key, JSON.stringify(value));
+  //         } else if (typeof value === 'object' && value.file_name && value.file_content) {
+  //           // Convert pre-existing file to a File object
+  //           try {
+  //             const byteCharacters = atob(value.file_content);
+  //             const byteNumbers = new Array(byteCharacters.length);
+  //             for (let i = 0; i < byteCharacters.length; i++) {
+  //               byteNumbers[i] = byteCharacters.charCodeAt(i);
+  //             }
+  //             const byteArray = new Uint8Array(byteNumbers);
+  //             const file = new File([byteArray], value.file_name, { type: "application/pdf" });
+  //             formData.append(key, file);
+  //           } catch (error) {
+  //             console.error(`Error converting file: ${key}`, error);
+  //           }
+  //         } else if (value instanceof File) {
+  //           formData.append(key, value);
+  //         } else {
+  //           formData.append(key, value);
+  //         }
+  //       }
+  //     });
   
-      console.log("form data:", formData);
+  //     console.log("form data:", formData);
   
-      const response = await createClient(formData);
-      // console.log("response:", response);
+  //     const response = await createClient(formData);
+  //     // console.log("response:", response);
   
-      if (response.error && response.error.data.detail) {
-        toast.error(response.error.data.detail);
-      } else if (response.error) {
-        toast.error(response.error?.data?.message || "An error occurred");
-      } else if (response.data) {
-        toast.success(response.data?.message);
-        navigate("/clients");
-      }
-    } catch (error) {
-      console.error("Error creating user:", error);
-    } finally {
-      setIsLoadingSubmit(false);
-    }
-  };
+  //     if (response.error && response.error.data.detail) {
+  //       toast.error(response.error.data.detail);
+  //     } else if (response.error) {
+  //       toast.error(response.error?.data?.message || "An error occurred");
+  //     } else if (response.data) {
+  //       toast.success(response.data?.message);
+  //       navigate("/clients");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating user:", error);
+  //   } finally {
+  //     setIsLoadingSubmit(false);
+  //   }
+  // };
   
   
 
-  const handleSaveAndContinueLater = async (values) => {
+  const handleSaveModifications = async (values) => {
     try {
       setIsLoadingSaveLater(true);
 
@@ -200,7 +199,7 @@ const ClientUpdateForm = () => {
       }
 
       // Navigate to incomplete clients page after all updates
-      navigate("/incomplete-clients");
+      navigate("/clients");
     } catch (error) {
       console.error("Error saving form for later:", error);
       toast.error("An error occurred while saving the form.");
@@ -795,7 +794,7 @@ const ClientUpdateForm = () => {
         />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            <Link to="/incomplete-clients">Back to Incomplete Client List</Link>
+            <Link to="/clients">Back to Clients List</Link>
           </Button>
         </Box>
       </Box>
@@ -803,7 +802,7 @@ const ClientUpdateForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={checkoutSchema}
-        onSubmit={handleFormSubmit}
+        onSubmit={handleSaveModifications}
       >
         {({
           values,
@@ -940,6 +939,7 @@ const ClientUpdateForm = () => {
                   handleChange={handleChange}
                   isNonMobile={isNonMobile}
                   setFieldValue={setFieldValue}
+                  client={client}
                 />
               )}
               {step === 11 && (
@@ -970,11 +970,11 @@ const ClientUpdateForm = () => {
 
             {/* Previous and Next Buttons */}
             <Box display="flex" justifyContent="space-between">
-              {step !== 13 && (
+              {step !== 12 && (
                 <Box display="flex" mt={"20px"}>
                   <Button
                     variant="contained"
-                    onClick={() => handleSaveAndContinueLater(values)}
+                    onClick={() => handleSaveModifications(values)}
                     color="secondary"
                     disabled={isLoadingSaveLater}
                     style={{ marginRight: "10px" }}
@@ -982,7 +982,7 @@ const ClientUpdateForm = () => {
                     {isLoadingSaveLater ? (
                       <CircularProgress size={24} color="inherit" />
                     ) : (
-                      "Save & Continue Later"
+                      "Save Modifications"
                     )}
                   </Button>
                 </Box>
@@ -1123,22 +1123,22 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={() => handleFormSubmit(values)}
+                    onClick={() => handleSaveModifications(values)}
                     type="submit"
                     color="secondary"
-                    disabled={isLoadingSubmit}
+                    disabled={isLoadingSaveLater}
                   >
-                    {isLoadingSubmit ? (
+                    {isLoadingSaveLater ? (
                       <CircularProgress size={24} color="inherit" />
                     ) : (
-                      "Submit"
+                      "Save Modifications"
                     )}
                   </Button>
                 </Box>
               )}
             </Box>
-            <ErrorBox isError={isError} />
-            <SuccessBox data={data} />
+            {/* <ErrorBox isError={isError} />
+            <SuccessBox data={data} /> */}
           </form>
         )}
       </Formik>

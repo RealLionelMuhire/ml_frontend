@@ -43,6 +43,7 @@ import ReportByIDParent from "./scenes/reports_summary/reportByIdParent";
 import ReportsForm from "./scenes/report_form";
 // import ReportByIdPaper from "./scenes/reports_summary/reportByIdParent";
 import ReportsUpdateForm from "./scenes/report_form/update_report";
+import ClientUpdateForm from "./scenes/client_update_form";
 
 import IncompleteClients from "./scenes/uncomp_clients";
 import IncompleteClientForm from "./scenes/uncomp_client_form";
@@ -247,6 +248,14 @@ function App() {
                   element={
                     <AdminLayout>
                       <ClientsForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/update-client"
+                  element={
+                    <AdminLayout>
+                      <ClientUpdateForm />
                     </AdminLayout>
                   }
                 />
