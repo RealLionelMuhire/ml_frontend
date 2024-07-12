@@ -89,6 +89,23 @@ export const api = createApi({
       }),
       invalidatesTags: ["Clients"],
     }),
+    
+    updateClient: build.mutation({
+      query: ({ clientId, updatedClient }) => ({
+        url: `/update-client/${clientId}/`,
+        method: "PUT",
+        body: updatedClient,
+      }),
+      invalidatesTags: ["Clients"],
+    }),
+    getClientByIdDisplay: build.query({
+      query: (clientId) => ({
+        url: `/clients-list-by-id/${clientId}`,
+        method: "GET",
+        providesTags: ["Clients"],
+      }),
+    }),
+    
     getUncompleteClients: build.query({
       query: () => "/all-incomplete-clients/",
       method: "GET",
@@ -342,6 +359,7 @@ export const {
   useActivateClientMutation,
   useDeactivateClientMutation,
   useDeleteClientMutation,
+  useUpdateClientMutation,
   useCreateUncompleteClientMutation,
   useGetUncompleteClientsQuery,
   useUpdateUncompletedClientMutation,
