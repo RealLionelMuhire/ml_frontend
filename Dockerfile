@@ -7,8 +7,14 @@ WORKDIR /app
 # Copy package.json and yarn.lock files to the working directory
 COPY package.json yarn.lock ./
 
-# Install the dependencies
-RUN yarn install
+# Set Node.js memory limit to 4GB
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Install the dependencies with retry logic
+RUN set -eux; \
+    for i in $(seq 1 5); do \
+        yarn install && break || sleep 5; \
+    done
 
 # Copy the rest of the application code to the working directory
 COPY . .
