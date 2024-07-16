@@ -71,6 +71,8 @@ const Clients = () => {
     }
   };
 
+// handle delete click, fx to fandle the delete click
+
   const handleDeleteClick = async () => {
     try {
       const promises = selectedClientIds.map(async (clientId) => {
