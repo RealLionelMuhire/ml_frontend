@@ -1,12 +1,11 @@
-import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Typography, Menu, MenuItem, CircularProgress } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetClientsQuery } from "../../state/api";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   useActivateClientMutation,
   useDeactivateClientMutation,
@@ -14,6 +13,7 @@ import {
 } from "../../state/api";
 import { toast } from "react-toastify";
 import { Dialog, DialogContent, DialogActions } from "@mui/material";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const Clients = () => {
   const { data, isLoading, refetch } = useGetClientsQuery();
@@ -27,7 +27,21 @@ const Clients = () => {
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null);
+  const [loadingDialogOpen, setLoadingDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  // Handle loading dialog state
+  useEffect(() => {
+    setLoadingDialogOpen(isLoading || isActivating || isDeactivating || isDeleting);
+  }, [isLoading, isActivating, isDeactivating, isDeleting]);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleConfirmationOpen = (action) => {
     setConfirmationAction(action);
@@ -54,7 +68,7 @@ const Clients = () => {
     await handleDeleteClick();
   };
 
-  const handleActivateClick = async (activate) => {
+  const handleActivateClick = async () => {
     try {
       const promises = selectedClientIds.map(async (clientId) => {
         const response = await activateClient(clientId);
@@ -70,8 +84,6 @@ const Clients = () => {
       toast.error("Error activating clients");
     }
   };
-
-// handle delete click, fx to fandle the delete click
 
   const handleDeleteClick = async () => {
     try {
@@ -107,28 +119,8 @@ const Clients = () => {
     }
   };
 
-  const handleViewMoreClick = () => {
-    navigate("/clients-id", {
-      state: { selectedClientIds },
-    });
-  };
-
-  const handleUpdateClick = () => {
-    navigate("/update-client", {
-      state: { selectedClientIds },
-    });
-  };
-
   const handleSelectionModelChange = (selectionModel) => {
     setSelectedClientIds(selectionModel);
-  };
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
   };
 
   const columns = [
@@ -138,62 +130,38 @@ const Clients = () => {
       field: "firstName",
       headerName: "Representative First Name",
       flex: 1,
-      cellClassName: "name-column--cell",
+    },
+    { field: "email", headerName: "Representative Email", flex: 1 },
+    { field: "isActive", headerName: "Is Active", flex: 1,
+      renderCell: ({ row: { isActive } }) => (
+        <Box
+          width="60%"
+          m="0 auto"
+          p="5px"
+          display="flex"
+          justifyContent="center"
+          backgroundColor={isActive ? colors.greenAccent[600] : colors.redAccent[600]}
+          borderRadius="4px"
+        >
+          <Typography color={colors.grey[100]}>{isActive ? "Yes" : "No"}</Typography>
+        </Box>
+      ),
     },
     {
-      field: "lastName",
-      headerName: "Representative Last Name",
-      flex: 1,
-      hide: true,
-    },
-    { field: "email", headerName: "Representitive Email", flex: 1 },
-    { field: "SectorOfEntity", headerName: "Sector of Entity", flex: 1 },
-    { field: "CathegoryOfEntity", headerName: "Cathegory of Entity", flex: 1 },
-    { field: "SPVType", headerName: "SPV Type", flex: 1, hide: true },
-    {
-      field: "passportIdNumber",
-      headerName: "Passport ID Number",
-      flex: 1,
-      hide: true,
-    },
-    {
-      field: "countryOfIssue",
-      headerName: "Country of Issue",
-      flex: 1,
-      hide: true,
-    },
-    {
-      field: "clientContact",
-      headerName: "Client Contact Phone",
-      flex: 1,
-      hide: true,
-    },
-    { field: "clientEmail", headerName: "Client Email", flex: 1, hide: true },
-    { field: "preferredLanguage", headerName: "Language", flex: 1, hide: true },
-
-    {
-      field: "isActive",
-      headerName: "Is Active",
-      flex: 1,
-      renderCell: ({ row: { isActive } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              isActive ? colors.greenAccent[600] : colors.redAccent[600]
-            }
-            borderRadius="4px"
-          >
-            <Typography color={colors.grey[100]}>
-              {isActive ? "Yes" : "No"}
-            </Typography>
-          </Box>
-        );
-      },
+      field: "actions",
+      headerName: "Actions",
+      renderCell: (params) => (
+        <Button
+          color="secondary"
+          onClick={handleMenuOpen}
+          aria-controls="action-menu"
+          aria-haspopup="true"
+          variant="contained"
+          startIcon={<MoreVertIcon />}
+        >
+          Actions
+        </Button>
+      ),
     },
   ];
 
@@ -201,7 +169,6 @@ const Clients = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CLIENTS" subtitle="Managing All Clients" />
-        
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
             aria-controls="simple-menu"
@@ -213,7 +180,7 @@ const Clients = () => {
             Select for More Actions
           </Button>
           <Menu
-            id="simple-menu"
+            id="action-menu"
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}
@@ -248,23 +215,22 @@ const Clients = () => {
             </MenuItem>
             <MenuItem
               onClick={() => {
-                handleViewMoreClick();
+                navigate("/clients-id", { state: { selectedClientIds } });
                 handleMenuClose();
               }}
               disabled={selectedClientIds.length === 0}
             >
-              View More On selected
+              View More On Selected
             </MenuItem>
             <MenuItem
               onClick={() => {
-                handleUpdateClick();
+                navigate("/update-client", { state: { selectedClientIds } });
                 handleMenuClose();
               }}
               disabled={selectedClientIds.length !== 1}
             >
               Modify Data On Selected(1)
             </MenuItem>
-
           </Menu>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
@@ -282,31 +248,11 @@ const Clients = () => {
         m="40px 0 0 0"
         height="75vh"
         sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
+          "& .MuiDataGrid-root": { border: "none" },
+          "& .MuiDataGrid-cell": { borderBottom: "none" },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
             borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
           },
         }}
       >
@@ -320,13 +266,9 @@ const Clients = () => {
           onSelectionModelChange={handleSelectionModelChange}
         />
       </Box>
+
       {/* Confirmation Dialog */}
-      <Dialog
-        open={confirmationDialogOpen}
-        onClose={handleConfirmationClose}
-        maxWidth="xs"
-        fullWidth
-      >
+      <Dialog open={confirmationDialogOpen} onClose={handleConfirmationClose} maxWidth="xs" fullWidth>
         <DialogContent>
           <Typography>
             {confirmationAction === "activate"
@@ -338,11 +280,7 @@ const Clients = () => {
         </DialogContent>
         <DialogActions>
           <Box display="flex" justifyContent="center" p={2} gap="20px">
-            <Button
-              onClick={handleConfirmationClose}
-              color="secondary"
-              variant="contained"
-            >
+            <Button onClick={handleConfirmationClose} color="secondary" variant="contained">
               Cancel
             </Button>
             <Button
@@ -360,6 +298,12 @@ const Clients = () => {
             </Button>
           </Box>
         </DialogActions>
+      </Dialog>
+
+      <Dialog open={loadingDialogOpen}>
+        <DialogContent>
+          <CircularProgress size={60} />
+        </DialogContent>
       </Dialog>
     </Box>
   );
