@@ -1,5 +1,5 @@
-import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, Button, Typography, Menu, MenuItem, CircularProgress } from "@mui/material";
+import { DataGrid, GridMoreVertIcon, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
@@ -8,7 +8,7 @@ import {
   useGetUncompleteClientsQuery,
   useDeleteUncompleteClientMutation,
 } from "../../state/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogActions } from "@mui/material";
 import { toast } from "react-toastify";
@@ -24,7 +24,12 @@ const IncompleteClients = () => {
   const [selectedClientIds, setSelectedClientIds] = useState([]);
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null);
+  const [loadingDialogOpen, setLoadingDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    setLoadingDialogOpen(isLoading || isDeleting);
+  }, [isLoading, isDeleting]);
 
   const handleConfirmationOpen = (action) => {
     setConfirmationAction(action);
@@ -116,29 +121,22 @@ const IncompleteClients = () => {
     { field: "clientEmail", headerName: "Client Email", flex: 1, hide: true },
     { field: "preferredLanguage", headerName: "Language", flex: 1, hide: true },
     {
-      field: "isActive",
-      headerName: "Is Active",
+      field: "actions",
+      headerName: "Actions",
       flex: 1,
-      renderCell: ({ row: { isActive } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              isActive ? colors.greenAccent[600] : colors.redAccent[600]
-            }
-            borderRadius="4px"
-          >
-            <Typography color={colors.grey[100]}>
-              {isActive ? "Yes" : "No"}
-            </Typography>
-          </Box>
-        );
-      },
-    },
+      renderCell: (params) => (
+        <Button
+          color="secondary"
+          onClick={handleMenuOpen}
+          aria-controls="action-menu"
+          aria-haspopup="true"
+          variant="contained"
+          startIcon={<GridMoreVertIcon />}
+        >
+          Actions
+        </Button>
+      ),
+    }
   ];
 
   return (
@@ -155,6 +153,7 @@ const IncompleteClients = () => {
             color="secondary"
             variant="contained"
             onClick={handleMenuOpen}
+            startIcon={<GridMoreVertIcon />}
           >
             Select for More Actions
             </Button>
@@ -205,14 +204,16 @@ const IncompleteClients = () => {
             border: "none",
           },
           "& .MuiDataGrid-cell": {
-            borderBottom: "none",
+            borderBottom: `2px solid ${colors.grey[400]}`,
+            borderRight: `1px solid ${colors.grey[400]}`,
+            borderLeft: `1px solid ${colors.grey[400]}`,
           },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
+            borderRight: `1px solid ${colors.grey[400]}`,
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: colors.primary[400],
@@ -273,6 +274,13 @@ const IncompleteClients = () => {
             </Button>
           </Box>
         </DialogActions>
+      </Dialog>
+
+      {/* Loading Dialog */}
+      <Dialog open={loadingDialogOpen} maxWidth="xs" fullWidth>
+        <DialogContent>
+          <CircularProgress />
+        </DialogContent>
       </Dialog>
     </Box>
   );

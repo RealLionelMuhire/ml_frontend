@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Typography, Menu, MenuItem, CircularProgress } from "@mui/material";
+import { Box, Button, Typography, Menu, MenuItem, CircularProgress} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -115,7 +115,7 @@ const Clients = () => {
       await Promise.all(promises);
       refetch();
     } catch (error) {
-      toast.error("Error deactivating clients");
+      toast.error(error);
     }
   };
 
@@ -169,13 +169,14 @@ const Clients = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CLIENTS" subtitle="Managing All Clients" />
-        <Box display="flex" justifyContent="end" mt="20px">
+        <Box >
           <Button
             aria-controls="simple-menu"
             aria-haspopup="true"
             onClick={handleMenuOpen}
             color="secondary"
             variant="contained"
+            startIcon={<MoreVertIcon />}
           >
             Select for More Actions
           </Button>
@@ -234,7 +235,7 @@ const Clients = () => {
           </Menu>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
-          <Button type="submit" color="secondary" variant="contained">
+          <Button type="submit" color="secondary" variant="contained" >
             <Link to="/incomplete-clients">Incomplete Registrations</Link>
           </Button>
         </Box>
@@ -248,11 +249,33 @@ const Clients = () => {
         m="40px 0 0 0"
         height="75vh"
         sx={{
-          "& .MuiDataGrid-root": { border: "none" },
-          "& .MuiDataGrid-cell": { borderBottom: "none" },
+          "& .MuiDataGrid-root": {
+            border: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: `2px solid ${colors.grey[400]}`,
+            borderRight: `1px solid ${colors.grey[400]}`,
+            borderLeft: `1px solid ${colors.grey[400]}`,
+          },
+          "& .name-column--cell": {
+            color: colors.greenAccent[300],
+          },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
+            borderRight: `1px solid ${colors.grey[400]}`,
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400],
+          },
+          "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: colors.blueAccent[700],
+          },
+          "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`,
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`,
           },
         }}
       >
