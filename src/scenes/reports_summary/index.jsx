@@ -1,5 +1,5 @@
-import { Box, useTheme, Button, Dialog, DialogContent, DialogActions, Typography, CircularProgress } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, useTheme, Button, Dialog, DialogContent, DialogActions, Typography, CircularProgress, Menu, MenuItem } from "@mui/material";
+import { DataGrid, GridToolbar, GridMoreVertIcon } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ const Reports = () => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null);
   const [loadingDialogOpen, setLoadingDialogOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,6 +59,14 @@ const Reports = () => {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   const handleUpdateConfirmation = async () => {
@@ -113,6 +122,23 @@ const Reports = () => {
           <Box variant="contained">No File</Box>
         ),
     },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Button
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          onClick={handleMenuOpen}
+          variant="contained"
+          color="secondary"
+          startIcon={<GridMoreVertIcon />}
+        >
+          Actions
+        </Button>
+      ),
+    }
   ];
 
   return (
@@ -124,34 +150,48 @@ const Reports = () => {
             type="button"
             color="secondary"
             variant="contained"
-            onClick={handleViewMoreClick}
-            disabled={selectedReportIds.length === 0}
+            onClick={handleMenuOpen}
+            startIcon={<GridMoreVertIcon />}
           >
-            Select Report to view More
+            Select For More Actions
           </Button>
-        </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("delete")}
-            disabled={selectedReportIds.length === 0 || isDeleting}
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
           >
-            Delete Selected
-          </Button>
+            <MenuItem
+              onClick={() => {
+                handleViewMoreClick();
+                handleMenuClose()
+              }}
+              disabled={selectedReportIds.length === 0}
+            >
+                View More
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleConfirmationOpen("delete");
+                handleMenuClose()
+              }}
+              disabled={selectedReportIds.length === 0 || isDeleting}
+            >
+              Delete Selected
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleConfirmationOpen("update");
+                handleMenuClose()
+              }}
+              disabled={selectedReportIds.length === 0}
+            >
+              Update Selected
+            </MenuItem>
+            
+          </Menu>
         </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleConfirmationOpen("update")}
-            disabled={selectedReportIds.length === 0}
-          >
-            Update Selected
-          </Button>
-        </Box>
+        
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
             <Link to="/reports-form">Create a Report</Link>
@@ -166,14 +206,16 @@ const Reports = () => {
             border: "none",
           },
           "& .MuiDataGrid-cell": {
-            borderBottom: "none",
+            borderBottom: `2px solid ${colors.grey[400]}`,
+            borderRight: `1px solid ${colors.grey[400]}`,
+            borderLeft: `1px solid ${colors.grey[400]}`,
           },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
+            borderRight: `1px solid ${colors.grey[400]}`,
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: colors.primary[400],

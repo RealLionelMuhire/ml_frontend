@@ -43,14 +43,16 @@ const ReportByID = ({ data, selectedReportIds }) => {
           border: "none",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: "none",
+          borderBottom: `2px solid ${colors.grey[400]}`,
+          borderRight: `1px solid ${colors.grey[400]}`,
+          borderLeft: `1px solid ${colors.grey[400]}`,
         },
         "& .name-column--cell": {
           color: colors.greenAccent[300],
         },
         "& .MuiDataGrid-columnHeaders": {
           backgroundColor: colors.blueAccent[700],
-          borderBottom: "none",
+          borderRight: `1px solid ${colors.grey[400]}`,
         },
         "& .MuiDataGrid-virtualScroller": {
           backgroundColor: colors.primary[400],

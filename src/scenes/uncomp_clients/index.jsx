@@ -65,7 +65,7 @@ const IncompleteClients = () => {
       await Promise.all(promises);
       refetch();
     } catch (error) {
-      toast.error("Error deleting clients");
+      toast.error(error.message);
     }
   };
 
@@ -156,7 +156,7 @@ const IncompleteClients = () => {
             startIcon={<GridMoreVertIcon />}
           >
             Select for More Actions
-            </Button>
+          </Button>
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
