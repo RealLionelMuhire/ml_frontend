@@ -24,7 +24,8 @@ import { setLogout } from "../../state";
 import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
 import { toast } from "react-toastify";
-import TokenRetrieval from "../../utils/TokenRetrieval";
+import TokenStorage from "../../utils/TokenStorage";
+import TokenServices from "../../utils/TokenService";
 import { useNavigate } from "react-router-dom";
 import Search from "./Search";
 
@@ -85,52 +86,46 @@ const Topbar = () => {
 
   const handleLogoutConfirm = async (confirmed) => {
     setLogoutDialogOpen(false);
-
+  
     if (confirmed) {
       setLoading(true);
       try {
+        const refreshToken = TokenStorage.getRefreshToken();
+        const accessToken = TokenStorage.getAccessToken();
+  
         const loggedOutResponse = await fetch(`${baseUrl}logout/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `token ${TokenRetrieval.getToken()}`,
+            "Authorization": `Bearer ${accessToken}`,
           },
+          body: JSON.stringify({ refresh_token: refreshToken })
         });
+  
         const loggedOut = await loggedOutResponse.json();
         setLoading(false);
-        if (loggedOut) {
-          localStorage.clear("token");
-          dispatch(
-            setLogout({
-              user: "null",
-              token: "null",
-            })
-          );
-        }
+  
         if (loggedOutResponse.ok) {
-          toast.success(loggedOut.message);
-
+          TokenStorage.clearTokens();
+          dispatch(setLogout({ user: "null", token: "null" }));
+          toast.success("Logged out successfully.");
           setTimeout(() => {
             navigate("/login");
             window.location.href = "/login";
           }, 2000);
         } else {
-          localStorage.clear("token");
-          dispatch(
-            setLogout({
-              user: "null",
-              token: "null",
-            })
-          );
           toast.error(loggedOut.message);
           navigate("/login");
         }
       } catch (error) {
         setLoading(false);
-        toast.error("Error in logging out. Please try again.");
+        toast.error("Error logging out. Please try again.");
       }
     }
   };
+  
+  
+  
 
   const handleChangePasswordConfirm = async (confirmed) => {
     seChangePasswordDialogOpen(false);

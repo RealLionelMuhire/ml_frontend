@@ -53,15 +53,14 @@ import ClientDashboard from "./client_scenes/client_dashboard";
 import ClientLogin from "./client_scenes/login_client";
 import AuthLandingClient from "./client_scenes/logged_in_welcome";
 import ClientWelcomePage from "./client_scenes/welcome_page";
+import TokenStorage from "./utils/TokenStorage";
 
-const ProtectedRoute = ({
-  isAuthenticated,
-  isClientAuthenticated,
-  isUserAuthenticated,
-}) => {
+const ProtectedRoute = ({ isAuthenticated, isClientAuthenticated, isUserAuthenticated }) => {
+  const accessToken = TokenStorage.getAccessToken();
   const userType = localStorage.getItem("userType");
 
-  if (isAuthenticated || isClientAuthenticated || isUserAuthenticated) {
+
+  if (accessToken && (isAuthenticated || isClientAuthenticated || isUserAuthenticated)) {
     return <Outlet />;
   } else {
     if (userType === "client") {
@@ -80,19 +79,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = TokenRetrieval.getToken();
-    // console.log(token);
+    const accessToken = TokenStorage.getAccessToken();
     const userType = localStorage.getItem("userType");
+
     setIsLoading(false);
-    if (token && token !== "undefined") {
+
+    if (accessToken && accessToken !== "undefined") {
       setIsAuthenticated(true);
+
       if (userType === "client") {
         setIsClientAuthenticated(true);
-      } else if (
-        userType === "user" ||
-        userType === "admin" ||
-        userType === "manager"
-      ) {
+      } else if (userType === "user" || userType === "admin" || userType === "manager") {
         setIsUserAuthenticated(true);
       } else {
         setIsClientAuthenticated(false);
