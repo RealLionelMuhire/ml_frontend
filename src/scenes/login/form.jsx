@@ -77,44 +77,73 @@ const Form = () => {
         },
         body: JSON.stringify(values),
       });
-
+  
+      const loggedIn = await loggedInResponse.json();
+  
       if (!loggedInResponse.ok) {
-        const errorData = await loggedInResponse.json();
-        toast.error(errorData.message);
+        toast.error(loggedIn.message || "Error logging in. Please try again.");
         onSubmitProps.resetForm();
         setLoading(false);
+        return;
       }
-
-      const loggedIn = await loggedInResponse.json();
-      if (loggedInResponse.ok) {
-        toast.success(loggedIn.message);
+  
+      // Store tokens
+      // console.log("Storing tokens");
+      try {
+        // console.log("Saving access token");
+        TokenStorage.saveAccessToken(loggedIn.access);
+        // console.log("Access token saved");
+        
+        // console.log("Saving refresh token");
+        TokenStorage.saveRefreshToken(loggedIn.refresh);
+        // console.log("Refresh token saved");
+      } catch (storageError) {
+        // console.error("Error saving tokens:", storageError);
+        toast.error("Error saving tokens. Please try again.");
+        onSubmitProps.resetForm();
         setLoading(false);
+        return;
       }
-
+  
+      localStorage.setItem("user_id", loggedIn.user_id);
+      localStorage.setItem("userType", loggedIn.user_roles); // Assuming user_roles is userType
+  
+      // Dispatch login action
+      try {
+        // console.log("Dispatching login action");
+        dispatch(setLogin({
+          user: loggedIn.user,
+          token: loggedIn.access,
+        }));
+        // console.log("Login action dispatched");
+      } catch (dispatchError) {
+        // console.error("Error dispatching login action:", dispatchError);
+        toast.error("Error during login. Please try again.");
+        onSubmitProps.resetForm();
+        setLoading(false);
+        return;
+      }
+  
+      toast.success(loggedIn.message || "Logged in successfully");
+      setLoading(false);
       onSubmitProps.resetForm();
-      if (loggedIn?.token) {
-        localStorage.setItem("user_id", loggedIn.user_id);
-        localStorage.setItem("userType", loggedIn.userType);
-        TokenStorage.saveToken(loggedIn.token);
-        dispatch(
-          setLogin({
-            user: loggedIn.user,
-            token: loggedIn.token,
-          })
-        );
-        setLoading(true);
-        setTimeout(() => {
-          navigate("/landing-user");
-          window.location.href = "/landing-user";
-          setLoading(false);
-        }, 100);
-      }
+  
+      // Redirect after successful login
+      setLoading(true);
+      setTimeout(() => {
+        navigate("/landing-user");
+        window.location.href = "/landing-user";
+        setLoading(false);
+      }, 100);
     } catch (error) {
-      onSubmitProps.resetForm();
+      // console.error("Error logging in:", error);
       toast.error("Error logging in. Please try again.");
+      onSubmitProps.resetForm();
       setLoading(false);
     }
   };
+  
+  
 
   const forgotPassword = async (values, onSubmitProps) => {
     try {
@@ -135,7 +164,7 @@ const Form = () => {
       onSubmitProps.resetForm();
       navigate("/");
     } catch (error) {
-      console.error("Error resetting password:", error);
+      // console.error("Error resetting password:", error);
       toast.error("Error resetting password. Please try again.");
     } finally {
       setLoading(false);

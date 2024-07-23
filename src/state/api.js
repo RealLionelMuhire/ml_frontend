@@ -1,15 +1,16 @@
 // state/api.js
-import TokenRetrieval from "../utils/TokenRetrieval";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import TokenStorage from "../utils/TokenStorage";
+import TokenService from "../utils/TokenService";
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: (headers) => {
-    const token = TokenRetrieval.getToken();
+    const token = TokenStorage.getAccessToken();
     if (token) {
-      headers.set("Authorization", `token ${token}`);
+      headers.set("Authorization", `Bearer ${token}`);
     }
     return headers;
   },
@@ -17,10 +18,16 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  
-  if (result && result.error && result.error.status === 401) {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
+
+  if (result.error && result.error.status === 401) {
+    const newAccessToken = await TokenService.refreshAccessToken();
+
+    if (newAccessToken) {
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      TokenStorage.clearTokens();
+      window.location.href = "/login";
+    }
   }
 
   return result;

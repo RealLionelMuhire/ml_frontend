@@ -1,18 +1,14 @@
-// TokenRetrieval.js
-import CryptoJS from 'crypto-js';
-
-const secretKey = process.env.REACT_APP_SECRET_KEY;
+// TokenRetrieval.jsx
 
 const TokenRetrieval = {
   getToken: () => {
     try {
-      // Retrieve the encrypted token from local storage
-      const encryptedToken = localStorage.getItem("token");
-      if (encryptedToken === null) {
+      // Retrieve token from local storage
+      const savedToken = localStorage.getItem("token");
+      if (savedToken === null) {
         return null;
       }
-      const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
-      return bytes.toString(CryptoJS.enc.Utf8);
+      return savedToken;
     } catch (error) {
     //   console.error("Error retrieving token:", error);
       return null;
