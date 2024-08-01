@@ -169,7 +169,7 @@ const Clients = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CLIENTS" subtitle="Managing All Clients" />
-        <Box >
+        <Box display="flex" justifyContent="end" mt="20px">
           <Button
             aria-controls="simple-menu"
             aria-haspopup="true"
