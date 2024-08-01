@@ -130,26 +130,29 @@ const Topbar = () => {
     seChangePasswordDialogOpen(false);
 
     if (confirmed) {
+      setLoading(true);
       try {
-        const changePassordResponse = await fetch(
-          `${baseUrl}forgot-password/`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userProfile.email }),
-          }
-        );
-        if (!changePassordResponse.ok) {
-          const errorData = await changePassordResponse.json();
-          toast.error(errorData.message);
-          return;
+
+        const refreshToken = TokenStorage.getRefreshToken();
+        const accessToken = TokenStorage.getAccessToken();
+
+        const changePassordResponse = await fetch(`${baseUrl}logout/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        if (changePassordResponse.ok) {
+          TokenStorage.clearTokens();
+          dispatch(setLogout({ user: "null", token: "null" }));
+          window.location.href = `${baseUrl}reset_password/`;
+        } else {
+          toast.error("Error changing password. Please try again.");
         }
-        toast.success(
-          "Check your email, Password reset instructions sent successfully."
-        );
-        navigate("/login");
       } catch (error) {
-        toast.error("Error resetting password. Please try again.");
+        toast.error(error);
       }
     }
   };
