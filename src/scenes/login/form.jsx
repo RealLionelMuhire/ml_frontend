@@ -137,7 +137,8 @@ const Form = () => {
       onSubmitProps.resetForm();
   
       // Redirect after successful login
-      navigate("/landing-user");
+      // navigate("/landing-user");
+      window.location.href = "/landing-user";
     } catch (error) {
       setErrorMessage("Error logging in. Please check your internet connection.");
       onSubmitProps.resetForm();
