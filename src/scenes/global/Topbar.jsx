@@ -25,7 +25,6 @@ import { useDispatch } from "react-redux";
 import { useGetUserProfileQuery, useGetClientsQuery } from "../../state/api";
 import { toast } from "react-toastify";
 import TokenStorage from "../../utils/TokenStorage";
-import TokenServices from "../../utils/TokenService";
 import { useNavigate } from "react-router-dom";
 import Search from "./Search";
 

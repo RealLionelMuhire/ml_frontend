@@ -20,24 +20,29 @@ import TokenStorage from "../../utils/TokenStorage";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
+// Validation schema for login
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
   password: yup.string().required("Required"),
 });
 
+// Initial form values for login
 const initialValuesLogin = {
   email: "",
   password: "",
 };
 
+// Validation schema for forgot password
 const forgotPasswordSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Required"),
 });
 
+// Initial form values for forgot password
 const initialValuesForgotPassword = {
   email: "",
 };
 
+// Function to get CSRF token from cookies
 const getCookie = (name) => {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -53,6 +58,7 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
+// Form component
 const Form = () => {
   const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
@@ -64,12 +70,14 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
 
+  // Function to handle login
   const login = async (values, onSubmitProps) => {
     try {
       setLoading(true);
       const csrftoken = getCookie('csrftoken');
-      const loggedInResponse = await fetch(`${baseUrl}login/`, {
+      const response = await fetch(`${baseUrl}login/`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -78,85 +86,79 @@ const Form = () => {
         body: JSON.stringify(values),
       });
   
-      const loggedIn = await loggedInResponse.json();
+      const data = await response.json();
   
-      if (!loggedInResponse.ok) {
-        toast.error(loggedIn.message || "Error logging in. Please try again.");
+      if (!response.ok) {
+        // Handle specific error messages based on response status
+        switch (response.status) {
+          case 401:
+            setErrorMessage("Invalid credentials. Please check your email and password.");
+            break;
+          case 500:
+            setErrorMessage("Server error. Please try again later.");
+            break;
+          default:
+            setErrorMessage(data.message || "Error logging in. Please try again.");
+        }
         onSubmitProps.resetForm();
         setLoading(false);
         return;
       }
   
       // Store tokens
-      // console.log("Storing tokens");
       try {
-        // console.log("Saving access token");
-        TokenStorage.saveAccessToken(loggedIn.access);
-        // console.log("Access token saved");
-        
-        // console.log("Saving refresh token");
-        TokenStorage.saveRefreshToken(loggedIn.refresh);
-        // console.log("Refresh token saved");
+        TokenStorage.saveAccessToken(data.access);
+        TokenStorage.saveRefreshToken(data.refresh);
       } catch (storageError) {
-        // console.error("Error saving tokens:", storageError);
-        toast.error("Error saving tokens. Please try again.");
+        setErrorMessage("Error saving tokens. Please try again.");
         onSubmitProps.resetForm();
         setLoading(false);
         return;
       }
   
-      localStorage.setItem("user_id", loggedIn.user_id);
-      localStorage.setItem("userType", loggedIn.user_roles); // Assuming user_roles is userType
+      localStorage.setItem("user_id", data.user_id);
+      localStorage.setItem("userType", data.user_roles);
   
       // Dispatch login action
       try {
-        // console.log("Dispatching login action");
         dispatch(setLogin({
-          user: loggedIn.user,
-          token: loggedIn.access,
+          user: data.user,
+          token: data.access,
         }));
-        // console.log("Login action dispatched");
       } catch (dispatchError) {
-        // console.error("Error dispatching login action:", dispatchError);
-        toast.error("Error during login. Please try again.");
+        setErrorMessage("Error completing login. Please try again.");
         onSubmitProps.resetForm();
         setLoading(false);
         return;
       }
   
-      toast.success(loggedIn.message || "Logged in successfully");
+      toast.success(data.message || "Logged in successfully");
       setLoading(false);
       onSubmitProps.resetForm();
   
       // Redirect after successful login
-      setLoading(true);
-      setTimeout(() => {
-        navigate("/landing-user");
-        window.location.href = "/landing-user";
-        setLoading(false);
-      }, 100);
+      navigate("/landing-user");
     } catch (error) {
-      // console.error("Error logging in:", error);
-      toast.error("Error logging in. Please try again.");
+      setErrorMessage("Error logging in. Please check your internet connection.");
       onSubmitProps.resetForm();
       setLoading(false);
     }
   };
-  
-  
 
+  // Function to handle forgot password
   const forgotPassword = async (values, onSubmitProps) => {
     try {
       setLoading(true);
-      const forgotPasswordResponse = await fetch(`${baseUrl}forgot-password/`, {
+      const response = await fetch(`${baseUrl}forgot-password/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
-      if (!forgotPasswordResponse.ok) {
-        const errorData = await forgotPasswordResponse.json();
-        toast.error(errorData.message);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrorMessage(data.message || "Error sending reset link. Please try again.");
       } else {
         toast.success("Password reset link sent to your email.");
       }
@@ -164,14 +166,15 @@ const Form = () => {
       onSubmitProps.resetForm();
       navigate("/");
     } catch (error) {
-      // console.error("Error resetting password:", error);
-      toast.error("Error resetting password. Please try again.");
+      setErrorMessage("Error resetting password. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Function to handle form submission
   const handleFormSubmit = async (values, onSubmitProps) => {
+    setErrorMessage(""); // Clear any previous error messages
     if (isLogin) await login(values, onSubmitProps);
     if (isForgotPassword) await forgotPassword(values, onSubmitProps);
   };
@@ -258,6 +261,21 @@ const Form = () => {
             )}
           </Box>
 
+          {/* Error Message Box */}
+          {errorMessage && (
+            <Box
+              sx={{
+                mt: 2,
+                p: 2,
+                backgroundColor: palette.error.main,
+                color: palette.error.contrastText,
+                borderRadius: 1,
+              }}
+            >
+              <Typography variant="h5">{errorMessage}</Typography>
+            </Box>
+          )}
+
           {/* BUTTONS */}
           <Box>
             <Button
@@ -286,15 +304,14 @@ const Form = () => {
             <Box
               display="flex"
               gap="50px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              p="2rem"
-              m="2rem auto"
-              borderRadius="1.5rem"
-              alignItems="flex-end"
+              sx={{
+                width: "100%",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
             >
               <Typography
-                // color="secondary"
-                ml="5px"
+                mr="5px"
                 fontWeight="500"
                 variant="h5"
                 onClick={() => {
@@ -303,7 +320,6 @@ const Form = () => {
                 sx={{
                   mb: "1.5rem",
                   textDecoration: "underline",
-                  // color: palette.secondary.main,
                   "&:hover": {
                     cursor: "pointer",
                     color: palette.secondary.light,
@@ -315,7 +331,6 @@ const Form = () => {
                   : "Remember your password? Login here."}
               </Typography>
               <Typography
-                // color="secondary"
                 mr="5px"
                 fontWeight="500"
                 variant="h5"
@@ -325,7 +340,6 @@ const Form = () => {
                 sx={{
                   mb: "1.5rem",
                   textDecoration: "underline",
-                  // color: palette.secondary.main,
                   "&:hover": {
                     cursor: "pointer",
                     color: palette.secondary.light,
