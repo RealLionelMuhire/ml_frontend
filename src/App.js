@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import TokenRetrieval from "./utils/TokenRetrieval";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Clients from "./scenes/clients";
@@ -47,6 +46,11 @@ import ClientUpdateForm from "./scenes/client_update_form";
 
 import IncompleteClients from "./scenes/uncomp_clients";
 import IncompleteClientForm from "./scenes/uncomp_client_form";
+
+import WeeklyRep from "./scenes/weekly_rep_summary";
+import WeeklyRepByIDParent from "./scenes/weekly_rep_summary/WeeklyRepByIDParent";
+import WeeklyRepForm from "./scenes/weekly_rep_form";
+import WeeklyRepUpdateForm from "./scenes/weekly_rep_form/update_report";
 
 import ClientLayout from "./layouts/client";
 import ClientDashboard from "./client_scenes/client_dashboard";
@@ -333,6 +337,41 @@ function App() {
                   element={
                     <AdminLayout>
                       <ReportsUpdateForm />{" "}
+                    </AdminLayout>
+                  }
+                />
+
+                <Route
+                  path="/weekly-reports"
+                  element={
+                    <AdminLayout>
+                      <WeeklyRep />
+                    </AdminLayout>
+                  }
+                />
+
+                <Route
+                  path="/weekly-reports-id"
+                  element={
+                    <AdminLayout>
+                      <WeeklyRepByIDParent />
+                    </AdminLayout>
+                  }
+                />
+
+                <Route
+                  path="/weekly-reports-form"
+                  element={
+                    <AdminLayout>
+                      <WeeklyRepForm />
+                    </AdminLayout>
+                  }
+                />
+                <Route
+                  path="/update-weekly-report"
+                  element={
+                    <AdminLayout>
+                      <WeeklyRepUpdateForm />
                     </AdminLayout>
                   }
                 />

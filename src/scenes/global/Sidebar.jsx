@@ -15,6 +15,7 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import BackupTableIcon from '@mui/icons-material/BackupTable';
 import {
   EmailOutlined,
   HandshakeOutlined,
@@ -237,6 +238,9 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
+            {/* weekly reports */}
+            
+
             {/* {userProfile["Access Level"] === "user" ? null : (
               <>
                 <Typography
@@ -277,9 +281,16 @@ const Sidebar = () => {
               Reports
             </Typography>
             <Item
-              title="Reports & Summary"
+              title="Meeting & Events Summary"
               to="/reports"
               icon={<SummarizeOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Weekly Reports"
+              to="/weekly-reports"
+              icon={<BackupTableIcon />}
               selected={selected}
               setSelected={setSelected}
             />
