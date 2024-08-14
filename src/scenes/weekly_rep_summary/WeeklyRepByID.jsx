@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import PdfViewerDialog from "../../utils/PdfViewerDialog";
 import { tokens } from "../../theme";
 
-const ReportByID = ({ data, selectedReportIds }) => {
+const WeeklyRepByID = ({ data, selectedReportIds }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -78,4 +78,4 @@ const ReportByID = ({ data, selectedReportIds }) => {
   );
 };
 
-export default ReportByID;
+export default WeeklyRepByID;

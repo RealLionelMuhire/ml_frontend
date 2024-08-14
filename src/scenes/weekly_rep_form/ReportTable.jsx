@@ -3,23 +3,46 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
-import WeeklyRepForm from "./WeeklyRepForm"; // Import your form component
 
-const ReportTable = () => {
+const ReportTable = ({ initialReportData = [] }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [reportData, setReportData] = useState([]);
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // State to manage the rows data
+  const [reportData, setReportData] = useState(initialReportData);
 
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "taskName", headerName: "Task Name", flex: 2 },
-    { field: "taskDescription", headerName: "Task Description", flex: 2 },
-    { field: "progress", headerName: "Progress", flex: 2 },
-    { field: "challenges", headerName: "Challenges", flex: 2 },
-    { field: "dateTime", headerName: "Date and Time", flex: 3 },
+    { field: "id", headerName: "ID", width: 70 },
+    {
+      field: "dateTime",
+      headerName: "Date & Time",
+      width: 180,
+      editable: true, // Enable editing
+    },
+    {
+      field: "taskName",
+      headerName: "Task Name",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "taskDescription",
+      headerName: "Task Description",
+      width: 300,
+      editable: true,
+    },
+    {
+      field: "progress",
+      headerName: "Progress",
+      width: 130,
+      editable: true,
+    },
+    {
+      field: "challenges",
+      headerName: "Challenges",
+      width: 300,
+      editable: true,
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -53,15 +76,17 @@ const ReportTable = () => {
     return 200 + columns.length * 120;
   };
 
-  // Handle adding a new row from the form data
-  const handleFormSubmit = (newData) => {
-    setReportData((prevData) => [...prevData, newData]);
-    setIsFormVisible(false); // Hide the form after submission
-  };
-
-  // Handle form cancel
-  const handleFormCancel = () => {
-    setIsFormVisible(false);
+  // Handle adding a new row
+  const handleAddRow = () => {
+    const newRow = {
+      id: reportData.length + 1,
+      dateTime: "",
+      taskName: "",
+      taskDescription: "",
+      progress: "",
+      challenges: "",
+    };
+    setReportData((prevData) => [...prevData, newRow]);
   };
 
   // Handle deleting a row
@@ -78,13 +103,21 @@ const ReportTable = () => {
   };
 
   return (
-    <Box
-      width="100%"
-      >
-      
+    <Box m="10px 0 0 0">
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddRow}
+          sx={{
+            backgroundColor: colors.greenAccent[400],
+          }}
+        >
+          Add Row
+        </Button>
+      </Box>
 
       <Box
-      m="20px"
         height={`${calculateHeight()}px`}
         width={`${calculateWidth()}px`}
         sx={{
@@ -101,7 +134,7 @@ const ReportTable = () => {
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
+            borderRight: `1px solid ${colors.grey[400]}`,
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: colors.primary[400],
@@ -113,56 +146,20 @@ const ReportTable = () => {
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: "bold",
-            textOverflow: "clip",
-            whiteSpace: "break-spaces",
-            lineHeight: 1,
-          },
-          "& .MuiDataGrid-cell--editing": {
-            bgcolor: "rgb(255,215,115, 0.19)",
-            color: "#1a3e72",
-          },
-          "& .Mui-error": {
-            bgcolor: (theme) =>
-              `rgb(126,10,15, ${theme.palette.mode === "dark" ? 0 : 0.1})`,
-            color: (theme) =>
-              theme.palette.mode === "dark" ? "#ff4343" : "#750f0f",
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`,
           },
         }}
       >
         <DataGrid
           rows={rows}
           columns={columns}
+          disableColumnMenu
           pageSize={5}
-          checkboxSelection
-          disableSelectionOnClick
-          onRowEditCommit={handleRowEditCommit}
+          rowsPerPageOptions={[5]}
+          onCellEditCommit={handleRowEditCommit} // Handle cell edits
         />
       </Box>
-
-      <Box display="flex" justifyContent="flex-start" m="20px">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsFormVisible(!isFormVisible)}
-          sx={{
-            backgroundColor: colors.greenAccent[400],
-          }}
-        >
-          {isFormVisible ? "Close Form" : "Add Task"}
-        </Button>
-      </Box>
-
-      {isFormVisible && (
-        <Box mt={2}>
-          <WeeklyRepForm
-            onSubmit={handleFormSubmit}
-            isLoading={isLoading}
-            handleCancel={handleFormCancel}
-          />
-        </Box>
-      )}
     </Box>
   );
 };
