@@ -475,6 +475,8 @@ const ClientByIDAccordion = ({ data }) => {
       }))
     )
 
+    
+
 
 
   return (
@@ -881,6 +883,8 @@ const ClientByIDAccordion = ({ data }) => {
         </AccordionDetails>
       </Accordion>
 
+
+
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[300]} variant="h5">
@@ -897,6 +901,27 @@ const ClientByIDAccordion = ({ data }) => {
           </TableContainer>
         </AccordionDetails>
       </Accordion>
+
+      {/* files */}
+      {Object.keys(filesAttachedData).some(key => filesAttachedData[key].some(file => file)) && (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography color={colors.greenAccent[300]} variant="h5">
+          FILES
+        </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+        <TableContainer>
+          <Table>
+            <TableBody>
+          {createTableRowsFromGroupedData(filesAttachedData)}
+            </TableBody>
+          </Table>
+        </TableContainer>
+          </AccordionDetails>
+        </Accordion>
+      )}
+      
     </Box>
   );
 }
