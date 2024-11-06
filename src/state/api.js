@@ -324,6 +324,38 @@ export const api = createApi({
       invalidatesTags: ["Reports"],
     }),
 
+    // Weekly Reports
+    getWeeklyReports: build.query({
+      query: () => "/weekly-reports/",
+      providesTags: ["WeeklyReports"],
+    }),
+
+    createWeeklyReport: build.mutation({
+      query: ({ reportData }) => ({
+        url: `/weekly-reports/`,
+        method: "POST",
+        body: reportData,
+      }),
+      invalidatesTags: ["WeeklyReports"],
+    }),
+
+    updateWeeklyReport: build.mutation({
+      query: ({ reportId, updatedReport }) => ({
+        url: `/weekly-reports/${reportId}/`,
+        method: "PUT",
+        body: updatedReport,
+      }),
+      invalidatesTags: ["WeeklyReports"],
+    }),
+
+    deleteWeeklyReport: build.mutation({
+      query: (reportId) => ({
+        url: `/weekly-reports/${reportId}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["WeeklyReports"],
+    }),
+
     // Reservations
     getFutureReservations: build.query({
       query: () => "/reservations-future/",

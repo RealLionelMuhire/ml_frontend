@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -7,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Formik, useFormik } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
@@ -15,7 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import { format } from "date-fns";
 import TestCalendar from "./TestCalendar";
 
-const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
+const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel, initialValues }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -27,45 +26,33 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
     resetForm();
   };
 
-  const handleTimeSelect = (selectInfo) => {
-    if (!selectInfo.start || !selectInfo.end) {
-      console.error("Invalid time selection. Please try again.");
-      return;
-    }
-
-    const startTime = selectInfo.start.toISOString();
-    const endTime = selectInfo.end.toISOString();
-
-    formik.setValues((prevValues) => ({
-      ...prevValues,
-      startTime,
-      endTime,
-    }));
-
-    setShowCalendar(false);
-  };
-
-  const formik = useFormik({
-    initialValues: initialValuesAppointment,
-    validationSchema: appointmentSchema,
-    onSubmit: handleFormSubmit,
-  });
-
-  const { startTime, endTime } = formik.values || {};
-
   return (
     <Box m="20px">
       <Formik
-        onSubmit={formik.handleSubmit}
-        initialValues={formik.initialValues}
-        validationSchema={appointmentSchema}
+        initialValues={initialValues || {
+          taskName: "",
+          taskDescription: "",
+          progress: "",
+          challenges: "",
+          startTime: null,
+          endTime: null,
+        }}
+        validationSchema={yup.object().shape({
+          taskDescription: yup.string().required("Required"),
+          taskName: yup.string().required("Required"),
+          progress: yup.string().required("Required"),
+          challenges: yup.string().required("Required"),
+          startTime: yup.date().required("Required"),
+          endTime: yup.date().required("Required"),
+        })}
+        onSubmit={handleFormSubmit}
       >
         {({
           values,
           errors,
           touched,
-          handleBlur,
           handleChange,
+          handleBlur,
           handleSubmit,
           setValues,
         }) => (
@@ -126,9 +113,7 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
                 onChange={handleChange}
                 value={values.challenges}
                 name="challenges"
-                error={
-                  Boolean(touched.challenges) && Boolean(errors.challenges)
-                }
+                error={Boolean(touched.challenges) && Boolean(errors.challenges)}
                 helperText={touched.challenges && errors.challenges}
                 sx={{ gridColumn: "span 3" }}
               />
@@ -147,7 +132,7 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
                 }}
                 onClick={() => setShowCalendar(true)}
               >
-                {startTime && endTime ? (
+                {values.startTime && values.endTime ? (
                   <div>
                     <Typography
                       variant="h5"
@@ -157,12 +142,12 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
                       Task Period:
                     </Typography>
                     <Typography variant="body1">
-                      Start time: {format(new Date(startTime), "EEE d MMM yyyy")} at:{" "}
-                      {format(new Date(startTime), "h:mm a")}
+                      Start time: {format(new Date(values.startTime), "EEE d MMM yyyy")} at:{" "}
+                      {format(new Date(values.startTime), "h:mm a")}
                     </Typography>
                     <Typography variant="body1">
-                      End time: {format(new Date(endTime), "EEE d MMM yyyy")} at:{" "}
-                      {format(new Date(endTime), "h:mm a")}
+                      End time: {format(new Date(values.endTime), "EEE d MMM yyyy")} at:{" "}
+                      {format(new Date(values.endTime), "h:mm a")}
                     </Typography>
                   </div>
                 ) : (
@@ -197,12 +182,12 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
                 >
                   <TestCalendar
                     onTimeSelect={(selectInfo) => {
-                      handleTimeSelect(selectInfo);
                       setValues((prevValues) => ({
                         ...prevValues,
                         startTime: selectInfo.start.toISOString(),
                         endTime: selectInfo.end.toISOString(),
                       }));
+                      setShowCalendar(false);
                     }}
                   />
                 </Box>
@@ -235,7 +220,7 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
                   {isLoading ? (
                     <CircularProgress size={24} color="inherit" />
                   ) : (
-                    "Add a task"
+                    "Add Task"
                   )}
                 </Button>
                 <Button
@@ -263,24 +248,6 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel }) => {
       </Formik>
     </Box>
   );
-};
-
-const appointmentSchema = yup.object().shape({
-  taskName: yup.string().required("required"),
-  taskDescription: yup.string().required("required"),
-  progress: yup.string().required("required"),
-  challenges: yup.string().required("required"),
-  startTime: yup.date().required("Required"),
-  endTime: yup.date().required("Required"),
-});
-
-const initialValuesAppointment = {
-  taskName: "",
-  taskDescription: "",
-  progress: "",
-  challenges: "",
-  startTime: null,
-  endTime: null,
 };
 
 export default WeeklyRepForm;

@@ -4,6 +4,7 @@ import { Box, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import WeeklyRepForm from "./WeeklyRepForm"; // Import your form component
+import { v4 as uuidv4 } from "uuid";
 
 const ReportTable = () => {
   const theme = useTheme();
@@ -39,14 +40,8 @@ const ReportTable = () => {
     },
   ];
 
-  // Convert the data to rows with IDs
-  const rows = reportData.map((item, index) => ({
-    ...item,
-    id: index + 1, // Start IDs at 1
-  }));
-
   const calculateHeight = () => {
-    return 90 + rows.length * 55;
+    return 90 + reportData.length * 65;
   };
 
   const calculateWidth = () => {
@@ -55,7 +50,8 @@ const ReportTable = () => {
 
   // Handle adding a new row from the form data
   const handleFormSubmit = (newData) => {
-    setReportData((prevData) => [...prevData, newData]);
+    const newDataWithId = { ...newData, id: uuidv4() }; // Assign a unique ID when adding
+    setReportData((prevData) => [...prevData, newDataWithId]);
     setIsFormVisible(false); // Hide the form after submission
   };
 
@@ -78,13 +74,9 @@ const ReportTable = () => {
   };
 
   return (
-    <Box
-      width="100%"
-      >
-      
-
+    <Box width="100%">
       <Box
-      m="20px"
+        m="20px"
         height={`${calculateHeight()}px`}
         width={`${calculateWidth()}px`}
         sx={{
@@ -132,7 +124,7 @@ const ReportTable = () => {
         }}
       >
         <DataGrid
-          rows={rows}
+          rows={reportData} // Use reportData directly, as it already has IDs
           columns={columns}
           pageSize={5}
           checkboxSelection
