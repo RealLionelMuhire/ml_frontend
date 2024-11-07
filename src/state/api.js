@@ -155,7 +155,7 @@ export const api = createApi({
     updateUncompletedClient: build.mutation({
       query: ({ clientId, updatedClient }) => ({
         url: `/update-incompleted-client/${clientId}/`,
-        method: "PUT",
+        method: "PATCH",
         body: updatedClient,
       }),
       invalidatesTags: ["Clients"],

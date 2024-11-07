@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, CircularProgress, Dialog, DialogContent, Typography } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -22,8 +22,9 @@ import FormFields9 from "./FormField9";
 import FormFields10 from "./FormField10";
 import FormFields11 from "./FormField11";
 import FormFields12 from "./FormField12";
-import ErrorBox from "./ErrorBox";
-import SuccessBox from "./SuccessBox";
+import FeedbackDialog from"../global/FeedbackDialog"
+// import ErrorBox from "./ErrorBox";
+// import SuccessBox from "./SuccessBox";
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -32,21 +33,24 @@ const ClientForm = () => {
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
-  const [dialogOpen, setDialogOpen] = useState(false); // New state for dialog box
-  const [dialogMessage, setDialogMessage] = useState(""); // Message in dialog box
-  const [isSuccessDialog, setIsSuccessDialog] = useState(false); // Dialog type
-
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogSuccess, setDialogSuccess] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
   const [step, setStep] = useState(1);
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    if (isSuccessDialog) navigate("/clients"); // Redirect on success
-  };
+  
 
 
   const handleFormSubmit = async (values) => {
     try {
-      setIsLoadingSubmit(true);
+      // Set loading state for dialog
+      setDialogLoading(true);
+      setDialogOpen(true);  // Open the dialog
+      setDialogMessage("Submitting form...");  // Set dialog message as submitting
+      setDialogSuccess(false); // Set dialog to show a loading state, not success
+  
+      // Prepare form data
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
@@ -58,14 +62,13 @@ const ClientForm = () => {
         }
       });
   
-      const response = await createClient(formData);
-  
-      console.log("Response received:", response); // Log the full response
+      const response = await createClient(formData); // API call
+      // console.log("Response received:", response);
   
       if (response.error) {
-        // Parse the error response to get the message
-        const errorMessage = response.error.data?.detail || 
-                             response.error?.data?.message || 
+        // Handle error
+        const errorMessage = response.error.data?.detail ||
+                             response.error?.data?.message ||
                              "An error occurred";
         const errors = response.error.data?.errors;
   
@@ -78,64 +81,78 @@ const ClientForm = () => {
           toast.error(errorMessage);
         }
   
-        // Log and set dialog message and open dialog
-        console.log("Setting error dialog with message:", errorMessage);
+        // Set dialog to show error message
         setDialogMessage(errorMessage);
-        setIsSuccessDialog(false);
-        setDialogOpen(true);
-  
+        setDialogSuccess(false); // Set to false for error
       } else if (response.data) {
-        // Success case
+        // Handle success
         const successMessage = response.data.message;
-        console.log("Setting success dialog with message:", successMessage);
-  
         toast.success(successMessage);
+  
+        // Set dialog to show success message
         setDialogMessage(successMessage);
-        setIsSuccessDialog(true);
-        setDialogOpen(true);
+        setDialogSuccess(true); // Set to true for success
       }
     } catch (error) {
       const errorMessage = `Error creating user: ${error}`;
-      console.log("Caught exception:", errorMessage);
-      toast.error(errorMessage);
+      // console.log("Caught exception:", errorMessage);
+      toast.error(errorMessage); // Toast for general error
   
+      // Set dialog to show error message
       setDialogMessage(errorMessage);
-      setIsSuccessDialog(false);
-      setDialogOpen(true);
+      setDialogSuccess(false); // Set to false for error
     } finally {
-      setIsLoadingSubmit(false);
+      setDialogLoading(false); // Hide loading spinner after submission
     }
   };
 
   const handleSaveAndContinueLater = async (values) => {
     try {
-      setIsLoadingSaveLater(true);
+      // Show loading dialog while saving
+      setDialogLoading(true);
+      setDialogOpen(true);  // Open the dialog
+      setDialogMessage("Saving data for later...");  // Show saving message
+      setDialogSuccess(false); // Set to false (loading state)
+  
+      // Prepare form data
       const incompleteFormData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (
-            key === "financialForecast" ||
-            key === "expectedAccountActivity"
-          ) {
+          if (key === "financialForecast" || key === "expectedAccountActivity") {
             incompleteFormData.append(key, JSON.stringify(value));
           } else {
             incompleteFormData.append(key, value);
           }
         }
       });
-
+  
+      // Send data to API
       const response = await saveUncompleteData(incompleteFormData);
+      console.log("Response received:", response); // Log the full response
+  
       if (response.error) {
-        toast.error(response.error.message);
+        // Handle error if response.error exists
+        const errorMessage = response.error.message || "An error occurred";
+        setDialogMessage(errorMessage); // Set dialog to show error message
+        setDialogSuccess(false); // Set dialog state to error
+        toast.error(errorMessage);  // Show toast for error
       } else if (response.data) {
-        toast.success(response.data?.message);
-        navigate("/incomplete-clients");
+        // Handle success
+        const successMessage = response.data?.message || "Form saved successfully";
+        setDialogMessage(successMessage);  // Set dialog to show success message
+        setDialogSuccess(true); // Set dialog state to success
+        toast.success(successMessage);  // Show toast for success
+        navigate("/incomplete-clients");  // Navigate after successful save
       }
     } catch (error) {
-      // console.error("Error saving form for later:", error);
-      toast.error(error);
+      // Handle catch block errors
+      const errorMessage = `Error saving form: ${error.message || error}`;
+      // console.log("Caught exception:", errorMessage);
+      setDialogMessage(errorMessage);  // Set dialog to show error message
+      setDialogSuccess(false); // Set dialog state to error
+      toast.error(errorMessage);  // Show toast for error
     } finally {
-      setIsLoadingSaveLater(false);
+      setDialogLoading(false); // Hide the loading spinner
     }
   };
 
@@ -1056,22 +1073,17 @@ const ClientForm = () => {
                 </Box>
               )}
             </Box>
-            <ErrorBox isError={isError} />
-            <SuccessBox data={data} />
           </form>
         )}
       </Formik>
 
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogContent>
-          <Typography>{dialogMessage}</Typography>
-        </DialogContent>
-        <Box display="flex" justifyContent="center" p={2} gap="20px">
-          <Button onClick={handleDialogClose} color="secondary" variant="contained">
-            Close
-          </Button>
-        </Box>
-      </Dialog>
+      <FeedbackDialog
+        open={isDialogOpen}  // Open or close dialog based on this state
+        message={dialogMessage}  // Show this message in the dialog
+        isSuccess={dialogSuccess}  // Success or error state (for color/icons)
+        onClose={() => setDialogOpen(false)}  // Close the dialog when the user clicks "Close"
+        isLoading={dialogLoading}  // Show loading spinner while true
+      />
     </Box>
   );
 };

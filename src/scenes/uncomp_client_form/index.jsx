@@ -24,6 +24,7 @@ import FormFields9 from "./FormField9";
 import FormFields10 from "./FormField10";
 import FormFields11 from "./FormField11";
 import FormFields12 from "./FormField12";
+import FeedbackDialog from"../global/FeedbackDialog"
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -35,9 +36,11 @@ const IncompleteClientForm = () => {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
 
-  const [dialogOpen, setDialogOpen] = useState(false); // New state for dialog box
-  const [dialogMessage, setDialogMessage] = useState(""); // Message in dialog box
-  const [isSuccessDialog, setIsSuccessDialog] = useState(false); // Dialog type
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogSuccess, setDialogSuccess] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
+
 
   const location = useLocation();
   const selectedClientIds = useMemo(
@@ -45,10 +48,7 @@ const IncompleteClientForm = () => {
     [location.state?.selectedClientIds]
   );
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    if (isSuccessDialog) navigate("/clients"); // Redirect on success
-  };
+  
 
   const [updateUncompleteData] = useUpdateUncompletedClientMutation();
 
@@ -90,49 +90,38 @@ const IncompleteClientForm = () => {
   };
   
   const handleFormSubmit = async (values) => {
-  
-    // Create a new object to hold the final form values
+    // Merge values with client data for final submission
     const finalValues = { ...values };
   
-    // Merge financialForecast data
     if (values.financialForecast && client.financialForecast) {
       finalValues.financialForecast = mergeForecastData(values.financialForecast, client.financialForecast);
     }
-  
-    // Merge expectedAccountActivity data
     if (values.expectedAccountActivity && client.expectedAccountActivity) {
       finalValues.expectedAccountActivity = mergeForecastData(values.expectedAccountActivity, client.expectedAccountActivity);
     }
-  
-    // Iterate through each field in the values object
     Object.keys(values).forEach((key) => {
       if (!values[key] && client[key]) {
         finalValues[key] = client[key];
       }
     });
   
-  
     try {
       setIsLoadingSubmit(true);
+      setDialogLoading(true);
+      setDialogOpen(true);
+      setDialogMessage("Submitting form...");
+      setDialogSuccess(false);
+  
+      // Create formData from finalValues
       const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
+      Object.entries(finalValues).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           if (key === "financialForecast" || key === "expectedAccountActivity") {
             formData.append(key, JSON.stringify(value));
           } else if (typeof value === 'object' && value.file_name && value.file_content) {
-            // Convert pre-existing file to a File object
-            try {
-              const byteCharacters = atob(value.file_content);
-              const byteNumbers = new Array(byteCharacters.length);
-              for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-              }
-              const byteArray = new Uint8Array(byteNumbers);
-              const file = new File([byteArray], value.file_name, { type: "application/pdf" });
-              formData.append(key, file);
-            } catch (error) {
-              console.error(`Error converting file: ${key}`, error);
-            }
+            const byteArray = Uint8Array.from(atob(value.file_content), (c) => c.charCodeAt(0));
+            const file = new File([byteArray], value.file_name, { type: "application/pdf" });
+            formData.append(key, file);
           } else if (value instanceof File) {
             formData.append(key, value);
           } else {
@@ -143,50 +132,27 @@ const IncompleteClientForm = () => {
   
       const response = await createClient(formData);
   
-      console.log("Response received:", response); // Log the full response
-  
       if (response.error) {
-        // Parse the error response to get the message
-        const errorMessage = response.error.data?.detail || 
-                             response.error?.data?.message || 
-                             "An error occurred";
-        const errors = response.error.data?.errors;
-  
-        // Display detailed errors for specific fields, if available
-        if (errors) {
-          Object.entries(errors).forEach(([field, messages]) => {
-            messages.forEach((msg) => toast.error(`${field}: ${msg}`));
-          });
-        } else {
-          toast.error(errorMessage);
-        }
-  
-        // Log and set dialog message and open dialog
-        console.log("Setting error dialog with message:", errorMessage);
+        const errorMessage = response.error.data?.detail || response.error?.data?.message || "An error occurred";
         setDialogMessage(errorMessage);
-        setIsSuccessDialog(false);
-        setDialogOpen(true);
-  
+        setDialogSuccess(false);
+        toast.error(errorMessage);
       } else if (response.data) {
-        // Success case
         const successMessage = response.data.message;
-        console.log("Setting success dialog with message:", successMessage);
-  
-        toast.success(successMessage);
         setDialogMessage(successMessage);
-        setIsSuccessDialog(true);
-        setDialogOpen(true);
+        setDialogSuccess(true);
+        toast.success(successMessage);
       }
+
+      navigate("/clients");
     } catch (error) {
-      const errorMessage = `Error creating user: ${error}`;
-      console.log("Caught exception:", errorMessage);
-      toast.error(errorMessage);
-  
+      const errorMessage = `Error creating user: ${error.message || error}`;
       setDialogMessage(errorMessage);
-      setIsSuccessDialog(false);
-      setDialogOpen(true);
+      setDialogSuccess(false);
+      toast.error(errorMessage);
     } finally {
       setIsLoadingSubmit(false);
+      setDialogLoading(false);
     }
   };
   
@@ -195,51 +161,51 @@ const IncompleteClientForm = () => {
   const handleSaveAndContinueLater = async (values) => {
     try {
       setIsLoadingSaveLater(true);
-
-      // Prepare the updated client data
+      setDialogLoading(true);
+      setDialogOpen(true);
+      setDialogMessage("Saving data for later...");
+      setDialogSuccess(false);
+  
+      // Prepare incomplete formData
       const incompleteFormData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (
-            key === "financialForecast" ||
-            key === "expectedAccountActivity"
-          ) {
+          if (key === "financialForecast" || key === "expectedAccountActivity") {
             incompleteFormData.append(key, JSON.stringify(value));
           } else {
             incompleteFormData.append(key, value);
           }
         }
       });
-
-      // console.log("incompleteFormData:", incompleteFormData);
-
-      // Loop through each selected client ID and make an API call
+  
       for (const clientId of selectedClientIds) {
-        const response = await updateUncompleteData({
-          clientId,
-          updatedClient: incompleteFormData,
-        }).unwrap();
-
+        const response = await updateUncompleteData({ clientId, updatedClient: incompleteFormData }).unwrap();
+  
         if (response.error) {
-          toast.error(
-            `Error updating client ${clientId}: ${response.error.message}`
-          );
+          const errorMessage = `Error updating client ${clientId}: ${response.error.message}`;
+          setDialogMessage(errorMessage);
+          setDialogSuccess(false);
+          toast.error(errorMessage);
+          break;
         } else if (response.data) {
-          toast.success(
-            `Client ${clientId} updated successfully: ${response.data.message}`
-          );
+          const successMessage = `Client ${clientId} updated successfully: ${response.data.message}`;
+          setDialogMessage(successMessage);
+          setDialogSuccess(true);
+          toast.success(successMessage);
         }
       }
-
-      // Navigate to incomplete clients page after all updates
       navigate("/incomplete-clients");
     } catch (error) {
-      console.error("Error saving form for later:", error);
-      toast.error("An error occurred while saving the form.");
+      const errorMessage = "An error occurred while saving the form.";
+      setDialogMessage(errorMessage);
+      setDialogSuccess(false);
+      toast.error(errorMessage);
     } finally {
       setIsLoadingSaveLater(false);
+      setDialogLoading(false);
     }
   };
+  
 
   const phoneRegExp =
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -1176,16 +1142,13 @@ const IncompleteClientForm = () => {
         )}
       </Formik>
 
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogContent>
-          <Typography>{dialogMessage}</Typography>
-        </DialogContent>
-        <Box display="flex" justifyContent="center" p={2} gap="20px">
-          <Button onClick={handleDialogClose} color="secondary" variant="contained">
-            Close
-          </Button>
-        </Box>
-      </Dialog>
+      <FeedbackDialog
+        open={isDialogOpen}
+        message={dialogMessage}
+        isSuccess={dialogSuccess}
+        onClose={() => setDialogOpen(false)}
+        isLoading={dialogLoading}
+      />
     </Box>
   );
 };
