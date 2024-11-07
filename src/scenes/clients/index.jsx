@@ -131,7 +131,7 @@ const Clients = () => {
       headerName: "Representative First Name",
       flex: 1,
     },
-    { field: "email", headerName: "Representative Email", flex: 1 },
+    { field: "clientEmail", headerName: "Representative Email", flex: 1 },
     { field: "isActive", headerName: "Is Active", flex: 1,
       renderCell: ({ row: { isActive } }) => (
         <Box
