@@ -23,6 +23,7 @@ import FormFields9 from "./FormField9";
 import FormFields10 from "./FormField10";
 import FormFields11 from "./FormField11";
 import FormFields12 from "./FormField12";
+import FeedbackDialog from"../global/FeedbackDialog"
 // import ErrorBox from "./ErrorBox";
 // import SuccessBox from "./SuccessBox";
 
@@ -33,6 +34,11 @@ const ClientUpdateForm = () => {
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   // const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
+
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogSuccess, setDialogSuccess] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
 
   const location = useLocation();
   const selectedClientIds = useMemo(
@@ -63,151 +69,63 @@ const ClientUpdateForm = () => {
   }
 
   const client = clientData ? clientData[0] : {};
-  // console.log("client:", client);
-
-  // const mergeForecastData = (valuesData, clientData) => {
-  //   if (!valuesData || !clientData) return valuesData || clientData;
-  
-  //   return valuesData.map((row, index) => {
-  //     const clientRow = clientData[index] || {};
-  //     return {
-  //       ...row,
-  //       year1: row.year1 || clientRow.year1,
-  //       year2: row.year2 || clientRow.year2,
-  //       year3: row.year3 || clientRow.year3,
-  //     };
-  //   });
-  // };
-  
-  // const handleFormSubmit = async (values) => {
-  //   // console.log("Form submitting  ... \n");
-  //   // console.log("client values:", client);
-  //   // console.log("Form submitting  ... \n");
-  //   // console.log("values:", values);
-  
-  //   // Create a new object to hold the final form values
-  //   const finalValues = { ...values };
-  
-  //   // Merge financialForecast data
-  //   if (values.financialForecast && client.financialForecast) {
-  //     finalValues.financialForecast = mergeForecastData(values.financialForecast, client.financialForecast);
-  //   }
-  
-  //   // Merge expectedAccountActivity data
-  //   if (values.expectedAccountActivity && client.expectedAccountActivity) {
-  //     finalValues.expectedAccountActivity = mergeForecastData(values.expectedAccountActivity, client.expectedAccountActivity);
-  //   }
-  
-  //   // Iterate through each field in the values object
-  //   Object.keys(values).forEach((key) => {
-  //     if (!values[key] && client[key]) {
-  //       finalValues[key] = client[key];
-  //     }
-  //   });
-  
-  //   console.log("Final values:", finalValues);
-  
-  //   try {
-  //     setIsLoadingSubmit(true);
-  //     const formData = new FormData();
-  
-  //     Object.entries(finalValues).forEach(([key, value]) => {
-  //       if (value !== null && value !== undefined) {
-  //         if (key === "financialForecast" || key === "expectedAccountActivity") {
-  //           formData.append(key, JSON.stringify(value));
-  //         } else if (typeof value === 'object' && value.file_name && value.file_content) {
-  //           // Convert pre-existing file to a File object
-  //           try {
-  //             const byteCharacters = atob(value.file_content);
-  //             const byteNumbers = new Array(byteCharacters.length);
-  //             for (let i = 0; i < byteCharacters.length; i++) {
-  //               byteNumbers[i] = byteCharacters.charCodeAt(i);
-  //             }
-  //             const byteArray = new Uint8Array(byteNumbers);
-  //             const file = new File([byteArray], value.file_name, { type: "application/pdf" });
-  //             formData.append(key, file);
-  //           } catch (error) {
-  //             console.error(`Error converting file: ${key}`, error);
-  //           }
-  //         } else if (value instanceof File) {
-  //           formData.append(key, value);
-  //         } else {
-  //           formData.append(key, value);
-  //         }
-  //       }
-  //     });
-  
-  //     console.log("form data:", formData);
-  
-  //     const response = await createClient(formData);
-  //     // console.log("response:", response);
-  
-  //     if (response.error && response.error.data.detail) {
-  //       toast.error(response.error.data.detail);
-  //     } else if (response.error) {
-  //       toast.error(response.error?.data?.message || "An error occurred");
-  //     } else if (response.data) {
-  //       toast.success(response.data?.message);
-  //       navigate("/clients");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating user:", error);
-  //   } finally {
-  //     setIsLoadingSubmit(false);
-  //   }
-  // };
   
   
 
   const handleSaveModifications = async (values) => {
+    setDialogLoading(true);
+    setDialogOpen(true);
+    setDialogMessage("Saving form...");
+  
     try {
       setIsLoadingSaveLater(true);
-
-      // Prepare the updated client data
       const incompleteFormData = new FormData();
+  
+      // Prepare the updated client data
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (
-            key === "financialForecast" ||
-            key === "expectedAccountActivity"
-          ) {
+          if (key === "financialForecast" || key === "expectedAccountActivity") {
             incompleteFormData.append(key, JSON.stringify(value));
           } else {
             incompleteFormData.append(key, value);
           }
         }
       });
-
-      // console.log("incompleteFormData:", incompleteFormData);
-
+  
       // Loop through each selected client ID and make an API call
       for (const clientId of selectedClientIds) {
         const response = await updateUncompleteData({
           clientId,
           updatedClient: incompleteFormData,
         }).unwrap();
-
+  
         if (response.error) {
-          toast.error(
-            `Error updating client ${clientId}: ${response.error.message}`
-          );
-        } else if (response.data) {
-          toast.success(
-            `Client ${clientId} updated successfully: ${response.data.message}`
-          );
+          setDialogMessage(`Error updating client ${clientId}: ${response.error.message}`);
+          setDialogSuccess(false);
+          toast.error(`Error updating client ${clientId}: ${response.error.message}`); // Toast for error
+          break;
+        } else {
+          // Assuming the response message contains { "message": "Client registration updated successfully" }
+          const successMessage = response.data?.message || "Client updated successfully";  // Default fallback message
+          setDialogMessage(successMessage);
+          setDialogSuccess(true);
+          toast.success(successMessage); // Toast for success
         }
       }
-
+  
       // Navigate to incomplete clients page after all updates
       navigate("/clients");
     } catch (error) {
       console.error("Error saving form for later:", error);
-      toast.error("An error occurred while saving the form.");
+      setDialogMessage("An error occurred while saving the form.");
+      setDialogSuccess(false);
+      toast.error("An error occurred while saving the form."); // Toast for error
     } finally {
       setIsLoadingSaveLater(false);
+      setDialogLoading(false);
     }
   };
-
+  
   const phoneRegExp =
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
@@ -1142,6 +1060,14 @@ const ClientUpdateForm = () => {
           </form>
         )}
       </Formik>
+
+      <FeedbackDialog
+        open={isDialogOpen}
+        message={dialogMessage}
+        isSuccess={dialogSuccess}
+        onClose={() => setDialogOpen(false)}
+        isLoading={dialogLoading}
+      />
     </Box>
   );
 };

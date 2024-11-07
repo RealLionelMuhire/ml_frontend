@@ -119,7 +119,7 @@ export const api = createApi({
     updateClient: build.mutation({
       query: ({ clientId, updatedClient }) => ({
         url: `/update-client/${clientId}/`,
-        method: "PUT",
+        method: "PATCH",
         body: updatedClient,
       }),
       invalidatesTags: ["Clients"],

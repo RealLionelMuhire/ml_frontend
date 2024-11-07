@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogContent, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -35,11 +35,20 @@ const IncompleteClientForm = () => {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
 
+  const [dialogOpen, setDialogOpen] = useState(false); // New state for dialog box
+  const [dialogMessage, setDialogMessage] = useState(""); // Message in dialog box
+  const [isSuccessDialog, setIsSuccessDialog] = useState(false); // Dialog type
+
   const location = useLocation();
   const selectedClientIds = useMemo(
     () => location.state?.selectedClientIds || [],
     [location.state?.selectedClientIds]
   );
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    if (isSuccessDialog) navigate("/clients"); // Redirect on success
+  };
 
   const [updateUncompleteData] = useUpdateUncompletedClientMutation();
 
@@ -81,10 +90,6 @@ const IncompleteClientForm = () => {
   };
   
   const handleFormSubmit = async (values) => {
-    console.log("Form submitting  ... \n");
-    console.log("client values:", client);
-    console.log("Form submitting  ... \n");
-    console.log("values:", values);
   
     // Create a new object to hold the final form values
     const finalValues = { ...values };
@@ -106,13 +111,11 @@ const IncompleteClientForm = () => {
       }
     });
   
-    console.log("Final values:", finalValues);
   
     try {
       setIsLoadingSubmit(true);
       const formData = new FormData();
-  
-      Object.entries(finalValues).forEach(([key, value]) => {
+      Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           if (key === "financialForecast" || key === "expectedAccountActivity") {
             formData.append(key, JSON.stringify(value));
@@ -138,21 +141,50 @@ const IncompleteClientForm = () => {
         }
       });
   
-      console.log("form data:", formData);
-  
       const response = await createClient(formData);
-      // console.log("response:", response);
   
-      if (response.error && response.error.data.detail) {
-        toast.error(response.error.data.detail);
-      } else if (response.error) {
-        toast.error(response.error?.data?.message || "An error occurred");
+      console.log("Response received:", response); // Log the full response
+  
+      if (response.error) {
+        // Parse the error response to get the message
+        const errorMessage = response.error.data?.detail || 
+                             response.error?.data?.message || 
+                             "An error occurred";
+        const errors = response.error.data?.errors;
+  
+        // Display detailed errors for specific fields, if available
+        if (errors) {
+          Object.entries(errors).forEach(([field, messages]) => {
+            messages.forEach((msg) => toast.error(`${field}: ${msg}`));
+          });
+        } else {
+          toast.error(errorMessage);
+        }
+  
+        // Log and set dialog message and open dialog
+        console.log("Setting error dialog with message:", errorMessage);
+        setDialogMessage(errorMessage);
+        setIsSuccessDialog(false);
+        setDialogOpen(true);
+  
       } else if (response.data) {
-        toast.success(response.data?.message);
-        navigate("/clients");
+        // Success case
+        const successMessage = response.data.message;
+        console.log("Setting success dialog with message:", successMessage);
+  
+        toast.success(successMessage);
+        setDialogMessage(successMessage);
+        setIsSuccessDialog(true);
+        setDialogOpen(true);
       }
     } catch (error) {
-      console.error("Error creating user:", error);
+      const errorMessage = `Error creating user: ${error}`;
+      console.log("Caught exception:", errorMessage);
+      toast.error(errorMessage);
+  
+      setDialogMessage(errorMessage);
+      setIsSuccessDialog(false);
+      setDialogOpen(true);
     } finally {
       setIsLoadingSubmit(false);
     }
@@ -1143,6 +1175,17 @@ const IncompleteClientForm = () => {
           </form>
         )}
       </Formik>
+
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogContent>
+          <Typography>{dialogMessage}</Typography>
+        </DialogContent>
+        <Box display="flex" justifyContent="center" p={2} gap="20px">
+          <Button onClick={handleDialogClose} color="secondary" variant="contained">
+            Close
+          </Button>
+        </Box>
+      </Dialog>
     </Box>
   );
 };
