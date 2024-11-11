@@ -28,7 +28,7 @@ import FeedbackDialog from"../global/FeedbackDialog"
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createClient, { isError, data }] = useCreateClientMutation();
+  const [createClient] = useCreateClientMutation();
   const [saveUncompleteData] = useCreateUncompleteClientMutation();
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -1081,8 +1081,13 @@ const ClientForm = () => {
         open={isDialogOpen}  // Open or close dialog based on this state
         message={dialogMessage}  // Show this message in the dialog
         isSuccess={dialogSuccess}  // Success or error state (for color/icons)
-        onClose={() => setDialogOpen(false)}  // Close the dialog when the user clicks "Close"
-        isLoading={dialogLoading}  // Show loading spinner while true
+        onClose={() => {
+          setDialogOpen(false);
+          if (dialogSuccess) {
+            navigate("/clients");
+          }
+        }}
+        isLoading={dialogLoading}
       />
     </Box>
   );

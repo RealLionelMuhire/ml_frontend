@@ -9,122 +9,69 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import FormFields from "./FormFields";
 import FileUpload from "./FileUpload";
-import ErrorBox from "./ErrorBox";
-import SuccessBox from "./SuccessBox";
+import FeedbackDialog from "../global/FeedbackDialog";
 
 const UserForm = () => {
+  console.log("Rendering user form...");
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createUser, { isLoading, isError, data }] = useCreateUserMutation();
+  const [createUser, { isLoading }] = useCreateUserMutation();
   const navigate = useNavigate();
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogSuccess, setDialogSuccess] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
   const [step, setStep] = useState(1);
-
-  const findErrorMessageDetail = (errorData) => {
-    let errorMessage = null;
-
-    const traverse = (data) => {
-      // console.log("===== findErrorMessageDetail.traverse =====");
-      // console.log("data:", data);
-
-      if (data && typeof data === "object") {
-        // Check if the object has a 'detail' property
-        if (data.detail) {
-          console.log("data.detail:", data.detail);
-          errorMessage = data.detail;
-        }
-        // Traverse through the object's keys
-        for (const key in data) {
-          console.log("key:", key);
-          if (Array.isArray(data[key])) {
-            // If the value is an array, traverse each element
-            console.log("data[key]:", data[key]);
-            data[key].forEach(traverse);
-          } else if (typeof data[key] === "object") {
-            // If the value is an object, recursively traverse it
-            console.log("data[key]:", data[key]);
-            traverse(data[key]);
-          }
-        }
-      }
-    };
-
-    traverse(errorData);
-    console.log("errorMessage:", errorMessage);
-    return errorMessage;
-  };
-
-  const findErrorMessageData = (errorData) => {
-    let errorMessage = null;
-
-    const traverse = (data) => {
-      if (data && typeof data === "object") {
-        // Check if the object has a 'message' property
-        if (data.message) {
-          errorMessage = data.message;
-        }
-        // Traverse through the object's keys
-        for (const key in data) {
-          if (Array.isArray(data[key])) {
-            // If the value is an array, get the first element
-            errorMessage = data[key][0];
-          } else {
-            // Recursively traverse through nested objects
-            traverse(data[key]);
-          }
-        }
-      }
-    };
-
-    traverse(errorData);
-    return errorMessage;
-  };
 
   const handleFormSubmit = async (values) => {
     try {
+  
+      setDialogLoading(true);
+      setIsDialogOpen(true);
+      setDialogMessage("Creating User...");
+      setDialogSuccess(false);
+  
       const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === "financialForecast") {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, value);
-        }
-      });
-
-      const response = await createUser(formData);
-
-      if (response.error && response.error.data) {
-        const errorMessage = findErrorMessageData(response.error.data);
-        if (errorMessage) {
-          console.log(errorMessage);
-          toast.error(errorMessage);
-          // navigate("/dashboard");
-          return; // Exit function after displaying error message
-        }
+      formData.append("FirstName", values.FirstName);
+      formData.append("LastName", values.LastName);
+      formData.append("email", values.email);
+      formData.append("contact", values.contact);
+      formData.append("password", values.password);
+      formData.append("NationalID", values.NationalID);
+      formData.append("BirthDate", values.BirthDate);
+      formData.append("UserRoles", values.UserRoles);
+      formData.append("Address", values.Address);
+      formData.append("accessLevel", values.accessLevel);
+      if (values.cv_file) {
+        formData.append("cv_file", values.cv_file[0]);
       }
-
-      if (!response.ok) {
-        // Extract error message from response data
-        // const errorMessage = response.data;
-        console.log("response not ok", response);
-        const errorMessage = findErrorMessageDetail(response.data);
-        if (errorMessage) {
-          console.log("error data when response not ok", errorMessage);
-          toast.error(errorMessage);
-          // navigate("/dashboard");
-          return; // Exit function after displaying error message
-        }
+      if (values.contract_file) {
+        formData.append("contract_file", values.contract_file[0]);
       }
-
-      // Handle other cases if needed
+      if (values.national_id_file) {
+        formData.append("national_id_file", values.national_id_file[0]);
+      }
+  
+      const response = await createUser(formData).unwrap();
+  
       if (response.error) {
-        console.log(response.error);
-        toast.error(response.error?.message || "An error occurred");
+        const errorMessage = response.error.message || "An error occurred";
+        setDialogMessage(errorMessage);
+        setDialogSuccess(false);
+        toast.error(errorMessage);
       } else if (response.data) {
-        toast.success(response.data?.message);
-        navigate("/team");
+        const successMessage = response.data.message;
+        setDialogMessage(successMessage);
+        setDialogSuccess(true);
+        toast.success(successMessage);
+
       }
     } catch (error) {
-      console.error("Error creating user:", error);
+      const errorMessage = `An error occurred: ${error.message}`;
+      setDialogMessage(errorMessage);
+      setDialogSuccess(false);
+      toast.error(errorMessage);
+    } finally {
+      setDialogLoading(false);
     }
   };
 
@@ -132,20 +79,20 @@ const UserForm = () => {
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
   const checkoutSchema = yup.object().shape({
-    FirstName: yup.string().required("required"),
-    LastName: yup.string().required("required"),
-    email: yup.string().email("invalid email").required("required"),
+    FirstName: yup.string(),
+    LastName: yup.string(),
+    email: yup.string().email("invalid email"),
     contact: yup
       .string()
-      .matches(phoneRegExp, "Phone number is not valid")
-      .required("required"),
-    password: yup.string().required("required"),
-    NationalID: yup.string().required("required"),
-    BirthDate: yup.date().required("required"),
-    UserRoles: yup.string().required("required"),
-    Address: yup.string().required("required"),
+      .matches(phoneRegExp, "Phone number is not valid"),
+    password: yup.string(),
+    NationalID: yup.string(),
+    BirthDate: yup.date(),
+    UserRoles: yup.string(),
+    Address: yup.string(),
     cv_file: yup
       .mixed()
+      .nullable()
       .test(
         "fileType",
         "Invalid file format. Please upload a PDF file.",
@@ -161,6 +108,7 @@ const UserForm = () => {
       ),
     contract_file: yup
       .mixed()
+      .nullable()
       .test(
         "fileType",
         "Invalid file format. Please upload a PDF file.",
@@ -174,7 +122,20 @@ const UserForm = () => {
           return true; // Validation passes
         }
       ),
-    accessLevel: yup.string().required("required"),
+    national_id_file: yup
+      .mixed()
+      .nullable()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) return true;
+          return value[0].type === "application/pdf";
+        }
+      ),
+    
+    
+    accessLevel: yup.string(),
   });
 
   const initialValues = {
@@ -191,31 +152,6 @@ const UserForm = () => {
     cv_file: null,
     contract_file: null,
     national_id_file: null,
-    financialForecast: [
-      {
-        id: 0,
-        description: "Currency",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      {
-        id: 1,
-        description: "Initial Investment",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      {
-        id: 2,
-        description: "Income from Business Activities",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
-      { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
-    ],
   };
 
   const nextStep = () => {
@@ -253,6 +189,7 @@ const UserForm = () => {
           handleChange,
           handleSubmit,
           setFieldValue,
+
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -314,13 +251,14 @@ const UserForm = () => {
               {step === 2 && (
                 <React.Fragment>
                   <Box display="flex" justifyContent="space-between" mt="20px">
-                    <Button type="submit" color="secondary" variant="contained">
+                    <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    disabled={isLoading}
+                    >
                       {isLoading ? (
                         <CircularProgress size={24} color="inherit" />
-                      ) : !values.cv_file ||
-                        !values.contract_file ||
-                        !values.national_id_file ? (
-                        "Upload Files First"
                       ) : (
                         "Create New User"
                       )}
@@ -329,11 +267,22 @@ const UserForm = () => {
                 </React.Fragment>
               )}
             </Box>
-            <ErrorBox isError={isError} />
-            <SuccessBox data={data} />
           </form>
         )}
       </Formik>
+
+      <FeedbackDialog
+        isOpen={isDialogOpen}
+        message={dialogMessage}
+        success={dialogSuccess}
+        loading={dialogLoading}
+        onClose={() => {
+          setIsDialogOpen(false);
+          if (dialogSuccess) {
+            navigate("/team");
+          }
+        }}
+      />
     </Box>
   );
 };
