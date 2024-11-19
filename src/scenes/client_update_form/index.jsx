@@ -183,7 +183,9 @@ const ClientUpdateForm = () => {
 
     CathegoryOfEntity: yup.string(),
     SPVType: yup.string(),
-    SectorOfEntity: yup.string(),
+    SectorOfEntity: yup.array()
+    .of(yup.string())
+    .optional(),
     OtherSectorOfEntity: yup.string(),
 
     // Similar Application
