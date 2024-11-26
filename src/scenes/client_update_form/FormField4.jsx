@@ -31,7 +31,7 @@ const FormFields4 = ({
         }}
       >
         <Typography variant="h5">
-          Indicate, whether the Client has changed his name.
+          Indicate, whether the Client has changed his name? : {client.changedName || ""}
         </Typography>
         <TextField
           select
@@ -63,7 +63,7 @@ const FormFields4 = ({
             }}
           >
             <Typography variant="body1">
-              If yes, please provide us with his former names
+              If yes, please provide us with his former names : {client.formerNames || ""}
             </Typography>
           </Box>
 
@@ -107,7 +107,7 @@ const FormFields4 = ({
       >
         <Typography variant="h5">
           Indicate, whether the Client conducts or carries out financial
-          services business from any jurisdiction other than Rwanda?
+          services business from any jurisdiction other than Rwanda? {client.financialServicesBusiness || ""}
         </Typography>
         <TextField
           select
@@ -145,7 +145,7 @@ const FormFields4 = ({
             }}
           >
             <Typography variant="body1">
-              If yes, specify the name of jurisdiction
+              If yes, specify the name of jurisdiction {client.jurisdictionName || ""}
             </Typography>
           </Box>
           <TextField
@@ -178,7 +178,7 @@ const FormFields4 = ({
           >
             <Typography variant="body1">
               If yes, please provide the address from which financial services
-              business is carried out:
+              business is carried out: {client.jurisdictionAddress || ""}
             </Typography>
           </Box>
           <TextField
@@ -217,7 +217,7 @@ const FormFields4 = ({
       >
         <Typography variant="h5">
           Has the Applicant/Beneficial Owner/Partner made a similar application
-          in another jurisdiction?
+          in another jurisdiction? :  {client.similarApplication || ""}
         </Typography>
         <TextField
           select
@@ -295,7 +295,7 @@ const FormFields4 = ({
           Has the Applicant/Beneficial Owner/Partner at any time in the previous
           7 years been criticised, censured, disciplined, suspended, or fined by
           any regulatory body in Rwanda or by any regulatory body in any other
-          jurisdiction?
+          jurisdiction? : {client.criticised || ""}
         </Typography>
         <TextField
           select
@@ -328,7 +328,7 @@ const FormFields4 = ({
             }}
           >
             <Typography variant="body1">
-              - If yes, please provide details:
+              - If yes, please provide details: {client.criticisedDetails || ""}
             </Typography>
           </Box>
           <TextField

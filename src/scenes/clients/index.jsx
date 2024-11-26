@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Typography, Menu, MenuItem, CircularProgress} from "@mui/material";
+import { Box, Button, Typography, Menu, MenuItem, CircularProgress, Snackbar, Alert} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -21,6 +21,8 @@ const Clients = () => {
   const [deactivateClient, { isLoading: isDeactivating }] = useDeactivateClientMutation();
   const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
 
+  // console.log("data: ......... ", data);
+
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -29,6 +31,7 @@ const Clients = () => {
   const [confirmationAction, setConfirmationAction] = useState(null);
   const [loadingDialogOpen, setLoadingDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [notification, setNotification] = useState({ open: false, message: "", severity: "info" });
 
   // Handle loading dialog state
   useEffect(() => {
@@ -68,6 +71,10 @@ const Clients = () => {
     await handleDeleteClick();
   };
 
+  const handleNotificationClose = () => {
+    setNotification({ ...notification, open: false });
+  };
+
   const handleActivateClick = async () => {
     try {
       const promises = selectedClientIds.map(async (clientId) => {
@@ -80,6 +87,7 @@ const Clients = () => {
       });
       await Promise.all(promises);
       await refetch();
+      setNotification({ open: true, message: "Client activated successfully!", severity: "success" });
     } catch (error) {
       toast.error("Error activating clients");
     }
@@ -114,8 +122,9 @@ const Clients = () => {
       });
       await Promise.all(promises);
       refetch();
+      setNotification({ open: true, message: "Client deactivated successfully!", severity: "info" });
     } catch (error) {
-      toast.error(error);
+      toast.error("Error deactivating clients");
     }
   };
 
@@ -328,6 +337,18 @@ const Clients = () => {
           <CircularProgress size={60} />
         </DialogContent>
       </Dialog>
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleNotificationClose} severity={notification.severity}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

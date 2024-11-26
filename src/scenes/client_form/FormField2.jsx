@@ -20,7 +20,7 @@ const FormFields2 = ({
     const value = event.target.value;
     setFieldValue(
       "SectorOfEntity",
-      typeof value === "string" ? value.split(",") : value // Ensure array format
+      typeof value === "string" ? value.split(",") : value
     );
   };
 

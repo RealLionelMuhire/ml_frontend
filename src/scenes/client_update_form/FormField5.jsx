@@ -35,7 +35,7 @@ const FormFields5 = ({
           the bankruptcy or compulsory winding up of the Applicant/Beneficial
           Owner/Partner or has the Applicant’s property been seized or
           Applicant’s property been seized or forfeited or relinquished by any
-          other similar means?
+          other similar means? :{client.bankruptcyApplication || ""}
         </Typography>
         <TextField
           select
@@ -70,7 +70,7 @@ const FormFields5 = ({
             }}
           >
             <Typography variant="body1">
-              - If yes, please provide details:
+              - If yes, please provide details: {client.similarApplicationDetailsForfeit || ""}
             </Typography>
           </Box>
           <TextField
@@ -115,7 +115,7 @@ const FormFields5 = ({
           Has the Applicant/Beneficial Owner/ Partner at any time in the
           previous 7 years had a Receiver or an Administrator appointed or
           failed to satisfy a debt adjudged due, or come to a compromise or
-          similar arrangement with any of its creditors?
+          similar arrangement with any of its creditors? :{client.receiverAppointed || ""}
         </Typography>
         <TextField
           select
@@ -147,7 +147,7 @@ const FormFields5 = ({
             }}
           >
             <Typography variant="body1">
-              - If yes, please provide details:
+              - If yes, please provide details: {client.similarApplicationDetailsReceiver || ""}
             </Typography>
           </Box>
           <TextField
@@ -192,7 +192,7 @@ const FormFields5 = ({
           Has the Applicant/Beneficial Owner/ Partner been engaged in any civil
           proceedings or arbitration at any time in the previous 7 years in
           which a debt was adjudged due from, or judgement given against, the
-          Applicant in relation to any financial service?
+          Applicant in relation to any financial service? :{client.civilProceedings || ""} 
         </Typography>
         <TextField
           select
@@ -224,7 +224,7 @@ const FormFields5 = ({
             }}
           >
             <Typography variant="body1">
-              - If yes, please provide details:
+              - If yes, please provide details: {client.similarApplicationDetailsFinancial || ""}
             </Typography>
           </Box>
           <TextField
@@ -270,7 +270,7 @@ const FormFields5 = ({
           of any offence involving fraud, or other dishonesty, or any other
           offence such as an economic offence or money laundering or been
           subject to penalties for tax evasion (whether or not in Rwanda)
-          relating to companies carrying out financial services business?
+          relating to companies carrying out financial services business? :{client.convicted || ""}
         </Typography>
         <TextField
           select
@@ -302,7 +302,7 @@ const FormFields5 = ({
             }}
           >
             <Typography variant="body1">
-              - If yes, please provide details:
+              - If yes, please provide details: ${client.similarApplicationDetailsOffence || ""}
             </Typography>
           </Box>
           <TextField
@@ -347,7 +347,7 @@ const FormFields5 = ({
           Has any Director, Officer or Partner of the Applicant been convicted
           in any Court of Law for a criminal offence or penalised or sanctioned,
           or is currently or has ever been under investigation for professional
-          negligence or malpractice by any Regulatory Authority in any country?
+          negligence or malpractice by any Regulatory Authority in any country? :{client.directorConvicted || ""}
         </Typography>
         <TextField
           select
@@ -379,7 +379,7 @@ const FormFields5 = ({
             }}
           >
             <Typography variant="body1">
-              - If yes, please provide details:
+              - If yes, please provide details: ${client.similarApplicationDetailsDirector || ""}
             </Typography>
           </Box>
           <TextField
