@@ -3,16 +3,17 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import FileUploadField from "../../utils/FileUploadField";
 
 const FileUpload = ({
   values,
-  touched,
   errors,
-  handleChange,
+  touched,
   setFieldValue,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <React.Fragment>
       <Box
@@ -21,104 +22,45 @@ const FileUpload = ({
         sx={{
           backgroundColor: colors.primary[400],
           gridColumn: "span 4",
-          margin: "1px 0px 1px",
+          marginBottom: "10px",
           borderRadius: "4px",
-          padding: "13px 5px",
+          padding: "10px 8px",
         }}
       >
         <Typography variant="h5" fontWeight="500">
           User Documents
         </Typography>
       </Box>
-      <Box
-        variant="outlined"
-        display="flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 2",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "13px 5px",
-        }}
-      >
-        <Typography variant="h5" fontWeight="500">
-          {values.cv_file ? (
-            values.cv_file.name
-          ) : (
-            <label htmlFor="cv_file">Upload CV</label>
-          )}
-        </Typography>
-        <input
-          type="file"
-          accept=".pdf"
-          name="cv_file"
-          onChange={(e) => {
-            handleChange(e);
-            setFieldValue("cv_file", e.currentTarget.files[0]);
-          }}
-        />
-      </Box>
-      <Box
-        variant="outlined"
-        display="flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 2",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "13px 5px",
-        }}
-      >
-        <Typography variant="h5" fontWeight="500">
-          {values.contract_file ? (
-            values.contract_file.name
-          ) : (
-            <label htmlFor="contract_file">Upload Contract</label>
-          )}
-        </Typography>
-        <input
-          type="file"
-          accept=".pdf"
-          name="contract_file"
-          onChange={(e) => {
-            handleChange(e);
-            setFieldValue("contract_file", e.currentTarget.files[0]);
-          }}
-        />
-      </Box>
-      <Box
-        variant="outlined"
-        display="flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 2",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "13px 5px",
-        }}
-      >
-        <Typography variant="h5" fontWeight="500">
-          {values.national_id_file ? (
-            values.national_id_file.name
-          ) : (
-            <label htmlFor="national_id_file">
-              Upload National ID or Passport
-            </label>
-          )}
-        </Typography>
-        <input
-          type="file"
-          accept=".pdf"
-          name="national_id_file"
-          onChange={(e) => {
-            handleChange(e);
-            setFieldValue("national_id_file", e.currentTarget.files[0]);
-          }}
-        />
-      </Box>
+
+      <FileUploadField
+        label="Upload CV"
+        name="cv_file"
+        value={values.cv_file}
+        error={errors.cv_file}
+        touched={touched.cv_file}
+        setFieldValue={setFieldValue}
+        accept=".pdf"
+      />
+
+      <FileUploadField
+        label="Upload Contract"
+        name="contract_file"
+        value={values.contract_file}
+        error={errors.contract_file}
+        touched={touched.contract_file}
+        setFieldValue={setFieldValue}
+        accept=".pdf"
+      />
+
+      <FileUploadField
+        label="Upload National ID or Passport"
+        name="national_id_file"
+        value={values.national_id_file}
+        error={errors.national_id_file}
+        touched={touched.national_id_file}
+        setFieldValue={setFieldValue}
+        accept=".pdf"
+      />
     </React.Fragment>
   );
 };
