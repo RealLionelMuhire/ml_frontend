@@ -31,9 +31,9 @@ const FileUploadField = ({
       const reader = new FileReader();
       reader.onload = () => {
         const newFile = {
-          id: Date.now(), // Unique identifier
+          id: Date.now(),
           file_name: file.name,
-          file_content: btoa(reader.result), // Convert to Base64
+          file_content: btoa(reader.result),
         };
         setUploadedFiles((prevFiles) => [...prevFiles, newFile]);
         setUploading(false);
