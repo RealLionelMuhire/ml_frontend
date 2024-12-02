@@ -1,4 +1,3 @@
-// FileUploadField.jsx
 import React, { useState } from "react";
 import { Box, Typography, Button, Input, CircularProgress } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -20,25 +19,34 @@ const FileUploadField = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [uploading, setUploading] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
       setUploading(true);
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const newFile = {
-          id: Date.now(),
-          file_name: file.name,
-          file_content: btoa(reader.result),
-        };
-        setUploadedFiles((prevFiles) => [...prevFiles, newFile]);
-        setUploading(false);
-      };
-      reader.readAsBinaryString(file);
+      const readFiles = files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              id: Date.now() + Math.random(), // Ensure unique ID
+              file_name: file.name,
+              file_content: btoa(reader.result),
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsBinaryString(file);
+        });
+      });
+
+      Promise.all(readFiles)
+        .then((newFiles) => {
+          setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+          setFieldValue(name, [...(value || []), ...newFiles]); // Append to form data
+        })
+        .finally(() => setUploading(false));
     }
   };
 
@@ -54,6 +62,8 @@ const FileUploadField = ({
     setUploadedFiles((prevFiles) =>
       prevFiles.filter((file) => file.id !== fileId)
     );
+    const updatedValue = (value || []).filter((file) => file.id !== fileId);
+    setFieldValue(name, updatedValue); // Update form data
   };
 
   return (
@@ -146,7 +156,10 @@ const FileUploadField = ({
           accept={accept}
           id={name}
           name={name}
-          onChange={handleFileUpload}
+          multiple // Allow multiple files
+          onChange={(event) => {
+            setFieldValue("cv_file", Array.from(event.currentTarget.files));
+          }}
           sx={{ display: "none" }}
         />
         <label htmlFor={name}>

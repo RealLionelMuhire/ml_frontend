@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import FormFields from "./FormFields";
 import FileUpload from "./FileUpload";
 import FeedbackDialog from "../global/FeedbackDialog";
+import { useTheme } from "@mui/material/styles";
+import { tokens } from "../../theme";
 
 const UserForm = () => {
   console.log("Rendering user form...");
@@ -21,6 +23,8 @@ const UserForm = () => {
   const [dialogSuccess, setDialogSuccess] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = async (values) => {
     try {
@@ -41,15 +45,23 @@ const UserForm = () => {
       formData.append("UserRoles", values.UserRoles);
       formData.append("Address", values.Address);
       formData.append("accessLevel", values.accessLevel);
-      if (values.cv_file) {
-        formData.append("cv_file", values.cv_file[0]);
+      if (values.cv_file && values.cv_file.length > 0) {
+        values.cv_file.forEach((file) => {
+          formData.append("cv_file", file);
+        });
       }
-      if (values.contract_file) {
-        formData.append("contract_file", values.contract_file[0]);
+      if (values.contract_file && values.contract_file.length > 0) {
+        values.contract_file.forEach((file) => {
+          formData.append("contract_file", file);
+        });
       }
-      if (values.national_id_file) {
-        formData.append("national_id_file", values.national_id_file[0]);
+      if (values.national_id_file && values.national_id_file.length > 0) {
+        values.national_id_file.forEach((file) => {
+          formData.append("national_id_file", file);
+        });
       }
+
+      console.log("Form Data: ", formData);
   
       const response = await createUser(formData).unwrap();
   
@@ -91,48 +103,37 @@ const UserForm = () => {
     UserRoles: yup.string(),
     Address: yup.string(),
     cv_file: yup
-      .mixed()
+      .array()
       .nullable()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true;
-          }
-          if (value[0].type !== "application/pdf") {
-            return false;
-          }
-          return true;
-        }
-      ),
+      .test("fileType", "Invalid file format. Only PDF files are allowed.", (values) => {
+        if (!values || values.length === 0) return true; // Pass if no files uploaded
+        return values.every((file) => {
+          const fileName = file.file_name || ""; // Get the file name
+          return fileName.toLowerCase().endsWith(".pdf"); // Check if it ends with .pdf
+        });
+      }),
+
     contract_file: yup
-      .mixed()
+      .array()
       .nullable()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
-          }
-          if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
-          }
-          return true; // Validation passes
-        }
-      ),
+      .test("fileType", "Invalid file format. Only PDF files are allowed.", (values) => {
+        if (!values || values.length === 0) return true; // Pass if no files
+        return values.every((file) => {
+          const fileName = file.file_name || ""; // Get the file name
+          return fileName.toLowerCase().endsWith(".pdf"); // Check if it ends with .pdf
+        });
+      }),
+    
     national_id_file: yup
-      .mixed()
-      .nullable()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) return true;
-          return value[0].type === "application/pdf";
-        }
-      ),
+    .array()
+    .nullable()
+    .test("fileType", "Invalid file format. Only PDF files are allowed.", (values) => {
+      if (!values || values.length === 0) return true; // Pass if no files
+      return values.every((file) => {
+        const fileName = file.file_name || ""; // Get the file name
+        return fileName.toLowerCase().endsWith(".pdf"); // Check if it ends with .pdf
+      });
+    }),
     
     
     accessLevel: yup.string(),
@@ -174,6 +175,50 @@ const UserForm = () => {
             <Link to="/team">Back to Team</Link>
           </Button>
         </Box>
+      </Box>
+
+      {/* Navigation Boxes */}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-around"
+        sx={{
+          border: `1px solid ${colors.grey[500]}`,
+          padding: "3px",
+          borderRadius: "4px",
+          backgroundColor: colors.primary[400],
+          marginBottom: "3px",
+        }}
+      >
+        <Button
+          variant={step === 1 ? "contained" : "outlined"}
+          color={step === 1 ? "secondary" : "primary"}
+          onClick={() => setStep(1)}
+          sx={{
+            backgroundColor: step === 1 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 1 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          USER DETAILS
+        </Button>
+        <Box display="flex" alignItems="center">
+
+        </Box>
+        <Button
+          variant={step === 2 ? "contained" : "outlined"}
+          color={step === 2 ? "secondary" : "primary"}
+          onClick={() => setStep(2)}
+          sx={{
+            backgroundColor: step === 2 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 2 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          USER FILES
+        </Button>
       </Box>
 
       <Formik
