@@ -25,13 +25,13 @@ const FileUploadField = ({
     const files = Array.from(e.target.files);
     if (files.length > 0) {
       setUploading(true);
-
+  
       const readFiles = files.map((file) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => {
             resolve({
-              id: Date.now() + Math.random(), // Ensure unique ID
+              id: Date.now() + Math.random(),
               file_name: file.name,
               file_content: btoa(reader.result),
             });
@@ -40,15 +40,19 @@ const FileUploadField = ({
           reader.readAsBinaryString(file);
         });
       });
-
+  
       Promise.all(readFiles)
         .then((newFiles) => {
-          setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]);
-          setFieldValue(name, [...(value || []), ...newFiles]); // Append to form data
+          setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]); // Append new files to the state
+          setFieldValue(name, [
+            ...(value || []), // Ensure previous files are retained
+            ...newFiles, // Append new files
+          ]);
         })
         .finally(() => setUploading(false));
     }
   };
+  
 
   const handleViewFile = (fileContent) => {
     const pdfDataUrl = `data:application/pdf;base64,${fileContent}`;
@@ -59,11 +63,9 @@ const FileUploadField = ({
   };
 
   const handleDeleteFile = (fileId) => {
-    setUploadedFiles((prevFiles) =>
-      prevFiles.filter((file) => file.id !== fileId)
-    );
-    const updatedValue = (value || []).filter((file) => file.id !== fileId);
-    setFieldValue(name, updatedValue); // Update form data
+    const updatedFiles = uploadedFiles.filter((file) => file.id !== fileId);
+    setUploadedFiles(updatedFiles);
+    setFieldValue(name, updatedFiles);
   };
 
   return (
@@ -157,19 +159,18 @@ const FileUploadField = ({
           id={name}
           name={name}
           multiple // Allow multiple files
-          onChange={(event) => {
-            setFieldValue("cv_file", Array.from(event.currentTarget.files));
-          }}
+          onChange={handleFileUpload}
           sx={{ display: "none" }}
         />
         <label htmlFor={name}>
-        <Button
+          <Button
             variant="contained"
             component="span"
             color="secondary"
             startIcon={uploadedFiles.length > 0 ? <NoteAddRoundedIcon /> : <AttachFileIcon />}
+            disabled={uploading}
           >
-            {uploadedFiles.length > 0 ? "Add File" : "Browse"}
+            {uploading ? <CircularProgress size={24} /> : uploadedFiles.length > 0 ? "Add File" : "Browse"}
           </Button>
         </label>
       </Box>

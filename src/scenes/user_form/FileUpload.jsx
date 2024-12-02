@@ -35,7 +35,7 @@ const FileUpload = ({
       <FileUploadField
         label="Upload CV"
         name="cv_file"
-        value={values.cv_file}
+        value={Array.isArray(values.cv_file) ? values.cv_file : []}
         error={errors.cv_file}
         touched={touched.cv_file}
         setFieldValue={setFieldValue}
@@ -45,7 +45,7 @@ const FileUpload = ({
       <FileUploadField
         label="Upload Contract"
         name="contract_file"
-        value={values.contract_file}
+        value={Array.isArray(values.contract_file) ? values.contract_file : []}
         error={errors.contract_file}
         touched={touched.contract_file}
         setFieldValue={setFieldValue}
@@ -55,7 +55,7 @@ const FileUpload = ({
       <FileUploadField
         label="Upload National ID or Passport"
         name="national_id_file"
-        value={values.national_id_file}
+        value={Array.isArray(values.national_id_file) ? values.national_id_file : []}
         error={errors.national_id_file}
         touched={touched.national_id_file}
         setFieldValue={setFieldValue}
