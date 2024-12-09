@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -14,7 +14,6 @@ import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 
 const UserForm = () => {
-  console.log("Rendering user form...");
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isLoading }] = useCreateUserMutation();
   const navigate = useNavigate();
@@ -60,8 +59,6 @@ const UserForm = () => {
           formData.append("national_id_file", file);
         });
       }
-
-      console.log("Form Data: ", formData);
   
       const response = await createUser(formData).unwrap();
   
@@ -87,6 +84,24 @@ const UserForm = () => {
     }
   };
 
+  function createFileSchema() {
+    return yup
+      .mixed()
+      .test(
+        "fileType",
+        "Invalid file format. Please upload a PDF file.",
+        (value) => {
+          if (!value || value.length === 0 || !value[0]) {
+            return true;
+          }
+          if (value[0].type !== "application/pdf") {
+            return false;
+          }
+          return true;
+        }
+      );
+  }
+
   const phoneRegExp =
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
@@ -102,38 +117,11 @@ const UserForm = () => {
     BirthDate: yup.date(),
     UserRoles: yup.string(),
     Address: yup.string(),
-    cv_file: yup
-      .array()
-      .nullable()
-      .test("fileType", "Invalid file format. Only PDF files are allowed.", (values) => {
-        if (!values || values.length === 0) return true; // Pass if no files uploaded
-        return values.every((file) => {
-          const fileName = file.file_name || ""; // Get the file name
-          return fileName.toLowerCase().endsWith(".pdf"); // Check if it ends with .pdf
-        });
-      }),
+    cv_file: createFileSchema(),
 
-    contract_file: yup
-      .array()
-      .nullable()
-      .test("fileType", "Invalid file format. Only PDF files are allowed.", (values) => {
-        if (!values || values.length === 0) return true; // Pass if no files
-        return values.every((file) => {
-          const fileName = file.file_name || ""; // Get the file name
-          return fileName.toLowerCase().endsWith(".pdf"); // Check if it ends with .pdf
-        });
-      }),
+    contract_file: createFileSchema(),
     
-    national_id_file: yup
-    .array()
-    .nullable()
-    .test("fileType", "Invalid file format. Only PDF files are allowed.", (values) => {
-      if (!values || values.length === 0) return true; // Pass if no files
-      return values.every((file) => {
-        const fileName = file.file_name || ""; // Get the file name
-        return fileName.toLowerCase().endsWith(".pdf"); // Check if it ends with .pdf
-      });
-    }),
+    national_id_file: createFileSchema(),
     
     
     accessLevel: yup.string(),

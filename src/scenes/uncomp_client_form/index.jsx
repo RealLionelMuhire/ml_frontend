@@ -473,12 +473,12 @@ const IncompleteClientForm = () => {
         "Invalid file format. Please upload a PDF file.",
         (value) => {
           if (!value || value.length === 0 || !value[0]) {
-            return true; // No file provided or empty array, validation passes
+            return true;
           }
           if (value[0].type !== "application/pdf") {
-            return false; // File type is not PDF, validation fails
+            return false;
           }
-          return true; // Validation passes
+          return true;
         }
       );
   }

@@ -22,34 +22,20 @@ const FileUploadField = ({
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files); // Convert FileList to an array of File objects
     if (files.length > 0) {
       setUploading(true);
   
-      const readFiles = files.map((file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            resolve({
-              id: Date.now() + Math.random(),
-              file_name: file.name,
-              file_content: btoa(reader.result),
-            });
-          };
-          reader.onerror = reject;
-          reader.readAsBinaryString(file);
-        });
-      });
-  
-      Promise.all(readFiles)
-        .then((newFiles) => {
-          setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]); // Append new files to the state
-          setFieldValue(name, [
-            ...(value || []), // Ensure previous files are retained
-            ...newFiles, // Append new files
-          ]);
-        })
-        .finally(() => setUploading(false));
+      // Removed FileReader-based conversion since backend requires raw file objects
+      const newFiles = files.map((file) => ({
+        id: Date.now() + Math.random(),
+        file_name: file.name,
+        file_object: file,
+      }));
+
+      setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+      setFieldValue(name, [...(value || []), ...files]);
+      setUploading(false);
     }
   };
   

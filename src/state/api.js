@@ -48,9 +48,9 @@ export const api = createApi({
         method: "POST",
         body: newUser,
       }),
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
       invalidatesTags: ["Team"],
     }),
 
