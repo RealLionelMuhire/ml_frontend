@@ -762,7 +762,7 @@ const ClientForm = () => {
       {/* navigation boxes */}
       <Box
         display="inline-grid"
-        alignItems="center"
+        alignItems="flex-start"
         justifyContent="space-between"
         mt="20px"
         sx={{

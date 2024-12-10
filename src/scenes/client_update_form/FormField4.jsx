@@ -18,6 +18,22 @@ const FormFields4 = ({
     <React.Fragment>
       <Box
         variant="outlined"
+        display="flex"
+        justifyContent="space-between"
+        sx={{
+          backgroundColor: colors.primary[400],
+          gridColumn: "span 4",
+          margin: "1px 0px 1px",
+          borderRadius: "4px",
+          padding: "13px 5px",
+        }}
+      >
+        <Typography variant="h5" fontWeight="800">
+        SECTION II – Other information (Background history 1)
+        </Typography>
+      </Box>
+      <Box
+        variant="outlined"
         display="inline-flex"
         justifyContent="space-between"
         sx={{

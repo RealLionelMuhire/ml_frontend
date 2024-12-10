@@ -25,6 +25,8 @@ import FormFields10 from "./FormField10";
 import FormFields11 from "./FormField11";
 import FormFields12 from "./FormField12";
 import FeedbackDialog from"../global/FeedbackDialog"
+import { useTheme } from "@mui/material/styles";
+import { tokens } from "../../theme";
 import ErrorBox from "./ErrorBox";
 import SuccessBox from "./SuccessBox";
 
@@ -47,6 +49,8 @@ const IncompleteClientForm = () => {
     () => location.state?.selectedClientIds || [],
     [location.state?.selectedClientIds]
   );
+  const theme = useTheme();
+  const colors = tokens(theme);
 
   
 
@@ -799,6 +803,187 @@ const IncompleteClientForm = () => {
           </Button>
         </Box>
       </Box>
+      <Box
+        display="grid"
+        gridTemplateColumns="175px auto"
+        gap="5px"
+        alignItems="start"
+      >
+
+      {/* navigation boxes */}
+      <Box
+        display="inline-grid"
+        alignItems="flex-start"
+        justifyContent="space-between"
+        mt="20px"
+        sx={{
+          border: `1px solid ${colors.grey[500]}`,
+          padding: "3px",
+          borderRadius: "4px",
+          backgroundColor: colors.primary[400],
+          marginBottom: "3px",
+        }}
+      >
+        <Button
+          variant={step === 1 ? "contained" : "outlined"}
+          color={step === 1 ? "secondary" : "primary"}
+          onClick={() => setStep(1)}
+          sx={{
+            backgroundColor: step === 1 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 1 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          CLIENT DETAILS
+        </Button>
+        <Button
+          variant={step === 2 ? "contained" : "outlined"}
+          color={step === 2 ? "secondary" : "primary"}
+          onClick={() => setStep(2)}
+          sx={{
+            backgroundColor: step === 2 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 2 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          LEGAL PERSON
+        </Button>
+        <Button
+          variant={step === 3 ? "contained" : "outlined"}
+          color={step === 3 ? "secondary" : "primary"}
+          onClick={() => setStep(3)}
+          sx={{
+            backgroundColor: step === 3 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 3 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          AUTHORIZED PERSON
+        </Button>
+        <Button
+          variant={step === 4 ? "contained" : "outlined"}
+          color={step === 4 ? "secondary" : "primary"}
+          onClick={() => setStep(4)}
+          sx={{
+            backgroundColor: step === 4 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 4 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          BACKGROUND HISTORY(1)
+        </Button>
+        <Button
+
+          variant={step === 5 ? "contained" : "outlined"}
+          color={step === 5 ? "secondary" : "primary"}
+          onClick={() => setStep(5)}
+          sx={{
+            backgroundColor: step === 5 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 5 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          BACKGROUND HISTORY(2)
+        </Button>
+        <Button
+          variant={step === 6 ? "contained" : "outlined"}
+          color={step === 6 ? "secondary" : "primary"}
+          onClick={() => setStep(6)}
+          sx={{
+            backgroundColor: step === 6 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 6 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          MODE OF PAYMENT
+        </Button>
+        <Button
+          variant={step === 7 ? "contained" : "outlined"}
+          color={step === 7 ? "secondary" : "primary"}
+          onClick={() => setStep(7)}
+          sx={{
+            backgroundColor: step === 7 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 7 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          PURPOSE OF BUSINESS
+        </Button>
+        <Button
+          variant={step === 8 ? "contained" : "outlined"}
+          color={step === 8 ? "secondary" : "primary"}
+          onClick={() => setStep(8)}
+          sx={{
+            backgroundColor: step === 8 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 8 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          SOURCE OF FUNDS
+        </Button>
+        <Button
+
+          variant={step === 9 ? "contained" : "outlined"}
+          color={step === 9 ? "secondary" : "primary"}
+          onClick={() => setStep(9)}
+          sx={{
+            backgroundColor: step === 9 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 9 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          SOURCE OF WEALTH
+        </Button>
+        <Button
+          variant={step === 10 ? "contained" : "outlined"}
+          color={step === 10 ? "secondary" : "primary"}
+          onClick={() => setStep(10)}
+          sx={{
+            backgroundColor: step === 10 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 10 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          DIRECTORSHIP
+        </Button>
+        <Button
+          variant={step === 11 ? "contained" : "outlined"}
+          color={step === 11 ? "secondary" : "primary"}
+          onClick={() => setStep(11)}
+          sx={{
+            backgroundColor: step === 11 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 11 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          BANK DETAILS
+        </Button>
+        <Button
+          variant={step === 12 ? "contained" : "outlined"}
+          color={step === 12 ? "secondary" : "primary"}
+          onClick={() => setStep(12)}
+          sx={{
+            backgroundColor: step === 12 ? colors.greenAccent[500] : colors.primary[400],
+            "&:hover": {
+              backgroundColor: step === 12 ? colors.greenAccent[700] : colors.greenAccent[400],
+            },
+          }}
+        >
+          FINANCIAL FORECAST
+        </Button>
+        
+      </Box>
 
       <Formik
         initialValues={initialValues}
@@ -817,7 +1002,7 @@ const IncompleteClientForm = () => {
           <form onSubmit={handleSubmit}>
             <Box
               display="grid"
-              gap="30px"
+              gap="10px"
               gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
@@ -1143,6 +1328,7 @@ const IncompleteClientForm = () => {
           </form>
         )}
       </Formik>
+      </Box>
 
       <FeedbackDialog
         open={isDialogOpen}
