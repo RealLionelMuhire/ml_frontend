@@ -164,12 +164,18 @@ const UserForm = () => {
           </Button>
         </Box>
       </Box>
+      <Box
+        display="grid"
+        gridTemplateColumns="130px auto"
+        gap="5px"
+        alignItems="start"
+      >
 
       {/* Navigation Boxes */}
       <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-around"
+        display="grid"
+        gridRow="span 2"
+        alignItems="start"
         sx={{
           border: `1px solid ${colors.grey[500]}`,
           padding: "3px",
@@ -303,6 +309,7 @@ const UserForm = () => {
           </form>
         )}
       </Formik>
+      </Box>
 
       <FeedbackDialog
         isOpen={isDialogOpen}
