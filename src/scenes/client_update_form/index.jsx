@@ -85,17 +85,24 @@ const ClientUpdateForm = () => {
       setIsLoadingSaveLater(true);
       const incompleteFormData = new FormData();
   
-      // Prepare the updated client data
+      // Dynamically append all fields including files
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (key === "financialForecast" || key === "expectedAccountActivity") {
+          // Check if the value is a file or an array of files
+          if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
+            if (Array.isArray(value)) {
+              value.forEach((file) => incompleteFormData.append(key, file));
+            } else {
+              incompleteFormData.append(key, value);
+            }
+          } else if (key === "financialForecast" || key === "expectedAccountActivity") {
             incompleteFormData.append(key, JSON.stringify(value));
           } else {
             incompleteFormData.append(key, value);
           }
         }
       });
-
+  
       console.log("incompleteFormData", incompleteFormData);
   
       // Loop through each selected client ID and make an API call
@@ -111,8 +118,7 @@ const ClientUpdateForm = () => {
           toast.error(`Error updating client ${clientId}: ${response.error.message}`); // Toast for error
           break;
         } else {
-          // Assuming the response message contains { "message": "Client registration updated successfully" }
-          const successMessage = response.data?.message || "Client updated successfully";  // Default fallback message
+          const successMessage = response.data?.message || "Client updated successfully"; // Default fallback message
           setDialogMessage(successMessage);
           setDialogSuccess(true);
           toast.success(successMessage); // Toast for success
@@ -130,7 +136,7 @@ const ClientUpdateForm = () => {
       setIsLoadingSaveLater(false);
       setDialogLoading(false);
     }
-  };
+  };  
   
   const phoneRegExp =
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -390,22 +396,20 @@ const ClientUpdateForm = () => {
       createFileSchema(),
   });
 
-  function createFileSchema() {
-    return yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true;
-          }
-          if (value[0].type !== "application/pdf") {
-            return false;
-          }
-          return true;
+  function createFileSchema(maxSizeMB = 5) {
+    return yup.mixed().test(
+      "fileSize",
+      `Each file must be smaller than ${maxSizeMB} MB.`,
+      (value) => {
+        if (!value || !Array.isArray(value) || value.length === 0) {
+          return true; // Allow empty uploads
         }
-      );
+  
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        
+        return value.every((file) => file.size <= maxSizeBytes);
+      }
+    );
   }
 
   const initialValues = {
@@ -440,10 +444,10 @@ const ClientUpdateForm = () => {
     authorisedPersonContact: "",
     authorisedCurrentAddress: "",
     authorisedRelationship: "",
-    signature_file: null,
+    signature_file: [],
     isPep: "",
-    bankStatement_file: null,
-    professionalReference_file: null,
+    bankStatement_file: [],
+    professionalReference_file: [],
     countryOfIncorporation: "",
     incorporationDate: "",
     registeredOfficeAddress: "",
@@ -581,43 +585,43 @@ const ClientUpdateForm = () => {
     callBackProcessContact: "",
     nameOfProposedOfficer: "",
 
-    confirmationLetter_file: null,
-    bank_statement_file: null,
-    custody_accounts_file: null,
-    source_of_funds_file: null,
-    payslips_file: null,
-    due_diligence_file: null,
-    financial_statements_file: null,
-    proof_of_ownership_file: null,
-    lease_agreement_file: null,
-    bank_statements_file: null,
-    cdd_documents_file: null,
-    documentary_evidence_file: null,
-    bank_statement_proceeds_file: null,
-    notarised_documents_file: null,
-    letter_from_donor_file: null,
-    donor_source_of_wealth_file: null,
-    donor_bank_statement_file: null,
-    letter_from_relevant_org_file: null,
-    lottery_bank_statement_file: null,
-    creditor_agreement_file: null,
-    creditor_cdd_file: null,
-    creditor_bank_statement_file: null,
-    legal_document_file: null,
-    notary_letter_file: null,
-    executor_letter_file: null,
-    loan_agreement_file: null,
-    loan_bank_statement_file: null,
-    related_third_party_loan_agreement_file: null,
-    related_third_party_cdd_file: null,
-    related_third_party_bank_statement_file: null,
-    unrelated_third_party_loan_agreement_file: null,
-    unrelated_third_party_cdd_file: null,
-    unrelated_third_party_bank_statement_file: null,
-    signed_letter_from_notary_file: null,
-    property_contract_file: null,
-    insurance_pay_out_file: null,
-    retirement_annuity_fund_statement_file: null,
+    confirmationLetter_file: [],
+    bank_statement_file: [],
+    custody_accounts_file: [],
+    source_of_funds_file: [],
+    payslips_file: [],
+    due_diligence_file: [],
+    financial_statements_file: [],
+    proof_of_ownership_file: [],
+    lease_agreement_file: [],
+    bank_statements_file: [],
+    cdd_documents_file: [],
+    documentary_evidence_file: [],
+    bank_statement_proceeds_file: [],
+    notarised_documents_file: [],
+    letter_from_donor_file: [],
+    donor_source_of_wealth_file: [],
+    donor_bank_statement_file: [],
+    letter_from_relevant_org_file: [],
+    lottery_bank_statement_file: [],
+    creditor_agreement_file: [],
+    creditor_cdd_file: [],
+    creditor_bank_statement_file: [],
+    legal_document_file: [],
+    notary_letter_file: [],
+    executor_letter_file: [],
+    loan_agreement_file: [],
+    loan_bank_statement_file: [],
+    related_third_party_loan_agreement_file: [],
+    related_third_party_cdd_file: [],
+    related_third_party_bank_statement_file: [],
+    unrelated_third_party_loan_agreement_file: [],
+    unrelated_third_party_cdd_file: [],
+    unrelated_third_party_bank_statement_file: [],
+    signed_letter_from_notary_file: [],
+    property_contract_file: [],
+    insurance_pay_out_file: [],
+    retirement_annuity_fund_statement_file: [],
     isMlDirectors: "",
     Director1FirstName: "",
     Director1LastName: "",
@@ -672,35 +676,35 @@ const ClientUpdateForm = () => {
     Director1isPep: "",
     Director2isPep: "",
     Director3isPep: "",
-    Director1_national_id_file: null,
-    Director1_passport_file: null,
-    Director2_national_id_file: null,
-    Director2_passport_file: null,
-    Director3_national_id_file: null,
-    Director3_passport_file: null,
-    passport_file: null,
-    utility_file: null,
-    wealth_file: null,
-    cv_file: null,
-    funds_file: null,
-    source_of_wealth_file: null,
-    financialStatements_file: null,
-    principals_identification_file: null,
-    shareholders_file: null,
-    declaration_of_trust_file: null,
-    certificate_of_registration_file: null,
-    deed_of_retirement_file: null,
-    business_plan_file: null,
-    registered_office_file: null,
-    register_of_trustee_file: null,
-    proof_of_source_of_funds_file: null,
-    proof_of_source_of_wealth_file: null,
-    latest_accounts_or_bank_statements_file: null,
-    licence_file: null,
-    certificate_of_incumbency_file: null,
-    charter_file: null,
-    latest_accounts_file: null,
-    identification_documents_of_the_principals_of_the_foundation_file: null,
+    Director1_national_id_file: [],
+    Director1_passport_file: [],
+    Director2_national_id_file: [],
+    Director2_passport_file: [],
+    Director3_national_id_file: [],
+    Director3_passport_file: [],
+    passport_file: [],
+    utility_file: [],
+    wealth_file: [],
+    cv_file: [],
+    funds_file: [],
+    source_of_wealth_file: [],
+    financialStatements_file: [],
+    principals_identification_file: [],
+    shareholders_file: [],
+    declaration_of_trust_file: [],
+    certificate_of_registration_file: [],
+    deed_of_retirement_file: [],
+    business_plan_file: [],
+    registered_office_file: [],
+    register_of_trustee_file: [],
+    proof_of_source_of_funds_file: [],
+    proof_of_source_of_wealth_file: [],
+    latest_accounts_or_bank_statements_file: [],
+    licence_file: [],
+    certificate_of_incumbency_file: [],
+    charter_file: [],
+    latest_accounts_file: [],
+    identification_documents_of_the_principals_of_the_foundation_file: [],
   };
 
   const nextStep = () => {

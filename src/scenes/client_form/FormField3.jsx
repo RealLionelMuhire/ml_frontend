@@ -2,6 +2,7 @@ import React from "react";
 import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import FileUploadField from "../../utils/FileUploadField";
 
 const FormFields3 = ({
   values,
@@ -109,39 +110,15 @@ const FormFields3 = ({
         }
         sx={{ gridColumn: "span 1" }}
       />
-      <Box
-        variant="outlined"
-        display="flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 2",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "13px 5px",
-        }}
-      >
-        <Typography variant="h6">
-          {values.signature_file ? (
-            values.signature_file.name
-          ) : (
-            <label htmlFor="signature_file">Upload Signature file</label>
-          )}
-        </Typography>
-        <input
-          type="file"
-          accept=".pdf"
-          name="signature_file"
-          onChange={(e) => {
-            handleChange(e);
-            setFieldValue("signature_file", e.currentTarget.files[0]);
-          }}
-          sx={{ gridColumn: "span 2" }}
-        />
-        {touched.signature_file && errors.signature_file && (
-          <div>{errors.signature_file}</div>
-        )}
-      </Box>
+      <FileUploadField
+        label="Upload Signature file"
+        name="signature_file"
+        value={Array.isArray(values.signature_file) ? values.signature_file : []}
+        error={errors.signature_file}
+        touched={touched.signature_file}
+        setFieldValue={setFieldValue}
+        accept=".pdf"
+      />
       <Box
         variant="outlined"
         display="flex"
@@ -183,81 +160,24 @@ const FormFields3 = ({
       {/* Conditional rendering for certificate upload */}
       {values.isPep === "yes" && (
         <>
-          <Box
-            variant="outlined"
-            display="flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "13px 5px",
-            }}
-          >
-            <Typography variant="h6">
-              {values.bankStatement_file ? (
-                values.bankStatement_file.name
-              ) : (
-                <label htmlFor="signature_file">
-                  Upload last six months bank statements
-                </label>
-              )}
-            </Typography>
-            <input
-              type="file"
-              accept=".pdf"
-              name="bankStatement_file"
-              onChange={(e) => {
-                handleChange(e);
-                setFieldValue("bankStatement_file", e.currentTarget.files[0]);
-              }}
-              sx={{ gridColumn: "span 2" }}
-            />
-            {touched.bankStatement_file && errors.bankStatement_file && (
-              <div>{errors.bankStatement_file}</div>
-            )}
-          </Box>
-
-          <Box
-            variant="outlined"
-            display="flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "13px 5px",
-            }}
-          >
-            <Typography variant="h6">
-              {values.professionalReference_file ? (
-                values.professionalReference_file.name
-              ) : (
-                <label htmlFor="signature_file">
-                  Upload professional reference
-                </label>
-              )}
-            </Typography>
-            <input
-              type="file"
-              accept=".pdf"
-              name="professionalReference_file"
-              onChange={(e) => {
-                handleChange(e);
-                setFieldValue(
-                  "professionalReference_file",
-                  e.currentTarget.files[0]
-                );
-              }}
-              sx={{ gridColumn: "span 2" }}
-            />
-            {touched.professionalReference_file &&
-              errors.professionalReference_file && (
-                <div>{errors.professionalReference_file}</div>
-              )}
-          </Box>
+          <FileUploadField
+            label="Upload last six months bank statements"
+            name="bankStatement_file"
+            value={Array.isArray(values.bankStatement_file) ? values.bankStatement_file : []}
+            error={errors.bankStatement_file}
+            touched={touched.bankStatement_file}
+            setFieldValue={setFieldValue}
+            accept=".pdf"
+          />
+          <FileUploadField
+            label="Upload professional reference"
+            name="professionalReference_file"
+            value={Array.isArray(values.professionalReference_file) ? values.professionalReference_file : []}
+            error={errors.professionalReference_file}
+            touched={touched.professionalReference_file}
+            setFieldValue={setFieldValue}
+            accept=".pdf"
+          />
         </>
       )}
     </React.Fragment>

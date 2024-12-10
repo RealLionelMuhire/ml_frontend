@@ -21,17 +21,21 @@ const FileUploadField = ({
   const [uploading, setUploading] = useState(false);
 
   const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files); // Convert FileList to an array of File objects
+    const files = Array.from(e.target.files).map((file) => ({
+      id: Date.now() + Math.random(), // Generate a unique ID
+      file_object: file,
+      name: file.name,
+    }));
+
     if (files.length > 0) {
       setUploading(true);
-  
-      // Add raw files directly to Formik's value
-      setFieldValue(name, [...(value || []), ...files]); 
-  
+
+      // Add files with unique IDs directly to Formik's value
+      setFieldValue(name, [...(value || []), ...files]);
+
       setUploading(false);
     }
   };
-  
 
   const handleViewFile = (file) => {
     const fileURL = URL.createObjectURL(file.file_object);
@@ -46,7 +50,7 @@ const FileUploadField = ({
   return (
     <Box
       display="flex"
-      flexDirection="column"
+      flexDirection="row"
       sx={{
         backgroundColor: colors.primary[400],
         gridColumn: "span 2",
@@ -55,35 +59,23 @@ const FileUploadField = ({
         padding: "8px 5px",
       }}
     >
-      {/* Label */}
-      {!value || value.length === 0 ? (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{
-            border: `1px solid ${colors.grey[500]}`,
-            padding: "3px",
-            borderRadius: "4px",
-            backgroundColor: colors.primary[400],
-            marginBottom: "3px",
-          }}
-        >
-          <Typography variant="h7" fontWeight="500">
-            {label}
-          </Typography>
-        </Box>
-      ) : null}
-
-      {/* Uploaded Files */}
-      {value &&
-        value.map((file) => (
+      {/* File List */}
+      <Box
+        display="flex"
+        flexDirection="column"
+        flexGrow={1}
+        sx={{
+          marginRight: "16px",
+        }}
+      >
+        {/* Label */}
+        {!value || value.length === 0 ? (
           <Box
-            key={file.id}
             display="flex"
             alignItems="center"
             justifyContent="space-between"
             sx={{
+              gridColumn: "span 2",
               border: `1px solid ${colors.grey[500]}`,
               padding: "3px",
               borderRadius: "4px",
@@ -92,43 +84,66 @@ const FileUploadField = ({
             }}
           >
             <Typography variant="h7" fontWeight="500">
-              {file.name}
+              {label}
             </Typography>
-            <Box display="flex" alignItems="center">
-              {/* View Button */}
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<VisibilityRoundedIcon />}
-                onClick={() => handleViewFile(file)}
-                sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  "&:hover": { backgroundColor: colors.greenAccent[700] },
-                  marginRight: "4px",
-                }}
-              >
-                View
-              </Button>
-
-              {/* Delete Button */}
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<DeleteForeverRoundedIcon />}
-                onClick={() => handleDeleteFile(file.id)}
-                sx={{
-                  backgroundColor: colors.redAccent[500],
-                  "&:hover": { backgroundColor: colors.redAccent[700] },
-                }}
-              >
-                Delete
-              </Button>
-            </Box>
           </Box>
-        ))}
+        ) : null}
+
+        {/* Uploaded Files */}
+        {value &&
+          value.map((file) => (
+            <Box
+              key={file.id}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{
+                border: `1px solid ${colors.grey[500]}`,
+                padding: "3px",
+                borderRadius: "4px",
+                backgroundColor: colors.primary[400],
+                marginBottom: "3px",
+              }}
+            >
+              <Typography variant="h7" fontWeight="500">
+                {file.name}
+              </Typography>
+              <Box display="flex" alignItems="center">
+                {/* View Button */}
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<VisibilityRoundedIcon />}
+                  onClick={() => handleViewFile(file)}
+                  sx={{
+                    backgroundColor: colors.greenAccent[500],
+                    "&:hover": { backgroundColor: colors.greenAccent[700] },
+                    marginRight: "4px",
+                  }}
+                >
+                  View
+                </Button>
+
+                {/* Delete Button */}
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<DeleteForeverRoundedIcon />}
+                  onClick={() => handleDeleteFile(file.id)}
+                  sx={{
+                    backgroundColor: colors.redAccent[500],
+                    "&:hover": { backgroundColor: colors.redAccent[700] },
+                  }}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          ))}
+      </Box>
 
       {/* File Upload Input */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" alignItems="center" justifyContent="center">
         <Input
           type="file"
           accept={accept}
@@ -146,7 +161,7 @@ const FileUploadField = ({
             startIcon={value && value.length > 0 ? <NoteAddRoundedIcon /> : <AttachFileIcon />}
             disabled={uploading}
           >
-            {uploading ? <CircularProgress size={24} /> : value && value.length > 0 ? "Add File" : "Browse"}
+            {uploading ? <CircularProgress size={24} /> : value && value.length > 0 ? "" : "Browse"}
           </Button>
         </label>
       </Box>
