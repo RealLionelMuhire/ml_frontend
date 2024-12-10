@@ -84,23 +84,22 @@ const UserForm = () => {
     }
   };
 
-  function createFileSchema() {
-    return yup
-      .mixed()
-      .test(
-        "fileType",
-        "Invalid file format. Please upload a PDF file.",
-        (value) => {
-          if (!value || value.length === 0 || !value[0]) {
-            return true;
-          }
-          if (value[0].type !== "application/pdf") {
-            return false;
-          }
-          return true;
+  function createFileSchema(maxSizeMB = 5) {
+    return yup.mixed().test(
+      "fileSize",
+      `Each file must be smaller than ${maxSizeMB} MB.`,
+      (value) => {
+        if (!value || !Array.isArray(value) || value.length === 0) {
+          return true; // Allow empty uploads
         }
-      );
+  
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        
+        return value.every((file) => file.size <= maxSizeBytes);
+      }
+    );
   }
+  
 
   const phoneRegExp =
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -138,9 +137,9 @@ const UserForm = () => {
     UserRoles: "",
     Address: "",
     accessLevel: "",
-    cv_file: null,
-    contract_file: null,
-    national_id_file: null,
+    cv_file: [],
+    contract_file: [],
+    national_id_file: [],
   };
 
   const nextStep = () => {
