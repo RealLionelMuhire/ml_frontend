@@ -72,7 +72,7 @@ const UserForm = () => {
         setDialogMessage(successMessage);
         setDialogSuccess(true);
         toast.success(successMessage);
-
+        navigate("/team");
       }
     } catch (error) {
       const errorMessage = `An error occurred: ${error.message}`;
@@ -81,6 +81,7 @@ const UserForm = () => {
       toast.error(errorMessage);
     } finally {
       setDialogLoading(false);
+      navigate("/team");
     }
   };
 
