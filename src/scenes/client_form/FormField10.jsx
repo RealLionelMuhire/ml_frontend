@@ -2,6 +2,7 @@ import React from "react";
 import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import FileUploadField from "../../utils/FileUploadField";
 
 const FormFields10 = ({
   values,
@@ -71,7 +72,7 @@ const FormFields10 = ({
       )}
 
       {/* Conditional rendering for certificate upload */}
-      {values.DirectorCount === "1" && (
+      {(values.isMlDirectors === "yes" && (values.DirectorCount === "1" || values.DirectorCount === "2" || values.DirectorCount === "3")) && (
         <>
           {/* Director 1 */}
           <Box
@@ -307,85 +308,24 @@ const FormFields10 = ({
           {/* Conditional rendering for certificate upload */}
           {values.Director1isPep === "yes" && (
             <>
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director1bankStatement_file ? (
-                    values.Director1bankStatement_file.name
-                  ) : (
-                    <label htmlFor="Director1bankStatement_file">
-                      Upload last six months bank statements
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director1bankStatement_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director1bankStatement_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director1bankStatement_file &&
-                  errors.Director1bankStatement_file && (
-                    <div>{errors.Director1bankStatement_file}</div>
-                  )}
-              </Box>
-
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director1professionalReference_file ? (
-                    values.Director1professionalReference_file.name
-                  ) : (
-                    <label htmlFor="Director1professionalReference_file">
-                      Upload professional reference
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director1professionalReference_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director1professionalReference_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director1professionalReference_file &&
-                  errors.Director1professionalReference_file && (
-                    <div>{errors.Director1professionalReference_file}</div>
-                  )}
-              </Box>
+            <FileUploadField
+              label="Upload last six months bank statements"
+              name="Director1bankStatement_file"
+              value={Array.isArray(values.Director1bankStatement_file) ? values.Director1bankStatement_file : []}
+              error={errors.Director1bankStatement_file}
+              touched={touched.Director1bankStatement_file}
+              setFieldValue={setFieldValue}
+              accept=".pdf"
+            />
+            <FileUploadField
+              label="Upload professional reference"
+              name="Director1professionalReference_file"
+              value={Array.isArray(values.Director1professionalReference_file) ? values.Director1professionalReference_file : []}
+              error={errors.Director1professionalReference_file}
+              touched={touched.Director1professionalReference_file}
+              setFieldValue={setFieldValue}
+              accept=".pdf"
+            />
             </>
           )}
 
@@ -410,45 +350,15 @@ const FormFields10 = ({
                 }
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director1_national_id_file ? (
-                    values.Director1_national_id_file.name
-                  ) : (
-                    <label htmlFor="Director1_national_id_file">
-                      Upload National ID
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director1_national_id_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director1_national_id_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director1_national_id_file &&
-                  errors.Director1_national_id_file && (
-                    <div>{errors.Director1_national_id_file}</div>
-                  )}
-              </Box>
+              <FileUploadField
+                label="Upload National ID"
+                name="Director1_national_id_file"
+                value={Array.isArray(values.Director1_national_id_file) ? values.Director1_national_id_file : []}
+                error={errors.Director1_national_id_file}
+                touched={touched.Director1_national_id_file}
+                setFieldValue={setFieldValue}
+                accept=".pdf"
+              />
             </>
           )}
           {values.Director1citizenship === "Other" && (
@@ -529,50 +439,20 @@ const FormFields10 = ({
                 }
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director1_passport_file ? (
-                    values.Director1_passport_file.name
-                  ) : (
-                    <label htmlFor="Director1_passport_file">
-                      Upload Passport
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director1_passport_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director1_passport_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director1_passport_file &&
-                  errors.Director1_passport_file && (
-                    <div>{errors.Director1_passport_file}</div>
-                  )}
-              </Box>
+              <FileUploadField
+                label="Upload Passport"
+                name="Director1_passport_file"
+                value={Array.isArray(values.Director1_passport_file) ? values.Director1_passport_file : []}
+                error={errors.Director1_passport_file}
+                touched={touched.Director1_passport_file}
+                setFieldValue={setFieldValue}
+                accept=".pdf"
+              />
             </>
           )}
         </>
       )}
-      {values.DirectorCount === "2" && (
+      {(values.isMlDirectors === "yes" && (values.DirectorCount === "2" || values.DirectorCount === "3")) && (
         <>
           <Box
             variant="outlined"
@@ -807,85 +687,24 @@ const FormFields10 = ({
           {/* Conditional rendering for certificate upload */}
           {values.Director2isPep === "yes" && (
             <>
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director2bankStatement_file ? (
-                    values.Director2bankStatement_file.name
-                  ) : (
-                    <label htmlFor="Director2bankStatement_file">
-                      Upload last six months bank statements
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director2bankStatement_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director2bankStatement_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director2bankStatement_file &&
-                  errors.Director2bankStatement_file && (
-                    <div>{errors.Director2bankStatement_file}</div>
-                  )}
-              </Box>
-
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director2professionalReference_file ? (
-                    values.Director2professionalReference_file.name
-                  ) : (
-                    <label htmlFor="Director2professionalReference_file">
-                      Upload professional reference
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director2professionalReference_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director2professionalReference_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director2professionalReference_file &&
-                  errors.Director2professionalReference_file && (
-                    <div>{errors.Director2professionalReference_file}</div>
-                  )}
-              </Box>
+            <FileUploadField
+              label="Upload last six months bank statements"
+              name="Director2bankStatement_file"
+              value={Array.isArray(values.Director2bankStatement_file) ? values.Director2bankStatement_file : []}
+              error={errors.Director2bankStatement_file}
+              touched={touched.Director2bankStatement_file}
+              setFieldValue={setFieldValue}
+              accept=".pdf"
+            />
+            <FileUploadField
+              label="Upload professional reference"
+              name="Director2professionalReference_file"
+              value={Array.isArray(values.Director2professionalReference_file) ? values.Director2professionalReference_file : []}
+              error={errors.Director2professionalReference_file}
+              touched={touched.Director2professionalReference_file}
+              setFieldValue={setFieldValue}
+              accept=".pdf"
+            />
             </>
           )}
 
@@ -910,45 +729,15 @@ const FormFields10 = ({
                 }
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director2_national_id_file ? (
-                    values.Director2_national_id_file.name
-                  ) : (
-                    <label htmlFor="Director2_national_id_file">
-                      Upload National ID
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director2_national_id_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director2_national_id_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director2_national_id_file &&
-                  errors.Director2_national_id_file && (
-                    <div>{errors.Director2_national_id_file}</div>
-                  )}
-              </Box>
+              <FileUploadField
+                label="Upload National ID"
+                name="Director2_national_id_file"
+                value={Array.isArray(values.Director2_national_id_file) ? values.Director2_national_id_file : []}
+                error={errors.Director2_national_id_file}
+                touched={touched.Director2_national_id_file}
+                setFieldValue={setFieldValue}
+                accept=".pdf"
+              />
             </>
           )}
           {values.Director2citizenship === "Other" && (
@@ -1029,52 +818,22 @@ const FormFields10 = ({
                 }
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director2_passport_file ? (
-                    values.Director2_passport_file.name
-                  ) : (
-                    <label htmlFor="Director2_passport_file">
-                      Upload Passport
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director2_passport_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director2_passport_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director2_passport_file &&
-                  errors.Director2_passport_file && (
-                    <div>{errors.Director2_passport_file}</div>
-                  )}
-              </Box>
+              <FileUploadField
+                label="Upload Passport"
+                name="Director2_passport_file"
+                value={Array.isArray(values.Director2_passport_file) ? values.Director2_passport_file : []}
+                error={errors.Director2_passport_file}
+                touched={touched.Director2_passport_file}
+                setFieldValue={setFieldValue}
+                accept=".pdf"
+              />
             </>
           )}
         </>
       )}
 
       {/* Director 3 */}
-      {values.DirectorCount === "3" && (
+      {(values.isMlDirectors === "yes" && values.DirectorCount === "3") && (
         <>
           <Box
             variant="outlined"
@@ -1309,85 +1068,24 @@ const FormFields10 = ({
           {/* Conditional rendering for certificate upload */}
           {values.Director3isPep === "yes" && (
             <>
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director3bankStatement_file ? (
-                    values.Director3bankStatement_file.name
-                  ) : (
-                    <label htmlFor="Director3bankStatement_file">
-                      Upload last six months bank statements
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director3bankStatement_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director3bankStatement_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director3bankStatement_file &&
-                  errors.Director3bankStatement_file && (
-                    <div>{errors.Director3bankStatement_file}</div>
-                  )}
-              </Box>
-
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director3professionalReference_file ? (
-                    values.Director3professionalReference_file.name
-                  ) : (
-                    <label htmlFor="Director3professionalReference_file">
-                      Upload professional reference
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director3professionalReference_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director3professionalReference_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director3professionalReference_file &&
-                  errors.Director3professionalReference_file && (
-                    <div>{errors.Director3professionalReference_file}</div>
-                  )}
-              </Box>
+            <FileUploadField
+              label="Upload last six months bank statements"
+              name="Director3bankStatement_file"
+              value={Array.isArray(values.Director3bankStatement_file) ? values.Director3bankStatement_file : []}
+              error={errors.Director3bankStatement_file}
+              touched={touched.Director3bankStatement_file}
+              setFieldValue={setFieldValue}
+              accept=".pdf"
+            />
+            <FileUploadField
+              label="Upload professional reference"
+              name="Director3professionalReference_file"
+              value={Array.isArray(values.Director3professionalReference_file) ? values.Director3professionalReference_file : []}
+              error={errors.Director3professionalReference_file}
+              touched={touched.Director3professionalReference_file}
+              setFieldValue={setFieldValue}
+              accept=".pdf"
+            />
             </>
           )}
 
@@ -1412,46 +1110,16 @@ const FormFields10 = ({
                 }
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director3_national_id_file ? (
-                    values.Director3_national_id_file.name
-                  ) : (
-                    <label htmlFor="Director3_national_id_file">
-                      Upload National ID
-                    </label>
-                  )}
-                </Typography>
-
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director3_national_id_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director3_national_id_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director3_national_id_file &&
-                  errors.Director3_national_id_file && (
-                    <div>{errors.Director3_national_id_file}</div>
-                  )}
-              </Box>
+              <FileUploadField
+                label="Upload National ID"
+                name="Director3_national_id_file"
+                value={Array.isArray(values.Director3_national_id_file) ? values.Director3_national_id_file : []}
+                error={errors.Director3_national_id_file}
+                touched={touched.Director3_national_id_file}
+                setFieldValue={setFieldValue}
+                accept=".pdf"
+              />
+              
             </>
           )}
           {values.Director3citizenship === "Other" && (
@@ -1532,45 +1200,15 @@ const FormFields10 = ({
                 }
                 sx={{ gridColumn: "span 2" }}
               />
-              <Box
-                variant="outlined"
-                display="flex"
-                justifyContent="space-between"
-                sx={{
-                  backgroundColor: colors.primary[400],
-                  gridColumn: "span 2",
-                  margin: "1px 0px 1px",
-                  borderRadius: "4px",
-                  padding: "13px 5px",
-                }}
-              >
-                <Typography variant="h6">
-                  {values.Director3_passport_file ? (
-                    values.Director3_passport_file.name
-                  ) : (
-                    <label htmlFor="Director3_passport_file">
-                      Upload Passport Document
-                    </label>
-                  )}
-                </Typography>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  name="Director3_passport_file"
-                  onChange={(e) => {
-                    handleChange(e);
-                    setFieldValue(
-                      "Director3_passport_file",
-                      e.currentTarget.files[0]
-                    );
-                  }}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                {touched.Director3_passport_file &&
-                  errors.Director3_passport_file && (
-                    <div>{errors.Director3_passport_file}</div>
-                  )}
-              </Box>
+              <FileUploadField
+                label="Upload Passport"
+                name="Director3_passport_file"
+                value={Array.isArray(values.Director3_passport_file) ? values.Director3_passport_file : []}
+                error={errors.Director3_passport_file}
+                touched={touched.Director3_passport_file}
+                setFieldValue={setFieldValue}
+                accept=".pdf"
+              />
             </>
           )}
         </>

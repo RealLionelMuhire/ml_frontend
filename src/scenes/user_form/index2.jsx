@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -13,6 +13,22 @@ import FeedbackDialog from "../global/FeedbackDialog";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 
+// Local storage utility functions
+const saveToLocalStorage = (key, data) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
+
+
+const getFromLocalStorage = (key) => {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : null;
+};
+
+const clearLocalStorage = (key) => {
+  localStorage.removeItem(key);
+};
+
 const UserForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [createUser, { isLoading }] = useCreateUserMutation();
@@ -21,10 +37,58 @@ const UserForm = () => {
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogSuccess, setDialogSuccess] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
-  const [step, setStep] = useState(1);
+  // const [step, setStep] = useState(1);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const initialValues = {
+    FirstName: "",
+    LastName: "",
+    email: "",
+    contact: "",
+    password: "",
+    NationalID: "",
+    BirthDate: "",
+    UserRoles: "",
+    Address: "",
+    accessLevel: "",
+    cv_file: [],
+    contract_file: [],
+    national_id_file: [],
+  };
+  const LOCAL_STORAGE_KEY = "userFormData";
+  const LOCAL_STORAGE_STEP_KEY = "userFormStep";
 
+  // Local state for form values and step
+  const [formValues, setFormValues] = useState(null); // Start with null
+  const [step, setStep] = useState(() => {
+    const savedStep = getFromLocalStorage(LOCAL_STORAGE_STEP_KEY);
+    return savedStep || 1;
+  });
+
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const savedData = getFromLocalStorage(LOCAL_STORAGE_KEY);
+    if (savedData) {
+      setFormValues(savedData); // Populate with saved data
+    } else {
+      setFormValues(initialValues); // Fallback to default
+    }
+  }, []);
+
+  // Show spinner if `formValues` is not yet initialized
+  if (!formValues) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const handleStepChange = (newStep, values) => {
+    saveToLocalStorage(LOCAL_STORAGE_KEY, values);
+    saveToLocalStorage(LOCAL_STORAGE_STEP_KEY, newStep);
+    setStep(newStep);
+  };
   const handleFormSubmit = async (values) => {
     try {
   
@@ -81,6 +145,8 @@ const UserForm = () => {
       toast.error(errorMessage);
     } finally {
       setDialogLoading(false);
+      clearLocalStorage(LOCAL_STORAGE_KEY);
+      clearLocalStorage(LOCAL_STORAGE_STEP_KEY);
       navigate("/team");
     }
   };
@@ -90,13 +156,21 @@ const UserForm = () => {
       "fileSize",
       `Each file must be smaller than ${maxSizeMB} MB.`,
       (value) => {
+        console.log("file receive value:", value);
+  
         if (!value || !Array.isArray(value) || value.length === 0) {
           return true; // Allow empty uploads
         }
   
         const maxSizeBytes = maxSizeMB * 1024 * 1024;
-        
-        return value.every((file) => file.size <= maxSizeBytes);
+  
+        return value.every((file) => {
+          if (file.file_object && file.file_object.size) {
+            return file.file_object.size <= maxSizeBytes; // Validate file size
+          }
+          console.error("Missing file size in:", file); // Debugging unexpected structure
+          return false; // Fail validation if size is unavailable
+        });
       }
     );
   }
@@ -127,29 +201,6 @@ const UserForm = () => {
     accessLevel: yup.string(),
   });
 
-  const initialValues = {
-    FirstName: "",
-    LastName: "",
-    email: "",
-    contact: "",
-    password: "",
-    NationalID: "",
-    BirthDate: "",
-    UserRoles: "",
-    Address: "",
-    accessLevel: "",
-    cv_file: [],
-    contract_file: [],
-    national_id_file: [],
-  };
-
-  const nextStep = () => {
-    setStep(step + 1);
-  };
-
-  const prevStep = () => {
-    setStep(step - 1);
-  };
 
   return (
     <Box m="20px">
@@ -187,7 +238,7 @@ const UserForm = () => {
         <Button
           variant={step === 1 ? "contained" : "outlined"}
           color={step === 1 ? "secondary" : "primary"}
-          onClick={() => setStep(1)}
+          onClick={() => handleStepChange(1, formValues)}
           sx={{
             backgroundColor: step === 1 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -203,7 +254,7 @@ const UserForm = () => {
         <Button
           variant={step === 2 ? "contained" : "outlined"}
           color={step === 2 ? "secondary" : "primary"}
-          onClick={() => setStep(2)}
+          onClick={() => handleStepChange(2, formValues)}
           sx={{
             backgroundColor: step === 2 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -216,7 +267,8 @@ const UserForm = () => {
       </Box>
 
       <Formik
-        initialValues={initialValues}
+        initialValues={formValues}
+        enableReinitialize={true}
         validationSchema={checkoutSchema}
         onSubmit={handleFormSubmit}
       >
@@ -269,7 +321,7 @@ const UserForm = () => {
                 <Box display="flex" mt="20px">
                   <Button
                     variant="contained"
-                    onClick={prevStep}
+                    onClick={() => handleStepChange(step - 1, values)}
                     color="secondary"
                   >
                     Previous
@@ -280,7 +332,7 @@ const UserForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next

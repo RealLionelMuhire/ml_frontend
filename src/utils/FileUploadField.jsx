@@ -22,20 +22,25 @@ const FileUploadField = ({
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files).map((file) => ({
-      id: Date.now() + Math.random(), // Generate a unique ID
-      file_object: file,
+      id: Date.now() + Math.random(),
+      file_object: {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified,
+      },
       name: file.name,
     }));
-
+  
     if (files.length > 0) {
       setUploading(true);
-
-      // Add files with unique IDs directly to Formik's value
+  
       setFieldValue(name, [...(value || []), ...files]);
-
+  
       setUploading(false);
     }
   };
+  
 
   const handleViewFile = (file) => {
     const fileURL = URL.createObjectURL(file.file_object);
