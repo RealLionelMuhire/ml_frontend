@@ -22,24 +22,21 @@ const FileUploadField = ({
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files).map((file) => ({
-      id: Date.now() + Math.random(),
-      file_object: {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        lastModified: file.lastModified,
-      },
-      name: file.name,
+      id: `${Date.now()}-${Math.random()}`, // Unique ID
+      file_object: file, // Actual File object
+      name: file.name, // File name
     }));
   
     if (files.length > 0) {
       setUploading(true);
   
-      setFieldValue(name, [...(value || []), ...files]);
+      const updatedFiles = [...(value || []), ...files];
+      setFieldValue(name, updatedFiles);
   
       setUploading(false);
     }
   };
+   
   
 
   const handleViewFile = (file) => {
@@ -50,7 +47,7 @@ const FileUploadField = ({
   const handleDeleteFile = (fileId) => {
     const updatedFiles = value.filter((file) => file.id !== fileId);
     setFieldValue(name, updatedFiles);
-  };
+  };  
 
   return (
     <Box

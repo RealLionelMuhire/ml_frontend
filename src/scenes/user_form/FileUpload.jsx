@@ -61,6 +61,16 @@ const FileUpload = ({
         setFieldValue={setFieldValue}
         accept=".pdf"
       />
+      {/* uploading other necessary compressed folder below 50mbs */}
+      <FileUploadField
+        label="Upload Other Necessary Documents(Compress in a zip file)"
+        name="other_docs"
+        value={Array.isArray(values.other_docs) ? values.other_docs : []}
+        error={errors.other_docs}
+        touched={touched.other_docs}
+        setFieldValue={setFieldValue}
+        accept=".zip"
+      />
     </React.Fragment>
   );
 };

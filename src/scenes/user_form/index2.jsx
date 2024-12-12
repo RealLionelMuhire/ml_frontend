@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -12,22 +12,7 @@ import FileUpload from "./FileUpload";
 import FeedbackDialog from "../global/FeedbackDialog";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
-
-// Local storage utility functions
-const saveToLocalStorage = (key, data) => {
-  localStorage.setItem(key, JSON.stringify(data));
-};
-
-
-
-const getFromLocalStorage = (key) => {
-  const data = localStorage.getItem(key);
-  return data ? JSON.parse(data) : null;
-};
-
-const clearLocalStorage = (key) => {
-  localStorage.removeItem(key);
-};
+import LocalStorageUtils from "../../utils/localStorageUtils";
 
 const UserForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -54,6 +39,7 @@ const UserForm = () => {
     cv_file: [],
     contract_file: [],
     national_id_file: [],
+    other_docs: [],
   };
   const LOCAL_STORAGE_KEY = "userFormData";
   const LOCAL_STORAGE_STEP_KEY = "userFormStep";
@@ -61,17 +47,17 @@ const UserForm = () => {
   // Local state for form values and step
   const [formValues, setFormValues] = useState(null); // Start with null
   const [step, setStep] = useState(() => {
-    const savedStep = getFromLocalStorage(LOCAL_STORAGE_STEP_KEY);
+    const savedStep = LocalStorageUtils.get(LOCAL_STORAGE_STEP_KEY);
     return savedStep || 1;
   });
 
   // Load data from localStorage on mount
   useEffect(() => {
-    const savedData = getFromLocalStorage(LOCAL_STORAGE_KEY);
+    const savedData = LocalStorageUtils.get(LOCAL_STORAGE_KEY);
     if (savedData) {
-      setFormValues(savedData); // Populate with saved data
+      setFormValues(savedData);
     } else {
-      setFormValues(initialValues); // Fallback to default
+      setFormValues(initialValues);
     }
   }, []);
 
@@ -85,8 +71,8 @@ const UserForm = () => {
   }
 
   const handleStepChange = (newStep, values) => {
-    saveToLocalStorage(LOCAL_STORAGE_KEY, values);
-    saveToLocalStorage(LOCAL_STORAGE_STEP_KEY, newStep);
+    LocalStorageUtils.save(LOCAL_STORAGE_KEY, values);
+    LocalStorageUtils.save(LOCAL_STORAGE_STEP_KEY, newStep);
     setStep(newStep);
   };
   const handleFormSubmit = async (values) => {
@@ -98,32 +84,17 @@ const UserForm = () => {
       setDialogSuccess(false);
   
       const formData = new FormData();
-      formData.append("FirstName", values.FirstName);
-      formData.append("LastName", values.LastName);
-      formData.append("email", values.email);
-      formData.append("contact", values.contact);
-      formData.append("password", values.password);
-      formData.append("NationalID", values.NationalID);
-      formData.append("BirthDate", values.BirthDate);
-      formData.append("UserRoles", values.UserRoles);
-      formData.append("Address", values.Address);
-      formData.append("accessLevel", values.accessLevel);
-      if (values.cv_file && values.cv_file.length > 0) {
-        values.cv_file.forEach((file) => {
-          formData.append("cv_file", file);
-        });
-      }
-      if (values.contract_file && values.contract_file.length > 0) {
-        values.contract_file.forEach((file) => {
-          formData.append("contract_file", file);
-        });
-      }
-      if (values.national_id_file && values.national_id_file.length > 0) {
-        values.national_id_file.forEach((file) => {
-          formData.append("national_id_file", file);
-        });
-      }
-  
+      Object.entries(values).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((fileData) => {
+            if (fileData.file_object instanceof File) {
+              formData.append(key, fileData.file_object);
+            }
+          });
+        } else {
+          formData.append(key, value);
+        }
+      });
       const response = await createUser(formData).unwrap();
   
       if (response.error) {
@@ -145,18 +116,17 @@ const UserForm = () => {
       toast.error(errorMessage);
     } finally {
       setDialogLoading(false);
-      clearLocalStorage(LOCAL_STORAGE_KEY);
-      clearLocalStorage(LOCAL_STORAGE_STEP_KEY);
+      LocalStorageUtils.clear(LOCAL_STORAGE_KEY);
+      LocalStorageUtils.clear(LOCAL_STORAGE_STEP_KEY);
       navigate("/team");
     }
   };
 
-  function createFileSchema(maxSizeMB = 5) {
+  function createFileSchema(maxSizeMB = 10) {
     return yup.mixed().test(
       "fileSize",
       `Each file must be smaller than ${maxSizeMB} MB.`,
       (value) => {
-        console.log("file receive value:", value);
   
         if (!value || !Array.isArray(value) || value.length === 0) {
           return true; // Allow empty uploads
@@ -168,7 +138,6 @@ const UserForm = () => {
           if (file.file_object && file.file_object.size) {
             return file.file_object.size <= maxSizeBytes; // Validate file size
           }
-          console.error("Missing file size in:", file); // Debugging unexpected structure
           return false; // Fail validation if size is unavailable
         });
       }
@@ -192,12 +161,9 @@ const UserForm = () => {
     UserRoles: yup.string(),
     Address: yup.string(),
     cv_file: createFileSchema(),
-
     contract_file: createFileSchema(),
-    
     national_id_file: createFileSchema(),
-    
-    
+    other_docs: createFileSchema(),
     accessLevel: yup.string(),
   });
 
