@@ -1,9 +1,10 @@
 import React from "react";
-import { TextField, MenuItem, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import FinancialForecastTable2 from "./FinancialForecastTable";
 import AccountAtivityTable from "./AccountActivityTable";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import FileUploadField from "../../utils/FileUploadField";
 
 const FormFields12 = ({
   values,
@@ -121,6 +122,20 @@ const FormFields12 = ({
           copies of due diligence documents.
         </Typography>
       </Box>
+      {/* other_necessary_documents_file */}
+      <FileUploadField
+        label="Upload Other Necessary Documents(Compress Folder into a zip file)"
+        name="other_necessary_documents_file"
+        value={
+          Array.isArray(values.other_necessary_documents_file)
+            ? values.other_necessary_documents_file
+            : []
+        }
+        error={errors.other_necessary_documents_file}
+        touched={touched.other_necessary_documents_file}
+        setFieldValue={setFieldValue}
+        accept=".zip"
+      />
     </React.Fragment>
   );
 };

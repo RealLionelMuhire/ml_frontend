@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -25,6 +25,8 @@ import FormFields12 from "./FormField12";
 import FeedbackDialog from"../global/FeedbackDialog"
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
+import LocalStorageUtils from "../../utils/localStorageUtils";
+import { use } from "react";
 // import ErrorBox from "./ErrorBox";
 // import SuccessBox from "./SuccessBox";
 
@@ -41,10 +43,6 @@ const ClientForm = () => {
   const [dialogLoading, setDialogLoading] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [step, setStep] = useState(1);
-
-  
-
 
   const handleFormSubmit = async (values) => {
     try {
@@ -59,12 +57,12 @@ const ClientForm = () => {
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           // Check if the value is a file or an array of files
-          if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
-            if (Array.isArray(value)) {
-              value.forEach((file) => formData.append(key, file));
-            } else {
-              formData.append(key, value);
-            }
+          if (Array.isArray(value)) {
+            value.forEach((fileData) => {
+              if (fileData.file_object instanceof File) {
+                formData.append(key, fileData.file_object);
+              }
+            });
           } else if (key === "financialForecast" || key === "expectedAccountActivity") {
             formData.append(key, JSON.stringify(value));
           } else {
@@ -72,7 +70,7 @@ const ClientForm = () => {
           }
         }
       });
-  
+      console.log("client form data:", formData)
       const response = await createClient(formData); // API call
   
       if (response.error) {
@@ -93,7 +91,8 @@ const ClientForm = () => {
       } else if (response.data) {
         const successMessage = response.data.message;
         toast.success(successMessage);
-  
+        LocalStorageUtils.clear(LOCAL_STORAGE_KEY);
+        LocalStorageUtils.clear(LOCAL_STORAGE_STEP_KEY);
         setDialogMessage(successMessage);
         setDialogSuccess(true); // Set to true for success
       }
@@ -146,6 +145,8 @@ const ClientForm = () => {
         setDialogMessage(successMessage);
         setDialogSuccess(true); // Set dialog state to success
         toast.success(successMessage); // Show toast for success
+        LocalStorageUtils.clear(LOCAL_STORAGE_KEY);
+        LocalStorageUtils.clear(LOCAL_STORAGE_STEP_KEY);
         navigate("/incomplete-clients"); // Navigate after successful save
       }
     } catch (error) {
@@ -415,23 +416,33 @@ const ClientForm = () => {
     latest_accounts_file: createFileSchema(),
     identification_documents_of_the_principals_of_the_foundation_file:
       createFileSchema(),
+    other_necessary_documents_file: createFileSchema(),
   });
 
-  function createFileSchema(maxSizeMB = 5) {
+  function createFileSchema(maxSizeMB = 10) {
     return yup.mixed().test(
       "fileSize",
       `Each file must be smaller than ${maxSizeMB} MB.`,
       (value) => {
+  
         if (!value || !Array.isArray(value) || value.length === 0) {
           return true; // Allow empty uploads
         }
   
         const maxSizeBytes = maxSizeMB * 1024 * 1024;
-        
-        return value.every((file) => file.size <= maxSizeBytes);
+  
+        return value.every((file) => {
+          if (file.file_object && file.file_object.size) {
+            return file.file_object.size <= maxSizeBytes; // Validate file size
+          }
+          return false; // Fail validation if size is unavailable
+        });
       }
     );
   }
+
+  const LOCAL_STORAGE_KEY = "clientFormData";
+  const LOCAL_STORAGE_STEP_KEY = "clientFormStep";
 
   const initialValues = {
     firstName: "",
@@ -726,19 +737,41 @@ const ClientForm = () => {
     charter_file: [],
     latest_accounts_file: [],
     identification_documents_of_the_principals_of_the_foundation_file: [],
+    other_necessary_documents_file: [],
   };
 
-  const nextStep = () => {
-    setStep(step + 1);
-  };
+  const [formValues, setFormValues] = useState(null);
+  const [step, setStep] = useState(() => {
+    const storedStep = LocalStorageUtils.get(LOCAL_STORAGE_STEP_KEY);
+    return storedStep ? parseInt(storedStep, 10) : 1;
+  });
 
-  const prevStep = () => {
-    setStep(step - 1);
+  useEffect(() => {
+    const savedData = LocalStorageUtils.get(LOCAL_STORAGE_KEY);
+    if (savedData) {
+      setFormValues(savedData);
+    } else {
+      setFormValues(initialValues);
+    }
+  }, []);
+
+  if (!formValues) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const handleStepChange = (newStep, values) => {
+    LocalStorageUtils.save(LOCAL_STORAGE_KEY, values);
+    LocalStorageUtils.save(LOCAL_STORAGE_STEP_KEY, newStep);
+    setStep(newStep);
   };
 
   return (
-    <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Box m="10px">
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginTop="-40px">
         <Header
           title="REGISTER A CLIENT"
           subtitle="Please fill in the blank fields in the form below. This information will help us to serve Client better."
@@ -773,7 +806,7 @@ const ClientForm = () => {
         <Button
           variant={step === 1 ? "contained" : "outlined"}
           color={step === 1 ? "secondary" : "primary"}
-          onClick={() => setStep(1)}
+          onClick={() => handleStepChange(1, formValues)}
           sx={{
             backgroundColor: step === 1 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -786,7 +819,7 @@ const ClientForm = () => {
         <Button
           variant={step === 2 ? "contained" : "outlined"}
           color={step === 2 ? "secondary" : "primary"}
-          onClick={() => setStep(2)}
+          onClick={() => handleStepChange(2, formValues)}
           sx={{
             backgroundColor: step === 2 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -794,12 +827,12 @@ const ClientForm = () => {
             },
           }}
         >
-          LEGAL PERSON
+          ENTITY INFORMATION
         </Button>
         <Button
           variant={step === 3 ? "contained" : "outlined"}
           color={step === 3 ? "secondary" : "primary"}
-          onClick={() => setStep(3)}
+          onClick={() => handleStepChange(3, formValues)}
           sx={{
             backgroundColor: step === 3 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -812,7 +845,7 @@ const ClientForm = () => {
         <Button
           variant={step === 4 ? "contained" : "outlined"}
           color={step === 4 ? "secondary" : "primary"}
-          onClick={() => setStep(4)}
+          onClick={() => handleStepChange(4, formValues)}
           sx={{
             backgroundColor: step === 4 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -823,10 +856,9 @@ const ClientForm = () => {
           BACKGROUND HISTORY(1)
         </Button>
         <Button
-
           variant={step === 5 ? "contained" : "outlined"}
           color={step === 5 ? "secondary" : "primary"}
-          onClick={() => setStep(5)}
+          onClick={() => handleStepChange(5, formValues)}
           sx={{
             backgroundColor: step === 5 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -839,7 +871,7 @@ const ClientForm = () => {
         <Button
           variant={step === 6 ? "contained" : "outlined"}
           color={step === 6 ? "secondary" : "primary"}
-          onClick={() => setStep(6)}
+          onClick={() => handleStepChange(6, formValues)}
           sx={{
             backgroundColor: step === 6 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -852,7 +884,7 @@ const ClientForm = () => {
         <Button
           variant={step === 7 ? "contained" : "outlined"}
           color={step === 7 ? "secondary" : "primary"}
-          onClick={() => setStep(7)}
+          onClick={() => handleStepChange(7, formValues)}
           sx={{
             backgroundColor: step === 7 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -865,7 +897,7 @@ const ClientForm = () => {
         <Button
           variant={step === 8 ? "contained" : "outlined"}
           color={step === 8 ? "secondary" : "primary"}
-          onClick={() => setStep(8)}
+          onClick={() => handleStepChange(8, formValues)}
           sx={{
             backgroundColor: step === 8 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -876,10 +908,9 @@ const ClientForm = () => {
           SOURCE OF FUNDS
         </Button>
         <Button
-
           variant={step === 9 ? "contained" : "outlined"}
           color={step === 9 ? "secondary" : "primary"}
-          onClick={() => setStep(9)}
+          onClick={() => handleStepChange(9, formValues)}
           sx={{
             backgroundColor: step === 9 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -892,7 +923,7 @@ const ClientForm = () => {
         <Button
           variant={step === 10 ? "contained" : "outlined"}
           color={step === 10 ? "secondary" : "primary"}
-          onClick={() => setStep(10)}
+          onClick={() => handleStepChange(10, formValues)}
           sx={{
             backgroundColor: step === 10 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -905,7 +936,7 @@ const ClientForm = () => {
         <Button
           variant={step === 11 ? "contained" : "outlined"}
           color={step === 11 ? "secondary" : "primary"}
-          onClick={() => setStep(11)}
+          onClick={() => handleStepChange(11, formValues)}
           sx={{
             backgroundColor: step === 11 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -918,7 +949,7 @@ const ClientForm = () => {
         <Button
           variant={step === 12 ? "contained" : "outlined"}
           color={step === 12 ? "secondary" : "primary"}
-          onClick={() => setStep(12)}
+          onClick={() => handleStepChange(12, formValues)}
           sx={{
             backgroundColor: step === 12 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -928,11 +959,11 @@ const ClientForm = () => {
         >
           FINANCIAL FORECAST
         </Button>
-        
       </Box>
 
       <Formik
         initialValues={initialValues}
+        enableReinitialize={true}
         validationSchema={checkoutSchema}
         onSubmit={handleFormSubmit}
       >
@@ -948,12 +979,29 @@ const ClientForm = () => {
           <form onSubmit={handleSubmit}>
             <Box
               display="grid"
-              gap="10px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              // gap="10px"
+              // gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
+              <Box
+                display="grid"
+                rowGap="10px"
+                columnGap="10px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                position="relative"
+                sx={{
+                  border: `1px solid ${colors.grey[500]}`,
+                  padding: "3px",
+                  borderRadius: "4px",
+                  height: "70vh",
+                  overflowY: "auto",
+                  width: "100%",
+                  alignItems: "start",
+                  gridAutoRows: "auto"
+                }}
+              >
               {step === 1 && (
                 <FormFields1
                   values={values}
@@ -1086,6 +1134,7 @@ const ClientForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              </Box>
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -1111,7 +1160,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px">
                   <Button
                     variant="contained"
-                    onClick={prevStep}
+                    onClick={() => handleStepChange(step - 1, values)}
                     color="secondary"
                   >
                     Previous
@@ -1122,7 +1171,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1133,7 +1182,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1144,7 +1193,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1155,7 +1204,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1166,7 +1215,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1177,7 +1226,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1188,7 +1237,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1199,7 +1248,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1210,7 +1259,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1221,7 +1270,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1232,7 +1281,7 @@ const ClientForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next

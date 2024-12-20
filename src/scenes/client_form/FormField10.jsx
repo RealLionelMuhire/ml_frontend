@@ -45,7 +45,7 @@ const FormFields10 = ({
         name="isMlDirectors"
         error={!!touched.isMlDirectors && !!errors.isMlDirectors}
         helperText={touched.isMlDirectors && errors.isMlDirectors}
-        sx={{ gridColumn: "span 1" }}
+        sx={{ gridColumn: "span 2" }}
       >
         <MenuItem value="yes">Yes</MenuItem>
         <MenuItem value="no">No</MenuItem>

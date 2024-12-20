@@ -95,6 +95,7 @@ const UserForm = () => {
           formData.append(key, value);
         }
       });
+      console.log("user form data:", formData)
       const response = await createUser(formData).unwrap();
   
       if (response.error) {
@@ -248,15 +249,31 @@ const UserForm = () => {
           setFieldValue,
 
         }) => (
+          
           <form onSubmit={handleSubmit}>
             <Box
-              display="grid"
-              gap="10px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              
               sx={{
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
+              <Box
+                display="grid"
+                rowGap="10px"
+                columnGap="10px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                position="relative"
+                sx={{
+                  border: `1px solid ${colors.grey[500]}`,
+                  padding: "3px",
+                  borderRadius: "4px",
+                  height: "65vh",
+                  overflowY: "auto",
+                  width: "100%",
+                  alignItems: "start",
+                  gridAutoRows: "auto"
+                }}
+              >
               {step === 1 && (
                 <FormFields
                   values={values}
@@ -279,6 +296,7 @@ const UserForm = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+              </Box>
             </Box>
 
             {/* Previous and Next Buttons */}

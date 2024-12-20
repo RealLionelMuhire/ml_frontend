@@ -93,7 +93,7 @@ const FormFields2 = ({
         }}
       >
         <Typography variant="h5" fontWeight="800">
-          Legal Person (Complete this section if the Shareholder is a legal
+          ENTITY INFORMATION (Complete this section if the Shareholder is a legal
           entity)
         </Typography>
       </Box>

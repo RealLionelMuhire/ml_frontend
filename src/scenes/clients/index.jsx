@@ -21,7 +21,7 @@ const Clients = () => {
   const [deactivateClient, { isLoading: isDeactivating }] = useDeactivateClientMutation();
   const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
 
-  // console.log("data: ......... ", data);
+  console.log("data: ......... ", data);
 
   const navigate = useNavigate();
   const theme = useTheme();

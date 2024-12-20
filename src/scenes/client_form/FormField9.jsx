@@ -183,6 +183,7 @@ const FormFields9 = ({
         value={values.countrySourceWealth || ""}
         onChange={handleChange}
         onBlur={handleBlur}
+        sx={{ gridColumn: "span 2" }}
         name="countrySourceWealth"
         error={touched.countrySourceWealth && errors.countrySourceWealth}
         helperText={touched.countrySourceWealth && errors.countrySourceWealth}

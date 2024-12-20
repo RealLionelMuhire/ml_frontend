@@ -9,18 +9,25 @@ const ClientByID = ({ data, selectedClientIds }) => {
   const colors = tokens(theme.palette.mode);
 
   // Filter out unwanted fields
-  const filteredData = data.map(item => {
+  const filteredData = data.map((item) => {
     const filteredItem = {};
-    Object.keys(item).forEach(key => {
-      if (
-        key !== "Expected Account Activity" &&
-        key !== "Financial Forecast"
-      ) {
+    Object.keys(item).forEach((key) => {
+      // Include "Expected Account Activity" and "Financial Forecast"
+      if (key === "Expected Account Activity" || key === "Financial Forecast") {
+        filteredItem[key] = item[key]?.map((file) => ({
+          file_name: file.name || file.file_name,
+          file_content: file.file_content || null, // Base64 content or parsed data
+          file_object: file.file_object || null, // Actual file object
+        })) || [];
+      } else {
+        // Include other fields normally
         filteredItem[key] = item[key];
       }
     });
     return filteredItem;
   });
+  
+  
 
   const columns = [
     { field: "property", headerName: "Property", flex: 1 },
@@ -30,14 +37,43 @@ const ClientByID = ({ data, selectedClientIds }) => {
       flex: 2,
       renderCell: (params) => {
         const value = params.value;
-        if (typeof value === "object" && value?.file_name) {
-          return <PdfViewerDialog file={value} />;
+  
+        if (Array.isArray(value)) {
+          // Render multiple files (array case)
+          return (
+            <Box display="flex" flexDirection="column">
+              {value.map((file, idx) => (
+                <PdfViewerDialog
+                  key={idx}
+                  file={{
+                    file_name: file.name || file.file_name,
+                    file_content: file.file_content || "",
+                  }}
+                />
+              ))}
+            </Box>
+          );
         }
-        return value;
+  
+        if (value && typeof value === "object") {
+          // Render single file (object case)
+          return (
+            <PdfViewerDialog
+              file={{
+                file_name: value.name || value.file_name,
+                file_content: value.file_content || "",
+              }}
+            />
+          );
+        }
+  
+        // For other types (e.g., string or number)
+        return typeof value === "string" || typeof value === "number" ? value : null;
       },
     })),
   ];
-
+  
+  
   const rows = filteredData
     ? Object.keys(filteredData[0]).map((key) => {
         const row = { id: key, property: key };
