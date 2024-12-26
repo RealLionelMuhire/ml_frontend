@@ -94,7 +94,7 @@ const FormFields2 = ({
         }}
       >
         <Typography variant="h5" fontWeight="800">
-          Legal Person (Complete this section if the Shareholder is a legal
+          ENTITY INFORMATION (Complete this section if the Shareholder is a legal
           entity)
         </Typography>
       </Box>
@@ -156,8 +156,21 @@ const FormFields2 = ({
         <MenuItem value="holdings">Holdings</MenuItem>
         <MenuItem value="SPV">SPV</MenuItem>
         <MenuItem value="foundation">Foundation</MenuItem>
+        <MenuItem value="corporation">Corporation</MenuItem>
+        <MenuItem value="partnership">Partnership</MenuItem>
+        <MenuItem value="limitedLiabilityCompany">Limited Liability Company (LLC)</MenuItem>
+        <MenuItem value="soleProprietorship">Sole Proprietorship</MenuItem>
+        <MenuItem value="cooperative">Cooperative(Co-op)</MenuItem>
+        <MenuItem value="nonprofitOrganization">Nonprofit Organization</MenuItem>
+        <MenuItem value="jointVenture">Joint Venture</MenuItem>
+        <MenuItem value="franchise">Franchise</MenuItem>
+        <MenuItem value="publicLimitedCompany">Public Limited Company (PLC)</MenuItem>
+        <MenuItem value="privateLimitedCompany">Private Limited Company (Ltd)</MenuItem>
+        <MenuItem value="branchOffice">Branch Office</MenuItem>
+        <MenuItem value="merchantsCompany">Merchants Company</MenuItem>
+        <MenuItem value="socialEnterprise">Social Enterprise</MenuItem>
       </TextField>
-      {client.CathegoryOfEntity === "SPV" && (
+      {(values.CathegoryOfEntity && (values.CathegoryOfEntity || client.CathegoryOfEntity) ) === "SPV" && (
         <>
           <TextField
             fullWidth

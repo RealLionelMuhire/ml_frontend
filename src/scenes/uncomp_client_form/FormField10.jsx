@@ -8,6 +8,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import PdfViewerDialog from "../../utils/PdfViewerDialog";
+import DocumentUploadField from "../../utils/DocumentUploadField";
 
 const FormFields10 = ({
   values,
@@ -55,14 +56,14 @@ const FormFields10 = ({
         name="isMlDirectors"
         error={!!touched.isMlDirectors && !!errors.isMlDirectors}
         helperText={touched.isMlDirectors && errors.isMlDirectors}
-        sx={{ gridColumn: "span 1" }}
+        sx={{ gridColumn: "span 2" }}
       >
         <MenuItem value="yes">Yes</MenuItem>
         <MenuItem value="no">No</MenuItem>
       </TextField>
 
       {/* how many directors */}
-      {values.isMlDirectors === "yes" && (
+      {(values.isMlDirectors === "yes" && (values.isMlDirectors === "yes" || client.isMlDirectors === "yes")) && (
         <TextField
           fullWidth
           variant="filled"
@@ -81,11 +82,10 @@ const FormFields10 = ({
           <MenuItem value="3">3</MenuItem>
         </TextField>
       )}
-
-      {/* Conditional rendering for certificate upload */}
-      {values.DirectorCount === "1" && (
+      {(values.isMlDirectors === "yes" && (values.DirectorCount === "1" || values.DirectorCount === "2" || values.DirectorCount === "3") &&
+      ((values.isMlDirectors === "yes" && (values.DirectorCount === "1" || values.DirectorCount === "2" || values.DirectorCount === "3")) ||
+      (client.isMlDirectors === "yes" && (client.DirectorCount === "1" || client.DirectorCount === "2" || client.DirectorCount === "3")))) && (
         <>
-          {/* Director 1 */}
           <Box
             variant="outlined"
             display="flex"
@@ -321,9 +321,9 @@ const FormFields10 = ({
             <MenuItem value="no">No</MenuItem>
           </TextField>
 
-          {/* Conditional rendering for certificate upload */}
           {values.Director1isPep === "yes" && (
             <>
+            
               <Box
                 variant="outlined"
                 display="flex"
@@ -598,7 +598,9 @@ const FormFields10 = ({
           )}
         </>
       )}
-      {values.DirectorCount === "2" && (
+      {((values.isMlDirectors === "yes" && (values.DirectorCount === "2" || values.DirectorCount === "3"))
+      || ((values.isMlDirectors === "yes" && (values.DirectorCount === "2" || values.DirectorCount === "3"))
+      && (client.isMlDirectors === "yes" && (client.DirectorCount === "2" || client.DirectorCount === "3")))) && (
         <>
           <Box
             variant="outlined"
@@ -620,7 +622,6 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            // label="First Name"
             label={`First Name: ${client.Director2FirstName || ""}`}
             onBlur={handleBlur}
             onChange={handleChange}
@@ -637,7 +638,6 @@ const FormFields10 = ({
             fullWidth
             variant="filled"
             type="text"
-            // label="Last Name"
             label={`Last Name: ${client.Director2LastName}`}
             onBlur={handleBlur}
             onChange={handleChange}
@@ -1105,7 +1105,10 @@ const FormFields10 = ({
       )}
 
       {/* Director 3 */}
-      {values.DirectorCount === "3" && (
+      {(values.isMlDirectors === "yes" && values.DirectorCount === "3")
+      || ((values.isMlDirectors === "yes" && values.DirectorCount === "3")
+      && (client.isMlDirectors === "yes" && client.DirectorCount === "3"))
+      && (
         <>
           <Box
             variant="outlined"

@@ -15,7 +15,6 @@ const ClientByIDParent = () => {
     );
     const { data, isLoading } = useGetClientsByIdsQuery(selectedClientIds);
     const [viewMode, setViewMode] = useState("table");
-    console.log("Data=============>",data);
     
     if (isLoading) {
         return (

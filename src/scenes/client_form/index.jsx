@@ -26,7 +26,6 @@ import FeedbackDialog from"../global/FeedbackDialog"
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import LocalStorageUtils from "../../utils/localStorageUtils";
-import { use } from "react";
 // import ErrorBox from "./ErrorBox";
 // import SuccessBox from "./SuccessBox";
 
@@ -41,10 +40,13 @@ const ClientForm = () => {
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogSuccess, setDialogSuccess] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = async (values) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true)
     try {
       // Set loading state for dialog
       setDialogLoading(true);
@@ -70,7 +72,7 @@ const ClientForm = () => {
           }
         }
       });
-      console.log("client form data:", formData)
+      // console.log("client form data:", formData)
       const response = await createClient(formData); // API call
   
       if (response.error) {
@@ -114,26 +116,26 @@ const ClientForm = () => {
       setDialogMessage("Saving data for later..."); // Show saving message
       setDialogSuccess(false); // Set to false (loading state)
   
-      const incompleteFormData = new FormData();
+      const completeFormData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           // Check if the value is a file or an array of files
           if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
             if (Array.isArray(value)) {
-              value.forEach((file) => incompleteFormData.append(key, file));
+              value.forEach((file) => completeFormData.append(key, file));
             } else {
-              incompleteFormData.append(key, value);
+              completeFormData.append(key, value);
             }
           } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-            incompleteFormData.append(key, JSON.stringify(value));
+            completeFormData.append(key, JSON.stringify(value));
           } else {
-            incompleteFormData.append(key, value);
+            completeFormData.append(key, value);
           }
         }
       });
   
-      const response = await saveUncompleteData(incompleteFormData);
-      console.log("Response received:", response);
+      const response = await saveUncompleteData(completeFormData);
+      // console.log("Response received:", response);
   
       if (response.error) {
         const errorMessage = response.error.message || "An error occurred";
@@ -155,7 +157,8 @@ const ClientForm = () => {
       setDialogSuccess(false); // Set dialog state to error
       toast.error(errorMessage); // Show toast for error
     } finally {
-      setDialogLoading(false); // Hide the loading spinner
+      setDialogLoading(false);
+      setIsSubmitting(false);
     }
   };
   
@@ -979,8 +982,6 @@ const ClientForm = () => {
           <form onSubmit={handleSubmit}>
             <Box
               display="grid"
-              // gap="10px"
-              // gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
@@ -1293,7 +1294,7 @@ const ClientForm = () => {
                   <Button
                     variant="contained"
                     onClick={() => handleFormSubmit(values)}
-                    type="submit"
+                    // type="submit"
                     color="secondary"
                     disabled={isLoadingSubmit}
                   >
