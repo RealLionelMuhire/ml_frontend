@@ -187,7 +187,7 @@ const FormFields7 = ({
         name="targetedCountries"
         error={!!touched.targetedCountries && !!errors.targetedCountries}
         helperText={touched.targetedCountries && errors.targetedCountries}
-        sx={{ gridColumn: "span 1" }}
+        sx={{ gridColumn: "span 2" }}
       />
       <Box
         variant="outlined"

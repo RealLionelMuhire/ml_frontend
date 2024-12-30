@@ -26,6 +26,7 @@ import FormFields12 from "./FormField12";
 import FeedbackDialog from"../global/FeedbackDialog"
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
+import LocalStorageUtils from "../../utils/localStorageUtils";
 // import ErrorBox from "./ErrorBox";
 // import SuccessBox from "./SuccessBox";
 
@@ -34,7 +35,7 @@ const ClientUpdateForm = () => {
   // const [createClient, { isError, data }] = useCreateClientMutation();
 
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
-  // const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const navigate = useNavigate();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -48,9 +49,8 @@ const ClientUpdateForm = () => {
     [location.state?.selectedClientIds]
   );
 
-  const [updateUncompleteData] = useUpdateClientMutation();
+  const [updateCompleteData] = useUpdateClientMutation();
 
-  const [step, setStep] = useState(1);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -64,6 +64,325 @@ const ClientUpdateForm = () => {
     refetch();
   }, [refetch]);
 
+  const LOCAL_STORAGE_KEY = "updateClientFormData";
+  const LOCAL_STORAGE_STEP_KEY = "updateClientFormStep";
+
+  const initialValues = {
+    firstName: "",
+    lastName: "",
+    clientEmail: "",
+    clientContact: "",
+    passportIdNumber: "",
+    birthDate: "",
+    citizenship: "",
+    countryOfResidence: "",
+    passportExpiryDate: "",
+    countryOfIssue: "",
+    preferredLanguage: "",
+    NameOfEntity: "",
+    PrevNameOfEntity: "",
+    TypeOfEntity: "",
+    TypeOfLicense: "",
+    sharePercent: "",
+    currentAddress: "",
+    taxResidency: "",
+    tinNumber: "",
+    designation: "",
+    introducerName: "",
+    introducerEmail: "",
+    contactPersonName: "",
+    contactPersonEmail: "",
+    contactPersonPhone: "",
+
+    CathegoryOfEntity: "",
+    SPVType: "",
+    SectorOfEntity:[],
+    OtherSectorOfEntity: "",
+
+    authorisedName: "",
+    authorisedEmail: "",
+    authorisedPersonContact: "",
+    authorisedCurrentAddress: "",
+    authorisedRelationship: "",
+    signature_file: [],
+    isPep: "",
+    bankStatement_file: [],
+    professionalReference_file: [],
+    countryOfIncorporation: "",
+    incorporationDate: "",
+    registeredOfficeAddress: "",
+    businessActivity: "",
+    countryOfOperation: "",
+
+    changedName: "",
+    similarApplicationDetailsName: "",
+    financialServicesBusiness: "",
+    jurisdictionName: "",
+    jurisdictionAddress: "",
+    similarApplication: "",
+    similarApplicationDetailsPartner: "",
+    criticised: "",
+    similarApplicationDetailsJurisdictions: "",
+
+    bankruptcyApplication: "",
+    similarApplicationDetailsForfeit: "",
+    receiverAppointed: "",
+    similarApplicationDetailsReceiver: "",
+    civilProceedings: "",
+    similarApplicationDetailsFinancial: "",
+    convicted: "",
+    imilarApplicationDetailsOffence: "",
+    directorConvicted: "",
+    similarApplicationDetailsDirector: "",
+
+    RemittingParty: "",
+    ModeOfPayment: "",
+    RelationshipWithApplicant: "",
+    ProposedNameOption1: "",
+    ProposedNameOption2: "",
+    ProposedNameOption3: "",
+
+    proposedActivity: "",
+    targetSectors: "",
+    otherTargetSectors: "",
+    targetedCountries: "",
+    specialLicense: "",
+    secretary: "",
+    productService: "",
+    businessAddress: "",
+    sharesType: "",
+    sharesNumber: "",
+    statedCapital: "",
+
+    sourceOfFunds: "",
+    otherSourceOfFunds: "",
+    countrySourceFunds: "",
+    netAnnualIncome: "",
+    estimatedNetWorth: "",
+    sourceOfWealth: "",
+    otherSourceOfWealth: "",
+    countrySourceWealth: "",
+    bankInvolvedWealth: "",
+
+    financialForecast: [
+      {
+        id: 0,
+        description: "Currency",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 1,
+        description: "Initial Investment",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 2,
+        description: "Income from Business Activities",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
+      { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
+    ],
+
+    // Estimated Deposit Yearly (Currency)
+    // Estimated Number of Transactions (monthly or yearly)
+    //   Estimated Value of Transactions (monthly or yearly)
+
+    expectedAccountActivity: [
+      {
+        id: 0,
+        description: "Estimated Deposit Yearly (Currency)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 1,
+        description: "Estimated Number of Transactions (monthly or yearly)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+      {
+        id: 2,
+        description: "Estimated Value of Transactions (monthly or yearly)",
+        year1: "",
+        year2: "",
+        year3: "",
+      },
+    ],
+
+    bankName: "",
+    Currency: "",
+    groupASignatory1: "",
+    groupASignatory2: "",
+    groupASignatory3: "",
+    groupASignatory4: "",
+    groupBSignatory1: "",
+    groupBSignatory2: "",
+    groupBSignatory3: "",
+    groupBSignatory4: "",
+    authorizedUser1: "",
+    authorizedUser1AccessRights: "",
+    authorizedUser2: "",
+    authorizedUser2AccessRights: "",
+    authorizedUser3: "",
+    authorizedUser3AccessRights: "",
+    authorizedUser4: "",
+    authorizedUser4AccessRights: "",
+    modeOfOperation: "",
+    callBackProcessContact: "",
+    nameOfProposedOfficer: "",
+
+    confirmationLetter_file: [],
+    bank_statement_file: [],
+    custody_accounts_file: [],
+    source_of_funds_file: [],
+    payslips_file: [],
+    due_diligence_file: [],
+    financial_statements_file: [],
+    proof_of_ownership_file: [],
+    lease_agreement_file: [],
+    bank_statements_file: [],
+    cdd_documents_file: [],
+    documentary_evidence_file: [],
+    bank_statement_proceeds_file: [],
+    notarised_documents_file: [],
+    letter_from_donor_file: [],
+    donor_source_of_wealth_file: [],
+    donor_bank_statement_file: [],
+    letter_from_relevant_org_file: [],
+    lottery_bank_statement_file: [],
+    creditor_agreement_file: [],
+    creditor_cdd_file: [],
+    creditor_bank_statement_file: [],
+    legal_document_file: [],
+    notary_letter_file: [],
+    executor_letter_file: [],
+    loan_agreement_file: [],
+    loan_bank_statement_file: [],
+    related_third_party_loan_agreement_file: [],
+    related_third_party_cdd_file: [],
+    related_third_party_bank_statement_file: [],
+    unrelated_third_party_loan_agreement_file: [],
+    unrelated_third_party_cdd_file: [],
+    unrelated_third_party_bank_statement_file: [],
+    signed_letter_from_notary_file: [],
+    property_contract_file: [],
+    insurance_pay_out_file: [],
+    retirement_annuity_fund_statement_file: [],
+    isMlDirectors: "",
+    Director1FirstName: "",
+    Director1LastName: "",
+    Director1email: "",
+    Director1contact: "",
+    Director1password: "",
+    Director1confirmPassword: "",
+    Director1BirthDate: "",
+    Director1NationalID: "",
+    Director1passportIdNumber: "",
+    Director1countryOfIssue: "",
+    Director1passportExpiryDate: "",
+    Director1citizenship: "",
+    Director1specifiedCitizenship: "",
+    Director1countryOfResidence: "",
+    Director1preferredLanguage: "",
+    Director1NameOfEntity: "",
+    Director1tinNumber: "",
+    Director1taxResidency: "",
+    Director2FirstName: "",
+    Director2LastName: "",
+    Director2email: "",
+    Director2contact: "",
+    Director2BirthDate: "",
+    Director2NationalID: "",
+    Director2passportIdNumber: "",
+    Director2countryOfIssue: "",
+    Director2passportExpiryDate: "",
+    Director2citizenship: "",
+    Director2specifiedCitizenship: "",
+    Director2countryOfResidence: "",
+    Director2preferredLanguage: "",
+    Director2NameOfEntity: "",
+    Director2tinNumber: "",
+    Director2taxResidency: "",
+    Director3FirstName: "",
+    Director3LastName: "",
+    Director3email: "",
+    Director3contact: "",
+    Director3BirthDate: "",
+    Director3NationalID: "",
+    Director3passportIdNumber: "",
+    Director3countryOfIssue: "",
+    Director3passportExpiryDate: "",
+    Director3citizenship: "",
+    Director3specifiedCitizenship: "",
+    Director3countryOfResidence: "",
+    Director3preferredLanguage: "",
+    Director3NameOfEntity: "",
+    Director3tinNumber: "",
+    Director3taxResidency: "",
+    Director1isPep: "",
+    Director2isPep: "",
+    Director3isPep: "",
+    Director1_national_id_file: [],
+    Director1_passport_file: [],
+    Director2_national_id_file: [],
+    Director2_passport_file: [],
+    Director3_national_id_file: [],
+    Director3_passport_file: [],
+    passport_file: [],
+    utility_file: [],
+    wealth_file: [],
+    cv_file: [],
+    funds_file: [],
+    source_of_wealth_file: [],
+    financialStatements_file: [],
+    principals_identification_file: [],
+    shareholders_file: [],
+    declaration_of_trust_file: [],
+    certificate_of_registration_file: [],
+    deed_of_retirement_file: [],
+    business_plan_file: [],
+    registered_office_file: [],
+    register_of_trustee_file: [],
+    proof_of_source_of_funds_file: [],
+    proof_of_source_of_wealth_file: [],
+    latest_accounts_or_bank_statements_file: [],
+    licence_file: [],
+    certificate_of_incumbency_file: [],
+    charter_file: [],
+    latest_accounts_file: [],
+    identification_documents_of_the_principals_of_the_foundation_file: [],
+    other_necessary_documents_file: [],
+  };
+
+  useEffect(() => {
+    const savedData = LocalStorageUtils.get(LOCAL_STORAGE_KEY);
+    if (savedData) {
+      setFormValues(savedData);
+    } else {
+      setFormValues(initialValues);
+    }
+  }, []);
+
+  const [formValues, setFormValues] = useState(null);
+  const [step, setStep] = useState(() => {
+    const storedStep = LocalStorageUtils.get(LOCAL_STORAGE_STEP_KEY);
+    return storedStep ? parseInt(storedStep, 10) : 1;
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+
   if (isLoading) {
     return (
       <div>
@@ -74,64 +393,85 @@ const ClientUpdateForm = () => {
 
   const client = clientData ? clientData[0] : {};
   
+  const mergeForecastData = (valuesData, clientData) => {
+    if (!valuesData || !clientData) return valuesData || clientData;
   
+    return valuesData.map((row, index) => {
+      const clientRow = clientData[index] || {};
+      return {
+        ...row,
+        year1: row.year1 || clientRow.year1,
+        year2: row.year2 || clientRow.year2,
+        year3: row.year3 || clientRow.year3,
+      };
+    });
+  };
 
   const handleSaveModifications = async (values) => {
-    setDialogLoading(true);
-    setDialogOpen(true);
-    setDialogMessage("Saving form...");
+    const finalValues = { ...values };
   
+    if (values.financialForecast && client.financialForecast) {
+      finalValues.financialForecast = mergeForecastData(values.financialForecast, client.financialForecast);
+    }
+    if (values.expectedAccountActivity && client.expectedAccountActivity) {
+      finalValues.expectedAccountActivity = mergeForecastData(values.expectedAccountActivity, client.expectedAccountActivity);
+    }
+    Object.keys(values).forEach((key) => {
+      if (!values[key] && client[key]) {
+        finalValues[key] = client[key];
+      }
+    });
+
     try {
       setIsLoadingSaveLater(true);
-      const incompleteFormData = new FormData();
+      setDialogLoading(true);
+      setDialogOpen(true);
+      setDialogMessage("Saving data for later...");
+      setDialogSuccess(false);
   
-      // Dynamically append all fields including files
+      // Prepare incomplete formData
+      const incompleteFormData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           // Check if the value is a file or an array of files
           if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
             if (Array.isArray(value)) {
               value.forEach((file) => incompleteFormData.append(key, file));
-            } else {
+            } else if (key === "financialForecast" || key === "expectedAccountActivity") {
+              incompleteFormData.append(key, JSON.stringify(value));
+            }else {
               incompleteFormData.append(key, value);
             }
-          } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-            incompleteFormData.append(key, JSON.stringify(value));
           } else {
             incompleteFormData.append(key, value);
           }
         }
       });
   
-      console.log("incompleteFormData", incompleteFormData);
-  
-      // Loop through each selected client ID and make an API call
       for (const clientId of selectedClientIds) {
-        const response = await updateUncompleteData({
-          clientId,
-          updatedClient: incompleteFormData,
-        }).unwrap();
+        const response = await updateCompleteData({ clientId, updatedClient: incompleteFormData }).unwrap();
   
         if (response.error) {
-          setDialogMessage(`Error updating client ${clientId}: ${response.error.message}`);
+          const errorMessage = `Error updating client ${clientId}: ${response.error.message}`;
+          setDialogMessage(errorMessage);
           setDialogSuccess(false);
-          toast.error(`Error updating client ${clientId}: ${response.error.message}`); // Toast for error
+          toast.error(errorMessage);
           break;
-        } else {
-          const successMessage = response.data?.message || "Client updated successfully"; // Default fallback message
+        } else if (response.data) {
+          const successMessage = `Client ${clientId} updated successfully: ${response.data.message}`;
           setDialogMessage(successMessage);
           setDialogSuccess(true);
-          toast.success(successMessage); // Toast for success
+          toast.success(successMessage);
+          LocalStorageUtils.clear(LOCAL_STORAGE_KEY);
+          LocalStorageUtils.clear(LOCAL_STORAGE_STEP_KEY);
         }
       }
-  
-      // Navigate to incomplete clients page after all updates
       navigate("/clients");
     } catch (error) {
-      console.error("Error saving form for later:", error);
-      setDialogMessage("An error occurred while saving the form.");
+      const errorMessage = "An error occurred while saving the form.";
+      setDialogMessage(errorMessage);
       setDialogSuccess(false);
-      toast.error("An error occurred while saving the form."); // Toast for error
+      toast.error(errorMessage);
     } finally {
       setIsLoadingSaveLater(false);
       setDialogLoading(false);
@@ -394,330 +734,48 @@ const ClientUpdateForm = () => {
     latest_accounts_file: createFileSchema(),
     identification_documents_of_the_principals_of_the_foundation_file:
       createFileSchema(),
+    other_necessary_documents_file: createFileSchema(),
   });
 
-  function createFileSchema(maxSizeMB = 5) {
-    return yup.mixed().test(
-      "fileSize",
-      `Each file must be smaller than ${maxSizeMB} MB.`,
-      (value) => {
-        if (!value || !Array.isArray(value) || value.length === 0) {
-          return true; // Allow empty uploads
+  function createFileSchema(maxSizeMB = 10) {
+      return yup.mixed().test(
+        "fileSize",
+        `Each file must be smaller than ${maxSizeMB} MB.`,
+        (value) => {
+    
+          if (!value || !Array.isArray(value) || value.length === 0) {
+            return true; // Allow empty uploads
+          }
+    
+          const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    
+          return value.every((file) => {
+            if (file.file_object && file.file_object.size) {
+              return file.file_object.size <= maxSizeBytes; // Validate file size
+            }
+            return false; // Fail validation if size is unavailable
+          });
         }
-  
-        const maxSizeBytes = maxSizeMB * 1024 * 1024;
-        
-        return value.every((file) => file.size <= maxSizeBytes);
-      }
-    );
-  }
+      );
+    }
 
-  const initialValues = {
-    firstName: "",
-    lastName: "",
-    clientEmail: "",
-    clientContact: "",
-    passportIdNumber: "",
-    birthDate: "",
-    citizenship: "",
-    countryOfResidence: "",
-    passportExpiryDate: "",
-    countryOfIssue: "",
-    preferredLanguage: "",
-    NameOfEntity: "",
-    PrevNameOfEntity: "",
-    TypeOfEntity: "",
-    TypeOfLicense: "",
-    sharePercent: "",
-    currentAddress: "",
-    taxResidency: "",
-    tinNumber: "",
-    designation: "",
-    introducerName: "",
-    introducerEmail: "",
-    contactPersonName: "",
-    contactPersonEmail: "",
-    contactPersonPhone: "",
+  if (!formValues) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+          <CircularProgress />
+        </Box>
+      );
+    }                                                                                                               
 
-    authorisedName: "",
-    authorisedEmail: "",
-    authorisedPersonContact: "",
-    authorisedCurrentAddress: "",
-    authorisedRelationship: "",
-    signature_file: [],
-    isPep: "",
-    bankStatement_file: [],
-    professionalReference_file: [],
-    countryOfIncorporation: "",
-    incorporationDate: "",
-    registeredOfficeAddress: "",
-    businessActivity: "",
-    countryOfOperation: "",
-
-    CathegoryOfEntity: "",
-    SPVType: "",
-    SectorOfEntity: "",
-    OtherSectorOfEntity: "",
-
-    changedName: "",
-    similarApplicationDetailsName: "",
-    financialServicesBusiness: "",
-    jurisdictionName: "",
-    jurisdictionAddress: "",
-    similarApplication: "",
-    similarApplicationDetailsPartner: "",
-    criticised: "",
-    similarApplicationDetailsJurisdictions: "",
-
-    bankruptcyApplication: "",
-    similarApplicationDetailsForfeit: "",
-    receiverAppointed: "",
-    similarApplicationDetailsReceiver: "",
-    civilProceedings: "",
-    similarApplicationDetailsFinancial: "",
-    convicted: "",
-    imilarApplicationDetailsOffence: "",
-    directorConvicted: "",
-    similarApplicationDetailsDirector: "",
-
-    RemittingParty: "",
-    ModeOfPayment: "",
-    RelationshipWithApplicant: "",
-    ProposedNameOption1: "",
-    ProposedNameOption2: "",
-    ProposedNameOption3: "",
-
-    proposedActivity: "",
-    targetSectors: "",
-    otherTargetSectors: "",
-    targetedCountries: "",
-    specialLicense: "",
-    secretary: "",
-    productService: "",
-    businessAddress: "",
-    sharesType: "",
-    sharesNumber: "",
-    statedCapital: "",
-
-    sourceOfFunds: "",
-    otherSourceOfFunds: "",
-    countrySourceFunds: "",
-    netAnnualIncome: "",
-    estimatedNetWorth: "",
-    sourceOfWealth: "",
-    otherSourceOfWealth: "",
-    countrySourceWealth: "",
-    bankInvolvedWealth: "",
-
-    financialForecast: [
-      {
-        id: 0,
-        description: "Currency",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      {
-        id: 1,
-        description: "Initial Investment",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      {
-        id: 2,
-        description: "Income from Business Activities",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      { id: 3, description: "Expenses", year1: "", year2: "", year3: "" },
-      { id: 4, description: "Net Profit", year1: "", year2: "", year3: "" },
-    ],
-
-    // Estimated Deposit Yearly (Currency)
-    // Estimated Number of Transactions (monthly or yearly)
-    //   Estimated Value of Transactions (monthly or yearly)
-
-    expectedAccountActivity: [
-      {
-        id: 0,
-        description: "Estimated Deposit Yearly (Currency)",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      {
-        id: 1,
-        description: "Estimated Number of Transactions (monthly or yearly)",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-      {
-        id: 2,
-        description: "Estimated Value of Transactions (monthly or yearly)",
-        year1: "",
-        year2: "",
-        year3: "",
-      },
-    ],
-
-    bankName: "",
-    Currency: "",
-    groupASignatory1: "",
-    groupASignatory2: "",
-    groupASignatory3: "",
-    groupASignatory4: "",
-    groupBSignatory1: "",
-    groupBSignatory2: "",
-    groupBSignatory3: "",
-    groupBSignatory4: "",
-    authorizedUser1: "",
-    authorizedUser1AccessRights: "",
-    authorizedUser2: "",
-    authorizedUser2AccessRights: "",
-    authorizedUser3: "",
-    authorizedUser3AccessRights: "",
-    authorizedUser4: "",
-    authorizedUser4AccessRights: "",
-    modeOfOperation: "",
-    callBackProcessContact: "",
-    nameOfProposedOfficer: "",
-
-    confirmationLetter_file: [],
-    bank_statement_file: [],
-    custody_accounts_file: [],
-    source_of_funds_file: [],
-    payslips_file: [],
-    due_diligence_file: [],
-    financial_statements_file: [],
-    proof_of_ownership_file: [],
-    lease_agreement_file: [],
-    bank_statements_file: [],
-    cdd_documents_file: [],
-    documentary_evidence_file: [],
-    bank_statement_proceeds_file: [],
-    notarised_documents_file: [],
-    letter_from_donor_file: [],
-    donor_source_of_wealth_file: [],
-    donor_bank_statement_file: [],
-    letter_from_relevant_org_file: [],
-    lottery_bank_statement_file: [],
-    creditor_agreement_file: [],
-    creditor_cdd_file: [],
-    creditor_bank_statement_file: [],
-    legal_document_file: [],
-    notary_letter_file: [],
-    executor_letter_file: [],
-    loan_agreement_file: [],
-    loan_bank_statement_file: [],
-    related_third_party_loan_agreement_file: [],
-    related_third_party_cdd_file: [],
-    related_third_party_bank_statement_file: [],
-    unrelated_third_party_loan_agreement_file: [],
-    unrelated_third_party_cdd_file: [],
-    unrelated_third_party_bank_statement_file: [],
-    signed_letter_from_notary_file: [],
-    property_contract_file: [],
-    insurance_pay_out_file: [],
-    retirement_annuity_fund_statement_file: [],
-    isMlDirectors: "",
-    Director1FirstName: "",
-    Director1LastName: "",
-    Director1email: "",
-    Director1contact: "",
-    Director1password: "",
-    Director1confirmPassword: "",
-    Director1BirthDate: "",
-    Director1NationalID: "",
-    Director1passportIdNumber: "",
-    Director1countryOfIssue: "",
-    Director1passportExpiryDate: "",
-    Director1citizenship: "",
-    Director1specifiedCitizenship: "",
-    Director1countryOfResidence: "",
-    Director1preferredLanguage: "",
-    Director1NameOfEntity: "",
-    Director1tinNumber: "",
-    Director1taxResidency: "",
-    Director2FirstName: "",
-    Director2LastName: "",
-    Director2email: "",
-    Director2contact: "",
-    Director2BirthDate: "",
-    Director2NationalID: "",
-    Director2passportIdNumber: "",
-    Director2countryOfIssue: "",
-    Director2passportExpiryDate: "",
-    Director2citizenship: "",
-    Director2specifiedCitizenship: "",
-    Director2countryOfResidence: "",
-    Director2preferredLanguage: "",
-    Director2NameOfEntity: "",
-    Director2tinNumber: "",
-    Director2taxResidency: "",
-    Director3FirstName: "",
-    Director3LastName: "",
-    Director3email: "",
-    Director3contact: "",
-    Director3BirthDate: "",
-    Director3NationalID: "",
-    Director3passportIdNumber: "",
-    Director3countryOfIssue: "",
-    Director3passportExpiryDate: "",
-    Director3citizenship: "",
-    Director3specifiedCitizenship: "",
-    Director3countryOfResidence: "",
-    Director3preferredLanguage: "",
-    Director3NameOfEntity: "",
-    Director3tinNumber: "",
-    Director3taxResidency: "",
-    Director1isPep: "",
-    Director2isPep: "",
-    Director3isPep: "",
-    Director1_national_id_file: [],
-    Director1_passport_file: [],
-    Director2_national_id_file: [],
-    Director2_passport_file: [],
-    Director3_national_id_file: [],
-    Director3_passport_file: [],
-    passport_file: [],
-    utility_file: [],
-    wealth_file: [],
-    cv_file: [],
-    funds_file: [],
-    source_of_wealth_file: [],
-    financialStatements_file: [],
-    principals_identification_file: [],
-    shareholders_file: [],
-    declaration_of_trust_file: [],
-    certificate_of_registration_file: [],
-    deed_of_retirement_file: [],
-    business_plan_file: [],
-    registered_office_file: [],
-    register_of_trustee_file: [],
-    proof_of_source_of_funds_file: [],
-    proof_of_source_of_wealth_file: [],
-    latest_accounts_or_bank_statements_file: [],
-    licence_file: [],
-    certificate_of_incumbency_file: [],
-    charter_file: [],
-    latest_accounts_file: [],
-    identification_documents_of_the_principals_of_the_foundation_file: [],
-  };
-
-  const nextStep = () => {
-    setStep(step + 1);
-  };
-
-  const prevStep = () => {
-    setStep(step - 1);
+  const handleStepChange = (newStep, values) => {
+    LocalStorageUtils.save(LOCAL_STORAGE_KEY, values);
+    LocalStorageUtils.save(LOCAL_STORAGE_STEP_KEY, newStep);
+    setStep(newStep);
   };
 
   return (
-    <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Box m="10px">
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginTop="-40px">
         <Header
           title="COMPLETE A CLIENT REGISTRATION"
           subtitle="Please resume the registration process by completing the blank fields in the form below. This information will help us to serve Client better."
@@ -752,7 +810,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 1 ? "contained" : "outlined"}
           color={step === 1 ? "secondary" : "primary"}
-          onClick={() => setStep(1)}
+          onClick={() => handleStepChange(1, formValues)}
           sx={{
             backgroundColor: step === 1 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -765,7 +823,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 2 ? "contained" : "outlined"}
           color={step === 2 ? "secondary" : "primary"}
-          onClick={() => setStep(2)}
+          onClick={() => handleStepChange(2, formValues)}
           sx={{
             backgroundColor: step === 2 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -773,12 +831,12 @@ const ClientUpdateForm = () => {
             },
           }}
         >
-          LEGAL PERSON
+          ENTITY INFORMATION
         </Button>
         <Button
           variant={step === 3 ? "contained" : "outlined"}
           color={step === 3 ? "secondary" : "primary"}
-          onClick={() => setStep(3)}
+          onClick={() => handleStepChange(3, formValues)}
           sx={{
             backgroundColor: step === 3 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -791,7 +849,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 4 ? "contained" : "outlined"}
           color={step === 4 ? "secondary" : "primary"}
-          onClick={() => setStep(4)}
+          onClick={() => handleStepChange(4, formValues)}
           sx={{
             backgroundColor: step === 4 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -805,7 +863,7 @@ const ClientUpdateForm = () => {
 
           variant={step === 5 ? "contained" : "outlined"}
           color={step === 5 ? "secondary" : "primary"}
-          onClick={() => setStep(5)}
+          onClick={() => handleStepChange(5, formValues)}
           sx={{
             backgroundColor: step === 5 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -818,7 +876,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 6 ? "contained" : "outlined"}
           color={step === 6 ? "secondary" : "primary"}
-          onClick={() => setStep(6)}
+          onClick={() => handleStepChange(6, formValues)}
           sx={{
             backgroundColor: step === 6 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -831,7 +889,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 7 ? "contained" : "outlined"}
           color={step === 7 ? "secondary" : "primary"}
-          onClick={() => setStep(7)}
+          onClick={() => handleStepChange(7, formValues)}
           sx={{
             backgroundColor: step === 7 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -844,7 +902,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 8 ? "contained" : "outlined"}
           color={step === 8 ? "secondary" : "primary"}
-          onClick={() => setStep(8)}
+          onClick={() => handleStepChange(8, formValues)}
           sx={{
             backgroundColor: step === 8 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -858,7 +916,7 @@ const ClientUpdateForm = () => {
 
           variant={step === 9 ? "contained" : "outlined"}
           color={step === 9 ? "secondary" : "primary"}
-          onClick={() => setStep(9)}
+          onClick={() => handleStepChange(9, formValues)}
           sx={{
             backgroundColor: step === 9 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -871,7 +929,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 10 ? "contained" : "outlined"}
           color={step === 10 ? "secondary" : "primary"}
-          onClick={() => setStep(10)}
+          onClick={() => handleStepChange(10, formValues)}
           sx={{
             backgroundColor: step === 10 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -884,7 +942,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 11 ? "contained" : "outlined"}
           color={step === 11 ? "secondary" : "primary"}
-          onClick={() => setStep(11)}
+          onClick={() => handleStepChange(11, formValues)}
           sx={{
             backgroundColor: step === 11 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -897,7 +955,7 @@ const ClientUpdateForm = () => {
         <Button
           variant={step === 12 ? "contained" : "outlined"}
           color={step === 12 ? "secondary" : "primary"}
-          onClick={() => setStep(12)}
+          onClick={() => handleStepChange(12, formValues)}
           sx={{
             backgroundColor: step === 12 ? colors.greenAccent[500] : colors.primary[400],
             "&:hover": {
@@ -928,11 +986,24 @@ const ClientUpdateForm = () => {
             <Box
               display="grid"
               gap="10px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
             >
+              <Box
+                display="grid"
+                rowGap="10px"
+                columnGap="10px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                position="relative"
+                sx={{
+                  border: `1px solid ${colors.grey[500]}`,
+                  padding: "3px",
+                  borderRadius: "4px",
+                  height: "70vh",
+                  overflowY: "auto",
+                  width: "100%",
+                  alignItems: "start",
+                  gridAutoRows: "auto"
+                }}
+              >
               {step === 1 && (
                 <FormFields1
                   values={values}
@@ -1077,6 +1148,7 @@ const ClientUpdateForm = () => {
                   client={client}
                 />
               )}
+              </Box>
             </Box>
 
             {/* Previous and Next Buttons */}
@@ -1102,7 +1174,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px">
                   <Button
                     variant="contained"
-                    onClick={prevStep}
+                    onClick={() => handleStepChange(step - 1, values)}
                     color="secondary"
                   >
                     Previous
@@ -1113,7 +1185,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1124,7 +1196,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1135,7 +1207,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1146,7 +1218,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1157,7 +1229,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1168,7 +1240,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1179,7 +1251,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1190,7 +1262,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1201,7 +1273,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1212,7 +1284,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1223,7 +1295,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={nextStep}
+                    onClick={() => handleStepChange(step + 1, values)}
                     color="secondary"
                   >
                     Next
@@ -1234,7 +1306,7 @@ const ClientUpdateForm = () => {
                 <Box display="flex" mt="20px" justifyContent="end">
                   <Button
                     variant="contained"
-                    onClick={() => handleSaveModifications(values)}
+                    onClick={() => handleStepChange(step + 1, values)}
                     type="submit"
                     color="secondary"
                     disabled={isLoadingSaveLater}

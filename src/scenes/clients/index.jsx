@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Typography, Menu, MenuItem, CircularProgress, Snackbar, Alert} from "@mui/material";
+import { Box, Button, Typography, Menu, MenuItem, Snackbar, Alert} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -332,11 +332,11 @@ const Clients = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={loadingDialogOpen}>
+      {/* <Dialog open={loadingDialogOpen}>
         <DialogContent>
           <CircularProgress size={60} />
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       {/* Notification Snackbar */}
       <Snackbar

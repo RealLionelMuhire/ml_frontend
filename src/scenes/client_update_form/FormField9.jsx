@@ -205,6 +205,7 @@ const FormFields9 = ({
         name="countrySourceWealth"
         error={touched.countrySourceWealth && errors.countrySourceWealth}
         helperText={touched.countrySourceWealth && errors.countrySourceWealth}
+        sx={{ gridColumn: "span 2" }}
       />
       <TextField
         fullWidth

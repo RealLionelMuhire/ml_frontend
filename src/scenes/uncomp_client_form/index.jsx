@@ -393,7 +393,6 @@ const IncompleteClientForm = () => {
   }
 
   const client = clientData ? clientData[0] : {};
-  // console.log("client:", client);
 
   const mergeForecastData = (valuesData, clientData) => {
     if (!valuesData || !clientData) return valuesData || clientData;
@@ -410,6 +409,7 @@ const IncompleteClientForm = () => {
   };
   
   const handleFormSubmit = async (values) => {
+    console.log("values from incomplete reg:", values);
     // Merge values with client data for final submission
     const finalValues = { ...values };
   
@@ -424,8 +424,6 @@ const IncompleteClientForm = () => {
         finalValues[key] = client[key];
       }
     });
-    if (isSubmitting) return;
-    setIsSubmitting(true);
   
     try {
       setIsLoadingSubmit(true);
@@ -443,16 +441,17 @@ const IncompleteClientForm = () => {
             value.forEach((fileData) => {
               if (fileData.file_object instanceof File) {
                 formData.append(key, fileData.file_object);
+              } else if (key === "financialForecast" || key === "expectedAccountActivity") {
+                formData.append(key, JSON.stringify(value));
+              } else {
+                formData.append(key, value);
               }
             });
-          } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-            formData.append(key, JSON.stringify(value));
-          } else {
+          }  else {
             formData.append(key, value);
           }
         }
       });
-      console.log("formData:", formData);
   
       const response = await createClient(formData); // API call
   
@@ -490,11 +489,8 @@ const IncompleteClientForm = () => {
       setIsLoadingSubmit(false);
     }
   };
-  
-  
 
   const handleSaveAndContinueLater = async (values) => {
-    if (isSubmitting) return;
     setIsSubmitting(true);
     try {
       setIsLoadingSaveLater(true);
@@ -508,14 +504,16 @@ const IncompleteClientForm = () => {
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           // Check if the value is a file or an array of files
-          if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
-            if (Array.isArray(value)) {
-              value.forEach((file) => incompleteFormData.append(key, file));
-            } else {
-              incompleteFormData.append(key, value);
-            }
-          } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-            incompleteFormData.append(key, JSON.stringify(value));
+          if (Array.isArray(value)) {
+            value.forEach((fileData) => {
+              if (fileData.file_object instanceof File) {
+                incompleteFormData.append(key, fileData.file_object);
+              } else if (key === "financialForecast" || key === "expectedAccountActivity") {
+                incompleteFormData.append(key, JSON.stringify(value));
+              } else {
+                incompleteFormData.append(key, value);
+              }
+            });
           } else {
             incompleteFormData.append(key, value);
           }
@@ -549,7 +547,6 @@ const IncompleteClientForm = () => {
     } finally {
       setIsLoadingSaveLater(false);
       setDialogLoading(false);
-      setIsSubmitting(false);
     }
   };
   

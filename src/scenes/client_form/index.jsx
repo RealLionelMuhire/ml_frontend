@@ -26,12 +26,12 @@ import FeedbackDialog from"../global/FeedbackDialog"
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import LocalStorageUtils from "../../utils/localStorageUtils";
-// import ErrorBox from "./ErrorBox";
-// import SuccessBox from "./SuccessBox";
+import ErrorBox from "./ErrorBox";
+import SuccessBox from "./SuccessBox";
 
 const ClientForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [createClient] = useCreateClientMutation();
+  const [createClient, { isError, data }] = useCreateClientMutation();
   const [saveUncompleteData] = useCreateUncompleteClientMutation();
   const [isLoadingSaveLater, setIsLoadingSaveLater] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -40,13 +40,10 @@ const ClientForm = () => {
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogSuccess, setDialogSuccess] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = async (values) => {
-    if (isSubmitting) return;
-    setIsSubmitting(true)
     try {
       // Set loading state for dialog
       setDialogLoading(true);
@@ -63,16 +60,17 @@ const ClientForm = () => {
             value.forEach((fileData) => {
               if (fileData.file_object instanceof File) {
                 formData.append(key, fileData.file_object);
+              } else if (key === "financialForecast" || key === "expectedAccountActivity") {
+                formData.append(key, JSON.stringify(value));
+              } else {
+                formData.append(key, value);
               }
             });
-          } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-            formData.append(key, JSON.stringify(value));
           } else {
             formData.append(key, value);
           }
         }
       });
-      // console.log("client form data:", formData)
       const response = await createClient(formData); // API call
   
       if (response.error) {
@@ -105,7 +103,7 @@ const ClientForm = () => {
       setDialogMessage(errorMessage);
       setDialogSuccess(false); // Set to false for error
     } finally {
-      setDialogLoading(false); // Hide loading spinner after submission
+      setDialogLoading(false);
     }
   };
 
@@ -120,14 +118,16 @@ const ClientForm = () => {
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           // Check if the value is a file or an array of files
-          if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
-            if (Array.isArray(value)) {
-              value.forEach((file) => completeFormData.append(key, file));
-            } else {
-              completeFormData.append(key, value);
-            }
-          } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-            completeFormData.append(key, JSON.stringify(value));
+          if (Array.isArray(value)) {
+            value.forEach((fileData) => {
+              if (fileData.file_object instanceof File) {
+                completeFormData.append(key, fileData.file_object);
+              } else if (key === "financialForecast" || key === "expectedAccountActivity") {
+                completeFormData.append(key, JSON.stringify(value));
+              } else {
+                completeFormData.append(key, value);
+              }
+            });
           } else {
             completeFormData.append(key, value);
           }
@@ -135,7 +135,6 @@ const ClientForm = () => {
       });
   
       const response = await saveUncompleteData(completeFormData);
-      // console.log("Response received:", response);
   
       if (response.error) {
         const errorMessage = response.error.message || "An error occurred";
@@ -149,7 +148,7 @@ const ClientForm = () => {
         toast.success(successMessage); // Show toast for success
         LocalStorageUtils.clear(LOCAL_STORAGE_KEY);
         LocalStorageUtils.clear(LOCAL_STORAGE_STEP_KEY);
-        navigate("/incomplete-clients"); // Navigate after successful save
+        // navigate("/incomplete-clients"); // Navigate after successful save
       }
     } catch (error) {
       const errorMessage = `Error saving form: ${error.message || error}`;
@@ -158,7 +157,6 @@ const ClientForm = () => {
       toast.error(errorMessage); // Show toast for error
     } finally {
       setDialogLoading(false);
-      setIsSubmitting(false);
     }
   };
   
@@ -1307,6 +1305,8 @@ const ClientForm = () => {
                 </Box>
               )}
             </Box>
+            <ErrorBox isError={isError} />
+            <SuccessBox data={data} />
           </form>
         )}
       </Formik>

@@ -2,7 +2,7 @@ import React from "react";
 import { TextField, Box, Typography, MenuItem } from "@mui/material";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
-import PdfViewerDialog from "../../utils/PdfViewerDialog";
+import DocumentUploadField from "../../utils/DocumentUploadField";
 
 const FormFields3 = ({
   values,
@@ -118,39 +118,16 @@ const FormFields3 = ({
         }
         sx={{ gridColumn: "span 1" }}
       />
-      <Box
-        variant="outlined"
-        display="flex"
-        justifyContent="space-between"
-        sx={{
-          backgroundColor: colors.primary[400],
-          gridColumn: "span 2",
-          margin: "1px 0px 1px",
-          borderRadius: "4px",
-          padding: "13px 5px",
-        }}
-      >
-        <Typography variant="h6">
-          {client?.signature_file ? (
-            <PdfViewerDialog file={client.signature_file} />
-          ) : (
-            <label htmlFor="signature_file">Upload Signature file</label>
-          )}
-        </Typography>
-        <input
-          type="file"
-          accept=".pdf"
-          name="signature_file"
-          onChange={(e) => {
-            handleChange(e);
-            setFieldValue("signature_file", e.currentTarget.files[0]);
-          }}
-          sx={{ gridColumn: "span 2" }}
-        />
-        {touched.signature_file && errors.signature_file && (
-          <div>{errors.signature_file}</div>
-        )}
-      </Box>
+      <DocumentUploadField
+        label="Upload Signature File"
+        name="signature_file"
+        value={values.signature_file}
+        error={errors.signature_file}
+        touched={touched.signature_file}
+        setFieldValue={setFieldValue}
+        client={client}
+        accept=".pdf"
+      />
       <Box
         variant="outlined"
         display="flex"
@@ -188,86 +165,37 @@ const FormFields3 = ({
         <MenuItem value="yes">Yes</MenuItem>
         <MenuItem value="no">No</MenuItem>
       </TextField>
-
-      {/* Conditional rendering for certificate upload */}
-      {(values.isPep === "yes" ||
-        (!values.isPep && client.isPep === "yes")) && (
+      {(values.isPep === "yes" || (!values.isPep && client.isPep === "yes")) && (
         <>
-          <Box
-            variant="outlined"
-            display="flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "13px 5px",
-            }}
-          >
-            <Typography variant="h6">
-              {client?.bankStatement_file ? (
-                <PdfViewerDialog file={client.bankStatement_file} />
-              ) : (
-                <label htmlFor="bankStatement_file">
-                  Upload last six months bank statements
-                </label>
-              )}
-            </Typography>
-            <input
-              type="file"
-              accept=".pdf"
-              name="bankStatement_file"
-              onChange={(e) => {
-                handleChange(e);
-                setFieldValue("bankStatement_file", e.currentTarget.files[0]);
-              }}
-              sx={{ gridColumn: "span 2" }}
-            />
-            {touched.bankStatement_file && errors.bankStatement_file && (
-              <div>{errors.bankStatement_file}</div>
-            )}
-          </Box>
+          <DocumentUploadField
+            label="Upload last six months bank statements"
+            name="bankStatement_file"
+            value={values.bankStatement_file}
+            error={errors.bankStatement_file}
+            touched={touched.bankStatement_file}
+            setFieldValue={setFieldValue}
+            client={client}
+            accept=".pdf"
+            sx={{ gridColumn: "span 2" }}
+          />
+          {touched.bankStatement_file && errors.bankStatement_file && (
+            <div>{errors.bankStatement_file}</div>
+          )}
 
-          <Box
-            variant="outlined"
-            display="flex"
-            justifyContent="space-between"
-            sx={{
-              backgroundColor: colors.primary[400],
-              gridColumn: "span 2",
-              margin: "1px 0px 1px",
-              borderRadius: "4px",
-              padding: "13px 5px",
-            }}
-          >
-            <Typography variant="h6">
-              {client?.professionalReference_file ? (
-                <PdfViewerDialog file={client.professionalReference_file} />
-              ) : (
-                <label htmlFor="professionalReference_file">
-                  Upload professional reference
-                </label>
-              )}
-            </Typography>
-            <input
-              type="file"
-              accept=".pdf"
-              name="professionalReference_file"
-              onChange={(e) => {
-                handleChange(e);
-                setFieldValue(
-                  "professionalReference_file",
-                  e.currentTarget.files[0]
-                );
-              }}
-              sx={{ gridColumn: "span 2" }}
-            />
-            {touched.professionalReference_file &&
-              errors.professionalReference_file && (
-                <div>{errors.professionalReference_file}</div>
-              )}
-          </Box>
+          <DocumentUploadField
+            label="Upload professional reference"
+            name="professionalReference_file"
+            value={values.professionalReference_file}
+            error={errors.professionalReference_file}
+            touched={touched.professionalReference_file}
+            setFieldValue={setFieldValue}
+            client={client}
+            accept=".pdf"
+            sx={{ gridColumn: "span 2" }}
+          />
+          {touched.professionalReference_file && errors.professionalReference_file && (
+            <div>{errors.professionalReference_file}</div>
+          )}
         </>
       )}
     </React.Fragment>

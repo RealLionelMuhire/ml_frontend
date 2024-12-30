@@ -277,11 +277,11 @@ const IncompleteClients = () => {
       </Dialog>
 
       {/* Loading Dialog */}
-      <Dialog open={loadingDialogOpen} maxWidth="xs" fullWidth>
+      {/* <Dialog open={loadingDialogOpen} maxWidth="xs" fullWidth>
         <DialogContent>
           <CircularProgress />
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };
