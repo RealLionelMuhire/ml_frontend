@@ -4,6 +4,7 @@ import FinancialForecastTable2 from "./FinancialForecastTable";
 import AccountAtivityTable from "./AccountActivityTable";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import DocumentUploadField from "../../utils/DocumentUploadField";
 
 const FormFields12 = ({
   values,
@@ -124,6 +125,21 @@ const FormFields12 = ({
           copies of due diligence documents.
         </Typography>
       </Box>
+
+      <DocumentUploadField
+        label="Upload Other Necessary Documents(Compress Folder into a zip file)"
+        name="other_necessary_documents_file"
+        value={
+          Array.isArray(values.other_necessary_documents_file)
+            ? values.other_necessary_documents_file
+            : []
+        }
+        error={errors.other_necessary_documents_file}
+        touched={touched.other_necessary_documents_file}
+        setFieldValue={setFieldValue}
+        client={client}
+        accept=".zip"
+      />
     </React.Fragment>
   );
 };

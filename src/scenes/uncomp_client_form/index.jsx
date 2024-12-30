@@ -43,7 +43,6 @@ const IncompleteClientForm = () => {
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogSuccess, setDialogSuccess] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   const location = useLocation();
@@ -491,7 +490,6 @@ const IncompleteClientForm = () => {
   };
 
   const handleSaveAndContinueLater = async (values) => {
-    setIsSubmitting(true);
     try {
       setIsLoadingSaveLater(true);
       setDialogLoading(true);
