@@ -434,19 +434,22 @@ const ClientUpdateForm = () => {
       Object.entries(values).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           // Check if the value is a file or an array of files
-          if (value instanceof File || (Array.isArray(value) && value[0] instanceof File)) {
-            if (Array.isArray(value)) {
-              value.forEach((file) => incompleteFormData.append(key, file));
-            } else if (key === "financialForecast" || key === "expectedAccountActivity") {
-              incompleteFormData.append(key, JSON.stringify(value));
-            }else {
-              incompleteFormData.append(key, value);
-            }
+          if (Array.isArray(value)) {
+            value.forEach((fileData) => {
+              if (fileData.file_object) {
+                incompleteFormData.append(key, fileData.file_object);
+              } else if (key === "financialForecast" || key === "expectedAccountActivity") {
+                incompleteFormData.append(key, JSON.stringify(value));
+              } else {
+                incompleteFormData.append(key, value);
+              }
+            }); 
           } else {
             incompleteFormData.append(key, value);
           }
         }
       });
+      console.log("incompleteFormData: ", incompleteFormData);
   
       for (const clientId of selectedClientIds) {
         const response = await updateCompleteData({ clientId, updatedClient: incompleteFormData }).unwrap();
