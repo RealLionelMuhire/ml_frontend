@@ -27,7 +27,7 @@ const WeeklyRepForm = ({ onSubmit, isLoading, handleCancel, initialValues }) => 
   };
 
   return (
-    <Box m="20px">
+    <Box>
       <Formik
         initialValues={initialValues || {
           taskName: "",

@@ -175,8 +175,8 @@ const Clients = () => {
   ];
 
   return (
-    <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Box m="10px">
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginTop="-40px">
         <Header title="CLIENTS" subtitle="Managing All Clients" />
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
@@ -255,8 +255,8 @@ const Clients = () => {
         </Box>
       </Box>
       <Box
-        m="40px 0 0 0"
-        height="75vh"
+        m="20px 0 -10 0"
+        height="80vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",

@@ -71,4 +71,3 @@ Or download and run [`setup_project.sh`](./setup_project.sh)
 ### License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-

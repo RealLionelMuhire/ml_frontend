@@ -86,8 +86,8 @@ const ClientByID = ({ data, selectedClientIds }) => {
 
   return (
     <Box
-      m="40px 0 0 0"
-      height="75vh"
+      m="20px 0 -10 0"
+      height="80vh"
       sx={{
         "& .MuiDataGrid-root": {
           border: "none",

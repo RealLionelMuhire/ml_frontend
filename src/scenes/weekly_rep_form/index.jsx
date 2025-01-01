@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import WeeklyRepForm from "./WeeklyRepForm"; // Import your form component
 import { v4 as uuidv4 } from "uuid";
+import { json, Link, useNavigate } from "react-router-dom";
+
 
 const ReportTable = () => {
   const theme = useTheme();
@@ -41,9 +44,24 @@ const ReportTable = () => {
       ),
     },
   ];
+  // console.log("report data: ", reportData);
+
+  const handleSaveReport = async (reportData) => {
+
+    const finalReportData = new FormData();
+    Object.entries(reportData).forEach(([key, value]) => {
+      finalReportData.append(key, JSON.stringify(value));
+    }
+  );
+  console.log("final report data: ", finalReportData);
+  };
+
+  // printing the output of handle save report function finalReportData
+  handleSaveReport(reportData);
+
 
   const calculateHeight = () => {
-    return 90 + reportData.length * 65;
+    return 90 + reportData.length * 55;
   };
 
   const calculateWidth = () => {
@@ -54,6 +72,7 @@ const ReportTable = () => {
   const handleFormSubmit = (newData) => {
     const newDataWithId = { ...newData, id: uuidv4() }; // Assign a unique ID when adding
     setReportData((prevData) => [...prevData, newDataWithId]);
+    // console.log("Report added: ", newDataWithId);
     setIsFormVisible(false); // Hide the form after submission
   };
 
@@ -73,12 +92,23 @@ const ReportTable = () => {
       row.id === params.id ? { ...row, [params.field]: params.value } : row
     );
     setReportData(updatedData);
+    // console.log("Row updated: ", params);
   };
 
   return (
-    <Box width="100%">
+    <Box m="10px">
+      <Box display="flex" justifyContent="space-between" alignItems="center" mt="-30px">
+        <Header
+          title="CREATE A REPORT"
+          subtitle="Add tasks and Fill in the form below to create a report"
+        />
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button type="submit" color="secondary" variant="contained">
+            <Link to="/team">Back to Reports</Link>
+          </Button>
+        </Box>
+      </Box>
       <Box
-        m="20px"
         height={`${calculateHeight()}px`}
         width={`${calculateWidth()}px`}
         sx={{
@@ -135,10 +165,10 @@ const ReportTable = () => {
         />
       </Box>
 
-      <Box display="flex" justifyContent="flex-start" m="20px">
+      <Box display="flex" justifyContent="flex-start" m="20px 0 20px 0"> 
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={() => setIsFormVisible(!isFormVisible)}
           sx={{
             backgroundColor: colors.greenAccent[400],
@@ -160,5 +190,4 @@ const ReportTable = () => {
     </Box>
   );
 };
-
 export default ReportTable;

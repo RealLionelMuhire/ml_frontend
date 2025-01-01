@@ -25,8 +25,8 @@ const ClientByIDParent = () => {
     }
     
     return (
-        <Box m="20px">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box m="10px">
+        <Box display="flex" justifyContent="space-between" alignItems="center" marginTop="-40px">
             <Header title="CLIENT" subtitle="View more data on selected clients" />
             <Box display="flex" justifyContent="end" mt="20px">
             <Button type="submit" color="secondary" variant="contained">
